@@ -22,7 +22,7 @@ When a user is in need of a public restroom, they will be able to access the dat
 
 Upon first load, the user will be directed to a landing page at which they must enter their information. If the user already exists (until authentication is a viable option) their unique ID will be stored to credit them if they make contributions. (?)
 
-A post MVP version sees a social media layer on top of the current idea. Obviously this much freedom by a pseudo-anonymous user would ill advised in a production setting.
+A post MVP version sees a social media layer on top of the current idea. Obviously this much freedom by a pseudo-anonymous user would be ill advised in a true production setting.
 
 ### Intended Crud Functionality
 
@@ -75,7 +75,7 @@ A post MVP version sees a social media layer on top of the current idea. Obvious
 
 ### **_Sources_**
 
-Style and organization will be inspired by [Airbnb's](https://www.airbnb.com) 2022 styling
+Style and organization will be inspired by [Airbnb's](https://www.airbnb.com) 2022 styling.
 
 ### ***Trello Board***
 
