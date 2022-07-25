@@ -6,6 +6,10 @@ router.get('/', (req, res) => res.send('crapple maps root route'));
 
 router.post('/users', controllers.createUser);
 
+router.get('/users', controllers.getAllUsers);
+
+router.put('/users', controllers.updateUser);
+
 router.post('/listings', controllers.createListing);
 
 router.get('/listings', controllers.getAllListings);

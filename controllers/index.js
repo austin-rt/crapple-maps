@@ -12,6 +12,32 @@ const createUser = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    return res.status(200).json({ users });
+  } catch (e) {
+    return res.status(500).send(error.message);
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await User.findByIdAndUpdate(id, req.body, { new: true }, (err, user) => {
+      if (err) {
+        res.status(500).send(err);
+      }
+      if (!user) {
+        res.status(500).send('User not found!');
+      }
+      return res.status(200).json(user);
+    });
+  } catch (e) {
+    return res.status(500).send(error.message);
+  }
+};
+
 const createListing = async (req, res) => {
   try {
     const listing = await new Listing(req.body);
@@ -78,6 +104,8 @@ const deleteListing = async (req, res) => {
 
 module.exports = {
   createUser,
+  getAllUsers,
+  updateUser,
   createListing,
   getAllListings,
   getListingById,
