@@ -4,6 +4,7 @@
   "description": "![](https://i.imgur.com/CUfLUPB.png) ## Date: 07/29/2022",
   "main": "index.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
