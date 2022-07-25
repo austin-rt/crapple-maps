@@ -8,7 +8,11 @@ router.post('/users', controllers.createUser);
 
 router.get('/users', controllers.getAllUsers);
 
-router.put('/users', controllers.updateUser);
+router.get('/users/:id', controllers.getUserById);
+
+router.put('/users/:id', controllers.updateUser);
+
+router.delete('/users/:id', controllers.deleteUser);
 
 router.post('/listings', controllers.createListing);
 
