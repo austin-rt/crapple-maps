@@ -1,0 +1,23 @@
+{
+  "name": "crapple-maps",
+  "version": "1.0.0",
+  "description": "![](https://i.imgur.com/CUfLUPB.png) ## Date: 07/29/2022",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/austin-rt/crapple-maps.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/austin-rt/crapple-maps/issues"
+  },
+  "homepage": "https://github.com/austin-rt/crapple-maps#readme",
+  "dependencies": {
+    "mongoose": "^6.4.6"
+  }
+}
