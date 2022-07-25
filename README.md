@@ -38,6 +38,12 @@ A post MVP version sees a social media layer on top of the current idea. Obvious
 - React.js
 - Node.js
 
+#### **_Component Hierarchy Diagram:_**
+![Component Hierarchy Diagram](./images/CrappleMapsComponentHierarchyDiagram.jpg "Component Hierarchy Diagram")
+
+#### **_Entity Relationship Diagram:_**
+![Entity Relationship Diagram](./images/CrappleMapsEntityRelationshipDiagram.jpg "Entity Relationship Diagram")
+
 
 #### **_Main Concepts:_**
 ```js
