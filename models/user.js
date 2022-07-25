@@ -8,7 +8,7 @@ const User = new Schema(
     emailAddress: { type: String, require: true },
     city: { type: String, require: true },
     favoriteListings: { type: Array, require: false },
-    contributions: { type: Aray, required: false }
+    contributions: { type: Array, required: false }
   },
   { timestamps: true }
 );
