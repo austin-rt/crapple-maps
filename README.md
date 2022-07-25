@@ -5,7 +5,7 @@
 
 ### By: Austin Taylor
 
-[Website](http://wwww.austinryantaylor.com) | [GitHub](https://github.com/austinryantaylor) | [LinkedIn](https://www.linkedin.com/in/austin-taylor-62594823a/)
+[Website](http://wwww.austinrt.io) | [GitHub](https://github.com/austin-rt) | [LinkedIn](https://www.linkedin.com/in/austinrt/)
 
 
 ### **_Hosted Site_**
