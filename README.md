@@ -89,6 +89,7 @@ Style and organization will be inspired by [Airbnb's](https://www.airbnb.com) 20
 2. map view
 3. proximity filter
 4. programiatically averaged ratings
+5. user to user interaction (post / comment / like / dislike)
 
 ### ***License***
 
