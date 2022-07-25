@@ -80,7 +80,7 @@ Style and organization will be inspired by [Airbnb's](https://www.airbnb.com) 20
 ### ***Trello Board***
 
 [Crapple Maps Trello Board](https://trello.com/b/xqud8mOJ/crapple-maps)
-###### Trello Board is a work in progress
+##### Trello Board is a work in progress
 
 <br />
 
