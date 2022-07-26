@@ -31,12 +31,12 @@ export default function UserForm() {
         });
 
     };
-    console.log(formValues);
     postUser(formValues);
     setFormValues(initialValues);
   };
 
   return (
+
     <form onSubmit={handleSubmit}>
       <label htmlFor="username">username:</label>
       <input
@@ -85,4 +85,4 @@ export default function UserForm() {
       <button type="submit" className="button">Sign Up</button>
     </form>
   );
-};;
+};

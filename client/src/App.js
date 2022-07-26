@@ -1,10 +1,10 @@
 import './styles/App.css';
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Nav from './components/Nav';
 import Home from './pages/Home';
 import UserForm from './components/UserForm';
 import Listings from './components/Listings';
+import ListingForm from './components/ListingForm';
 
 function App() {
   return (
@@ -12,6 +12,8 @@ function App() {
       <Routes>
         <Route index element={<Home />} />
         <Route path="/listings" element={<Listings />} />
+        <Route path="/signup" element={<UserForm />} />
+        <Route path="/contribute" element={<ListingForm />} />
       </Routes>
     </div>
   );
