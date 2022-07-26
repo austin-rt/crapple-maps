@@ -24,21 +24,24 @@ export default function Listings() {
 
 
   return (
-    <div className="listings-grid">
-      {listings.map((listing) => (
-        <Link to={`/listings/${listing._id}`} key={listing._id} className="listing-link">
-          <Listing
-            name={listing.name}
-            img={listing.img}
-            streetAddress={listing.streetAddress}
-            streetAddressTwo={listing.streetAddressTwo}
-            city={listing.city}
-            state={listing.state}
-            zip={listing.zip}
-            description={listing.description}
-          />
-        </Link>
-      ))}
+    <div className="listings-container">
+      <h2 className="listings-title">Listings</h2>
+      <div className="listings-grid">
+        {listings.map((listing) => (
+          <Link to={`/listings/${listing._id}`} key={listing._id} className="listing">
+            <Listing
+              name={listing.name}
+              img={listing.img}
+              streetAddress={listing.streetAddress}
+              streetAddressTwo={listing.streetAddressTwo}
+              city={listing.city}
+              state={listing.state}
+              zip={listing.zip}
+              description={listing.description}
+            />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 

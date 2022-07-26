@@ -8,7 +8,7 @@ export default function Listing(props) {
       <h4 className="listing-city">{props.city}</h4>
       <p className="listing-state">{props.state}</p>
       <p className="listing-zip">{props.zip}</p>
-      <p className="listing-description">{props.description}</p>
+      {/* <p className="listing-description">{props.description}</p> */}
     </div>
   );
 }

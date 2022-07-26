@@ -77,16 +77,19 @@ input {
 }
 
 .listing-img {
-  width: 100%;
+  max-height: 18rem;
+  max-width: 100%;
 }
 
-.listing-link {
+.listing {
   text-decoration: none;
+  overflow: hidden;
 }
 
-.listing-grid {
+.listings-grid {
   display: flex;
-
+  width: 100vw;
+  flex-wrap: wrap;
 }
 
 .listing-container {

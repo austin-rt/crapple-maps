@@ -6,8 +6,8 @@ export default function Home() {
   return (
     <>
       <Nav />
-      {/* <UserForm /> */}
-      <Listings />
+      <UserForm />
+      {/* <Listings /> */}
     </>
   );
 }
