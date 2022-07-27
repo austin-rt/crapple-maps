@@ -5,9 +5,7 @@ import Listings from "../components/Listings";
 export default function Home() {
   return (
     <>
-      <Nav />
-      <UserForm />
-      {/* <Listings /> */}
+      <Listings />
     </>
   );
 }

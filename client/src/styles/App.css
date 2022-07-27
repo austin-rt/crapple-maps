@@ -30,22 +30,33 @@ a {
   color: black;
 }
 
-.nav--listings {
+.nav--listings,
+.nav--contribute {
   color: black;
   font-size: 1rem;
   align-self: center;
   margin-right: 10px;
+}
+
+.nav--listings {
   margin-left: auto
 }
+
 
 form {
   padding: 5px;
   text-align: center;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   border: 2px solid black;
-  width: 20rem;
   align-items: center;
+  margin: 0 auto;
+}
+
+.listing-form {
+  justify-content: center;
+  align-items: center;
+  width: 35rem;
   margin: 0 auto;
 }
 
@@ -54,7 +65,6 @@ textarea {
   display: block;
   margin: 5px;
   padding: 5px;
-  border-radius: 8%
 }
 
 input {
@@ -83,14 +93,10 @@ input {
   transform: translateY(4px);
 }
 
-.listing-img {
-  max-width: 100%;
-  border-radius: 10%;
-}
-
-.listing {
-  text-decoration: none;
-  overflow: hidden;
+.listings-title {
+  text-align: center;
+  font-size: 48px;
+  font-weight: 400;
 }
 
 .listings-grid {
@@ -101,7 +107,98 @@ input {
 
 .listing-container {
   height: 25rem;
-  width: 25rem;
-  margin: 5px;
-  /* background-color: red; */
+  width: 22.5rem;
+  margin: 12px;
+  overflow: hidden;
+  border-radius: 2.5rem;
+}
+
+.listing {
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.listing-img {
+  height: 400px;
+}
+
+.listing-rating {
+  margin-left: auto;
+  font-weight: 300;
+  font-size: 24px;
+}
+
+.listing-info-container {
+  background-image: linear-gradient(#28272773, transparent);
+  position: relative;
+  top: -95px;
+  color: white;
+  padding: 0 15px 0 20px;
+  border-radius: 0 0 2.5rem 2.5rem;
+  height: 5.75rem;
+  overflow: hidden;
+}
+
+.listing-info-header {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0 0 0;
+}
+
+.listing-name {
+  font-size: 18px;
+  margin-right: auto;
+}
+
+.listing-container h3,
+h4 {
+  font-weight: 300;
+}
+
+.listing-address {
+  margin-top: -10px;
+}
+
+.listing-container {
+  height: 25rem;
+  width: 22.5rem;
+  margin: 12px;
+  overflow: hidden;
+  border-radius: 2.5rem;
+}
+
+.listing {
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.listing-detail-container {
+  margin: 75px 100px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.listing-detail-img-container {
+  border-radius: 2.5rem;
+  overflow: hidden;
+  height: 500px;
+  width: 500px;
+}
+
+.listing-detail-img {
+  height: 100%
+}
+
+.listing-detail-info-container {
+  text-align: right;
+  margin: 50px
+}
+
+.listing-detail-rating {
+  font-weight: 300;
+  font-size: 24px;
+}
+
+.listing-detail-city {
+  margin-bottom: 20px;
 }

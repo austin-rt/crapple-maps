@@ -28,13 +28,14 @@ export default function Listings() {
     <>
       <Nav />
       <div className="listings-container">
-        <h2 className="listings-title">Listings</h2>
+        <h1 className="listings-title">Listings</h1>
         <div className="listings-grid">
           {listings.map((listing) => (
             <Link to={`/listings/${listing._id}`} key={listing._id} className="listing">
               <Listing
-                name={listing.name}
                 img={listing.img}
+                name={listing.name}
+                overallRating={listing.overallRating}
                 streetAddress={listing.streetAddress}
                 streetAddressTwo={listing.streetAddressTwo}
                 city={listing.city}

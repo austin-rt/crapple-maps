@@ -1,17 +1,16 @@
-import Nav from "./Nav";
-
 export default function Listing(props) {
   return (
     <>
-      <Nav />
       <div className="listing-container">
         <img src={props.img} className="listing-img" />
-        <h2 className="listing-name">{props.name}</h2>
-        <h3 className="listing-address-one">{props.streetAddress}</h3>
-        <h3 className="listing-address-two">{props.streetAddressTwo}</h3>
-        <h4 className="listing-city">{props.city}</h4>
-        <p className="listing-state">{props.state}</p>
-        <p className="listing-zip">{props.zip}</p>
+        <div className="listing-info-container">
+          <div className="listing-info-header">
+            <h2 className="listing-name">{props.name}</h2>
+            <h3 className="listing-rating">{props.overallRating}⭑</h3>
+          </div>
+          <h3 className="listing-address">{props.streetAddress} {props.streetAddressTwo} </h3>
+          <h4 className="listing-city">{props.city}, {props.state} {props.zip} </h4>
+        </div>
         {/* <p className="listing-description">{props.description}</p> */}
       </div>
     </>
