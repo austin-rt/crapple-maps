@@ -28,11 +28,15 @@ export default function ListingDetails(props) {
           <h3 className="listing-detail-address">{listing.streetAddress} {listing.streetAddressTwo} </h3>
           <h4 className="listing-detail-city">{listing.city}, {listing.state} {listing.zip} </h4>
           <p className="listing-detail-description">{listing.description}</p>
-          <button className="button delete-listing-button">delete listing</button>
-          <button className="button update-listing-button">update listing</button>
         </div>
-        <div className="listing-detail-img-container">
-          <img src={listing.img} className="listing-detail-img" />
+        <div className="right-column">
+          <div className="listing-detail-img-container">
+            <img src={listing.img} className="listing-detail-img" />
+          </div>
+          <div className="listing-detail-buttons-container">
+            <button className="button update-listing-button">update listing</button>
+            <button className="button delete-listing-button">delete listing</button>
+          </div>
         </div>
       </div>
     </>

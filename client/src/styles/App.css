@@ -177,6 +177,26 @@ textarea {
   transform: translateY(4px);
 }
 
+.listing-detail-buttons-container {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 50px 45px 0 0;
+}
+
+.delete-listing-button {
+  background-color: red;
+}
+
+.button:hover {
+  background-color: #961111
+}
+
+.button:active {
+  background-color: #650b0b;
+  box-shadow: 4px 4px #666;
+  transform: translateY(4px);
+}
+
 .listings-title,
 .user-form-header,
 .listing-form-header {

@@ -9,7 +9,7 @@ export default function Home() {
       <nav className="splash-page-nav">
         <Link to="/" className="nav--logo-title-container">
           <img className="nav--logo" src="https://i.imgur.com/7jPAI3G.png" />
-          <h1 className="nav--title">Crapple Maps</h1>
+          <h1 className="nav--title" id="splash-page-title">Crapple Maps</h1>
         </Link>
         <div id="splash-page-nav-links" className="nav--links">
           <Link to="/signup" className="nav--userform">Sign Up</Link>
