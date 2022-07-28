@@ -11,7 +11,6 @@ export default function Listing(props) {
           <h3 className="listing-address">{props.streetAddress} {props.streetAddressTwo} </h3>
           <h4 className="listing-city">{props.city}, {props.state} {props.zip} </h4>
         </div>
-        {/* <p className="listing-description">{props.description}</p> */}
       </div>
     </>
   );

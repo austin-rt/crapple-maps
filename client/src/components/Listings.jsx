@@ -1,17 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Listing from './Listing';
-import Nav from './Nav';
 const BASE_URL = 'http://localhost:3001/api';
 
 export default function Listings() {
-
-  // let navigate = useNavigate();
-
-  // const displayListings = (listing) => {
-  //   navigate(`/listing/${listing._id}`);
-  // };
 
   const [listings, setListings] = useState([]);
 
@@ -23,10 +16,14 @@ export default function Listings() {
     showAllListings();
   }, []);
 
+  const deleteListing = async (id, e) => {
+    e.preventDefault();
+    console.log(e);
+  };
+
 
   return (
     <>
-      <Nav />
       <div className="listings-container">
         <h1 className="listings-title">Listings</h1>
         <div className="listings-grid">
@@ -43,6 +40,7 @@ export default function Listings() {
                 zip={listing.zip}
                 description={listing.description}
               />
+              <button className="delete-listing" onClick={deleteListing}>X</button>
             </Link>
           ))}
         </div>

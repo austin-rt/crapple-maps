@@ -13,12 +13,12 @@ export default function ListingForm() {
     city: '',
     state: '',
     zip: '',
-    cleanlinessRating: [],
-    accessibilityRating: [],
-    overallRating: [],
+    cleanlinessRating: undefined,
+    accessibilityRating: undefined,
+    overallRating: undefined,
     description: '',
-    contributors: [],
-    img: []
+    contributors: undefined,
+    img: undefined
   };
 
   const [formValues, setFormValues] = useState(initialValues);
@@ -48,8 +48,9 @@ export default function ListingForm() {
   return (
     <>
       <Nav />
+      <h1 className="listing-form-header">Add a Listing</h1>
       <form className="listing-form" onSubmit={handleSubmit}>
-        <label htmlFor="name">name:</label>
+        <label htmlFor="name">location</label>
         <input
           id="name"
           type="text"
@@ -59,82 +60,95 @@ export default function ListingForm() {
           placeholder="The Empire State Building"
           required
         />
-        <label htmlFor="street-address">street address:</label>
-        <input
-          id="street-address"
-          type="text"
-          size="30"
-          onChange={handleChange}
-          value={formValues.streetAddress}
-          placeholder="20 West 34th Street"
-          required
-        />
-        <label htmlFor="street-address-two">street address cont'd:</label>
-        <input
-          id="streetAddressTwo"
-          type="text"
-          size="15"
-          onChange={handleChange}
-          value={formValues.streetAddressTwo}
-          placeholder="102 Flr"
-        />
-        <label htmlFor="city">city:</label>
-        <input
-          id="city"
-          type="text"
-          size="15"
-          onChange={handleChange}
-          value={formValues.city}
-          placeholder="New York City"
-          required
-        />
-        <label htmlFor="state">state:</label>
-        <input
-          id="state"
-          type="text"
-          size="15"
-          onChange={handleChange}
-          value={formValues.state}
-          placeholder="NY"
-          required
-        />
-        <label htmlFor="zip">zip:</label>
-        <input
-          id="zip"
-          type="text"
-          size="15"
-          onChange={handleChange}
-          value={formValues.zip}
-          placeholder="10001"
-          required
-        />
-        <label htmlFor="cleanliness-rating">cleanliness rating:</label>
-        <input
-          id="cleanliness-rating"
-          type="text"
-          size="15"
-          onChange={handleChange}
-          value={formValues.cleanlinessRating}
-          placeholder="2.5"
-        />
-        <label htmlFor="accessibility-rating">accessibility rating:</label>
-        <input
-          id="accessibility-rating"
-          type="text"
-          size="15"
-          onChange={handleChange}
-          value={formValues.accessibilityRating}
-          placeholder="2.5"
-        />
-        <label htmlFor="overall-rating">overall rating:</label>
-        <input
-          id="overallRating"
-          type="text"
-          size="15"
-          onChange={handleChange}
-          value={formValues.overallRating}
-          placeholder="2.5"
-        />
+        <div className="listing-form-street-address-container">
+          <label htmlFor="streetAddress">address</label>
+          <input
+            id="streetAddress"
+            type="text"
+            size="30"
+            onChange={handleChange}
+            value={formValues.streetAddress}
+            placeholder="20 West 34th Street"
+            required
+          />
+          <div className="address-two-city-state-zip-container">
+            <div className="address-two-and-city">
+              <div className="address-two-label-and-field">
+                <label htmlFor="streetAddressTwo">address cont'd</label>
+                <input
+                  id="streetAddressTwo"
+                  type="text"
+                  size="15"
+                  onChange={handleChange}
+                  value={formValues.streetAddressTwo}
+                  placeholder="102 Flr"
+                />
+              </div>
+              <div className="city-label-and-field">
+                <label htmlFor="city">city</label>
+                <input
+                  id="city"
+                  type="text"
+                  size="15"
+                  onChange={handleChange}
+                  value={formValues.city}
+                  placeholder="New York City"
+                  required
+                />
+              </div>
+            </div>
+            <div className="state-and-zip">
+              <div className="state-label-and-field">
+                <label htmlFor="state">state</label>
+                <input
+                  id="state"
+                  type="text"
+                  size="15"
+                  onChange={handleChange}
+                  value={formValues.state}
+                  placeholder="NY"
+                  required
+                />
+              </div>
+              <div className="zip-label-and-field">
+                <label htmlFor="zip">zip</label>
+                <input
+                  id="zip"
+                  type="text"
+                  size="15"
+                  onChange={handleChange}
+                  value={formValues.zip}
+                  placeholder="10001"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="ratings">
+          <div className="cleanliness">
+            <label htmlFor="cleanlinessRating">cleanliness</label>
+            <input
+              id="cleanlinessRating"
+              type="text"
+              size="15"
+              onChange={handleChange}
+              value={formValues.cleanlinessRating}
+              placeholder="2.5"
+            />
+          </div>
+          <div className="accessibility">
+            <label htmlFor="accessibilityRating">accessibility</label>
+            <input
+              id="accessibilityRating"
+              type="text"
+              size="15"
+              onChange={handleChange}
+              value={formValues.accessibilityRating}
+              placeholder="2.5"
+            />
+          </div>
+        </div>
         <label htmlFor="description">description:</label>
         <textarea
           id="description"
@@ -145,8 +159,9 @@ export default function ListingForm() {
           value={formValues.description}
           placeholder="description"
         />
-        <button type="submit" onSubmit={handleSubmit}>Submit</button>
+        <button className="button" type="submit" onSubmit={handleSubmit}>Submit</button>
       </form>
+      <div className="listing-form-background"></div>
     </>
   );
 }

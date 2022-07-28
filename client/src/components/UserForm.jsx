@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import Nav from "./Nav";
+
 const BASE_URL = 'http://localhost:3001/api';
 
 export default function UserForm() {
@@ -36,53 +38,47 @@ export default function UserForm() {
   };
 
   return (
-
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="username">username:</label>
-      <input
-        id="username"
-        type="text"
-        onChange={handleChange}
-        value={formValues.username}
-        placeholder="username"
-        required
-      />
-      <label htmlFor="firstName">first name:</label>
-      <input id="firstName"
-        type="text"
-        onChange={handleChange}
-        value={formValues.firstName}
-        placeholder="first name"
-        required
-      />
-      <label htmlFor="lastName">last name:</label>
-      <input
-        id="lastName"
-        type="text"
-        onChange={handleChange}
-        value={formValues.lastName}
-        placeholder="last name"
-        required
-      />
-      <label htmlFor="emailAddress">email:</label>
-      <input
-        id="emailAddress"
-        type="text"
-        onChange={handleChange}
-        value={formValues.emailAddress}
-        placeholder="email address"
-        required
-      />
-      <label htmlFor="city">city:</label>
-      <input
-        id="city"
-        type="text"
-        onChange={handleChange}
-        value={formValues.city}
-        placeholder="city"
-        required
-      />
-      <button type="submit" className="button">Sign Up</button>
-    </form>
+    <>
+      <Nav />
+      <h1 className="user-form-header">Sign Up</h1>
+      <form className="user-form" onSubmit={handleSubmit}>
+        <label htmlFor="username">username</label>
+        <input
+          id="username"
+          type="text"
+          onChange={handleChange}
+          value={formValues.username}
+          placeholder="username"
+          required
+        />
+        <label htmlFor="firstName">first name</label>
+        <input id="firstName"
+          type="text"
+          onChange={handleChange}
+          value={formValues.firstName}
+          placeholder="first name"
+          required
+        />
+        <label htmlFor="lastName">last name</label>
+        <input
+          id="lastName"
+          type="text"
+          onChange={handleChange}
+          value={formValues.lastName}
+          placeholder="last name"
+          required
+        />
+        <label htmlFor="city">city</label>
+        <input
+          id="city"
+          type="text"
+          onChange={handleChange}
+          value={formValues.city}
+          placeholder="city"
+          required
+        />
+        <button type="submit" className="button">Sign Up</button>
+      </form>
+    </>
   );
 };

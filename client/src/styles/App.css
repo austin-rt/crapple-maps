@@ -5,11 +5,74 @@
   font-family: 'Roboto', sans-serif;
 }
 
+.splash-page-img-wrapper {
+  width: 100vw;
+  height: 675px;
+  background-image: url('https://i.imgur.com/6gCYthp.jpg');
+  background-position: 50% 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.polaroid-img-wrapper {
+  display: flex;
+  width: 90%;
+  max-width: 90%;
+  margin: -125px auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.polaroid-image {
+  max-width: 100%;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+#splash-page-button {
+  font-size: 36px;
+  font-weight: 400;
+  width: 400px;
+  height: 50px;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.splash-page-listings-link-container {
+  width: 100%;
+  display: flex;
+}
+
+.splash-page-listings-link {
+  margin: 300px auto;
+}
+
+.splash-page-logo {
+  height: 150px;
+  align-self: center
+}
+
+.splash-page-nav {
+  position: absolute;
+  width: 100%;
+  box-shadow: none;
+}
+
+#splash-page-nav-links {
+  display: block;
+  margin-top: 2.5rem
+}
+
 nav {
   height: 100px;
   display: flex;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .2);
   margin-bottom: 25px;
+  background-color: transparent;
+}
+
+.nav--logo-title-container {
+  display: flex;
 }
 
 .nav--logo {
@@ -26,49 +89,70 @@ nav {
   font-weight: 400;
 }
 
+a:hover.nav--logo-title-container,
+a:hover.listing {
+  text-decoration: none;
+}
+
 a {
   color: black;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 .nav--listings,
-.nav--contribute {
-  color: black;
-  font-size: 1rem;
+.nav--contribute,
+.nav--userform {
+  margin-right: 15px;
   align-self: center;
-  margin-right: 10px;
 }
 
-.nav--listings {
+.nav--links {
+  font-size: 1rem;
+  color: black;
+  text-align: right;
+  display: grid;
+  grid-auto-rows: auto;
   margin-left: auto
 }
 
-
 form {
-  padding: 5px;
   text-align: center;
-  display: flex;
-  flex-wrap: wrap;
-  border: 2px solid black;
-  align-items: center;
   margin: 0 auto;
-}
-
-.listing-form {
-  justify-content: center;
-  align-items: center;
-  width: 35rem;
-  margin: 0 auto;
+  padding: 5px;
+  background-color: rgba(0, 0, 0, .2);
+  width: 25rem;
+  border-radius: 2.5rem;
+  margin-bottom: 50px;
+  box-shadow: 3px 3px #999;
 }
 
 input,
 textarea {
-  display: block;
-  margin: 5px;
   padding: 5px;
+  text-align: center;
+  display: block;
+  margin: 10px auto;
+  border-radius: 1rem;
 }
 
-input {
-  text-align: center;
+textarea {
+  padding: 10px;
+  resize: none;
+  text-align: start;
+}
+
+.address-two-city-state-zip-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.ratings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .button {
@@ -93,10 +177,13 @@ input {
   transform: translateY(4px);
 }
 
-.listings-title {
+.listings-title,
+.user-form-header,
+.listing-form-header {
   text-align: center;
   font-size: 48px;
   font-weight: 400;
+  margin-bottom: 10px;
 }
 
 .listings-grid {
@@ -118,7 +205,10 @@ input {
   overflow: hidden;
 }
 
+.listing a:hover {}
+
 .listing-img {
+  display: flex;
   height: 400px;
 }
 
