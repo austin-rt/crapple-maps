@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import UserForm from './components/UserForm';
 import ViewListings from './pages/ViewListings';
 import ListingDetails from './pages/ListingDetails';
-import ListingForm from './components/ListingForm';
+import SubmitListing from './pages/SubmitListing';
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
         <Route path="/listings" element={<ViewListings />} />
         <Route path="/listings/:id" element={<ListingDetails />} />
         <Route path="/signup" element={<UserForm />} />
-        <Route path="/contribute" element={<ListingForm />} />
+        <Route path="/contribute" element={<SubmitListing />} />
       </Routes>
     </div>
   );

@@ -16,7 +16,7 @@ export default function Home() {
       <div className="splash-page-img-wrapper">
         <div className="splash-page-listings-link-container">
           <Link className="splash-page-listings-link" to="/listings">
-            <button className="button" id="splash-page-button">View Listings</button>
+            <button className="button" id="splash-page-button"> Find a Restroom 💦 </button>
           </Link>
         </div>
       </div>

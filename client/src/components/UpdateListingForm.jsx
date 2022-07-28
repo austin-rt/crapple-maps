@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const BASE_URL = 'http://localhost:3001/api';
 
 
-export default function ListingForm(props) {
+export default function UpdateListingForm(props) {
 
   const listingInitalState = {
     _id: '',
@@ -34,28 +34,24 @@ export default function ListingForm(props) {
     const { id, value } = e.target;
     setFormValues({ ...formValues, [id]: value });
   };
-
   const handleSubmit = e => {
     e.preventDefault();
     const postListing = async (input) => {
+      input._id = props.id;
       try {
-        await axios.post(`${BASE_URL}/listings`, input);
-        let get = await axios.get(`${BASE_URL}/listings/`);
-        const newListing = {
-          _id: get.data.listings[get.data.listings.length - 1]._id,
-          submitted: true
-        };
-        setListing(newListing);
+        await axios.put(`${BASE_URL}/listings/${input._id}`, input);
+        // let get = await axios.get(`${BASE_URL}/listings/`);
+        // const newListing = {
+        //   _id: get.data.listings[get.data.listings.length - 1]._id,
+        //   submitted: true
+        // };
+        // setListing(newListing);
       } catch (err) {
         console.log(err.message);
       }
     };
     postListing(formValues);
-    setFormValues(initialValues);
-  };
-
-  ListingForm.defaultProps = {
-    onSubmit: handleSubmit
+    // setFormValues(initialValues);
   };
 
   return (
@@ -170,7 +166,7 @@ export default function ListingForm(props) {
           value={formValues.description}
           placeholder="Description"
         />
-        <button className="button" type="submit" onSubmit={props.onSubmit}>Submit</button>
+        <button className="button" type="submit" onSubmit={handleSubmit}>Submit</button>
       </form>
       {listing.submitted && (
         <div className="listing-detail-overlay">Thank you for your contribution!

@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Nav from '../components/Nav';
-import ListingForm from '../components/ListingForm';
+import UpdateListingForm from '../components/UpdateListingForm';
+
 const BASE_URL = 'http://localhost:3001/api';
 
-export default function ListingDetails(props) {
+export default function ListingDetails() {
   const overlay = document.querySelector('.listing-detail-overlay');
 
   const initialConfirmationValues = {
@@ -40,9 +41,13 @@ export default function ListingDetails(props) {
         deleteRequest();
         break;
       case 'update-listing':
-        updateListing();
+        updateRequest();
         break;
     }
+  };
+
+  const putListing = async () => {
+    console.log(listing);
   };
 
   const deleteRequest = async () => {
@@ -73,13 +78,22 @@ export default function ListingDetails(props) {
     overlay.classList.add('hidden');
   };
 
-  const updateListing = () => {
+  const updateRequest = () => {
     const newConfirmation = {
+      message: `are you sure you want to update ${listing.name}?`,
       updateRequest: true,
       updateConfirmed: false
     };
     setConfirmation(newConfirmation);
     overlay.classList.remove('hidden');
+  };
+
+  const updateListing = () => {
+    const newConfirmation = {
+      updateConfirmed: true
+    };
+    setConfirmation(newConfirmation);
+    console.log(listing);
   };
 
   let overlayDisplay;
@@ -91,27 +105,48 @@ export default function ListingDetails(props) {
           <button
             id="cancel"
             className="button">
-            return to listings
+            Return to Listings
           </button>
         </Link>
       </div>;
   } else if (confirmation.deleteRequested) {
     overlayDisplay =
-      < div className="overlay-buttons" >
-        <button className="button button delete-listing-button"
+      <div className="overlay-buttons" >
+        <button className="button delete-listing-button"
           id="delete"
           onClick={deleteListing}>
-          delete
+          Delete
         </button>
         <button
           id="cancel"
           className="button"
           onClick={cancelDelete}>
-          cancel
+          Cancel
         </button>
       </div >;
+  } else if (confirmation.updateConfirmed) {
+    overlay.style.backgroundColor = 'transparent';
+    console.log(id);
+    overlayDisplay =
+      <div id="update-listing-form-container">
+        <div className="update-listing-form-spacer"></div>
+        <UpdateListingForm id={id} />
+      </div>;
   } else if (confirmation.updateRequest) {
-    overlayDisplay = <ListingForm />;
+    overlayDisplay =
+      <div className="overlay-buttons" >
+        <button className="button"
+          id="confirm-update-listing"
+          onClick={updateListing}>
+          Update
+        </button>
+        <button
+          id="cancel"
+          className="button"
+          onClick={cancelDelete}>
+          Cancel
+        </button>
+      </div >;
   }
 
   return (
@@ -125,8 +160,8 @@ export default function ListingDetails(props) {
           <h4 className="listing-detail-city">{listing.city}, {listing.state} {listing.zip} </h4>
           <p className="listing-detail-description">{listing.description}</p>
           <div className="listing-detail-buttons-container">
-            <button id="update-listing" className="button update-listing-button" onClick={handleClick}>update listing</button>
-            <button id="delete-listing" className="button delete-listing-button" onClick={handleClick}>delete listing</button>
+            <button id="update-listing" className="button update-listing-button" onClick={handleClick}>Update Listing</button>
+            <button id="delete-listing" className="button delete-listing-button" onClick={handleClick}>Delete Listing</button>
           </div>
         </div>
         <div className="right-column">
