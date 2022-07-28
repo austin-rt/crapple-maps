@@ -311,4 +311,29 @@ h4 {
   margin-bottom: 20px;
 }
 
-.listing-detail-overlay {}
+.listing-detail-overlay {
+  color: white;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  text-align: center;
+  border-radius: 2rem;
+  font-size: 3rem;
+  height: 500px;
+  width: 600px;
+  position: relative;
+  top: -650px;
+  margin: 100px auto;
+  background-color: rgba(0, 0, 0, .7);
+}
+
+.overlay-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 30px;
+}
+
+.hidden {
+  opacity: 0;
+  z-index: -1;
+}

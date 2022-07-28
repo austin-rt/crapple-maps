@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Nav from '../components/Nav';
 const BASE_URL = 'http://localhost:3001/api';
 
 export default function ListingDetails(props) {
-  const [listing, setListing] = useState({});
+  const overlay = document.querySelector('.listing-detail-overlay');
 
-  const [confirmation, setConfirmation] = useState({
+  const initialConfirmationValues = {
     message: '',
     deleteRequested: false,
     deleteConfirmed: false
-  });
+  };
+
+  const [listing, setListing] = useState({});
+
+  const [confirmation, setConfirmation] = useState({ initialConfirmationValues });
+
 
   let { id } = useParams();
 
@@ -38,14 +43,66 @@ export default function ListingDetails(props) {
   };
 
   const deleteRequest = async () => {
-    const { message, deleteRequested, deleteConfirmed } = confirmation;
-    setConfirmation(...confirmation, [message]: `are you sure you want to delete ${listing.name}?`);
-    if (deleteConfirmed) await axios.delete(`${BASE_URL}/listings/${id}`);
+    const newConfirmation = {
+      message: `are you sure you want to delete ${listing.name}?`,
+      deleteRequested: true,
+      deleteConfirmed: false
+    };
+    setConfirmation(newConfirmation);
+    overlay.classList.remove('hidden');
+  };
+
+  const deleteListing = async () => {
+    try {
+      await axios.delete(`${BASE_URL}/listings/${id}`);
+      const newConfirmation = {
+        message: `${listing.name} deleted`,
+        deleteRequested: true,
+        deleteConfirmed: true
+      };
+      setConfirmation(newConfirmation);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const cancelDelete = () => {
+    overlay.classList.add('hidden');
   };
 
   const updateListing = () => {
-    console.log(`are you sure you want to update ${listing.name} id no ${id}?`);
+    console.log(`are you sure you want to update ${listing.name}?`);
   };
+
+  let buttons;
+
+  if (confirmation.deleteConfirmed) {
+    buttons =
+      <div className="overlay-buttons" >
+        <Link to="/listings">
+          <button
+            id="cancel"
+            className="button">
+            return to listings
+          </button>
+        </Link>
+      </div>;
+  } else if (confirmation.deleteRequested) {
+    buttons =
+      < div className="overlay-buttons" >
+        <button className="button button delete-listing-button"
+          id="delete"
+          onClick={deleteListing}>
+          delete
+        </button>
+        <button
+          id="cancel"
+          className="button"
+          onClick={cancelDelete}>
+          cancel
+        </button>
+      </div >;
+  }
 
   return (
     <>
@@ -69,8 +126,8 @@ export default function ListingDetails(props) {
         </div>
       </div>
       <div className="listing-detail-overlay hidden">
-        {confirmation.message}
-        {confirmation.deleteRequested && (<div><button>delete</button><button>cancel</button></div>)}
+        <p>{confirmation.message}</p>
+        {buttons}
       </div>
     </>
   );
