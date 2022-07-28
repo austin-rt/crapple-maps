@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Nav from '../components/Nav';
+import ListingForm from '../components/ListingForm';
 const BASE_URL = 'http://localhost:3001/api';
 
 export default function ListingDetails(props) {
@@ -10,7 +11,9 @@ export default function ListingDetails(props) {
   const initialConfirmationValues = {
     message: '',
     deleteRequested: false,
-    deleteConfirmed: false
+    deleteConfirmed: false,
+    updateRequest: false,
+    updateConfirm: false
   };
 
   const [listing, setListing] = useState({});
@@ -71,13 +74,18 @@ export default function ListingDetails(props) {
   };
 
   const updateListing = () => {
-    console.log(`are you sure you want to update ${listing.name}?`);
+    const newConfirmation = {
+      updateRequest: true,
+      updateConfirmed: false
+    };
+    setConfirmation(newConfirmation);
+    overlay.classList.remove('hidden');
   };
 
-  let buttons;
+  let overlayDisplay;
 
   if (confirmation.deleteConfirmed) {
-    buttons =
+    overlayDisplay =
       <div className="overlay-buttons" >
         <Link to="/listings">
           <button
@@ -88,7 +96,7 @@ export default function ListingDetails(props) {
         </Link>
       </div>;
   } else if (confirmation.deleteRequested) {
-    buttons =
+    overlayDisplay =
       < div className="overlay-buttons" >
         <button className="button button delete-listing-button"
           id="delete"
@@ -102,6 +110,8 @@ export default function ListingDetails(props) {
           cancel
         </button>
       </div >;
+  } else if (confirmation.updateRequest) {
+    overlayDisplay = <ListingForm />;
   }
 
   return (
@@ -127,7 +137,7 @@ export default function ListingDetails(props) {
       </div>
       <div className="listing-detail-overlay hidden">
         <p>{confirmation.message}</p>
-        {buttons}
+        {overlayDisplay}
       </div>
     </>
   );

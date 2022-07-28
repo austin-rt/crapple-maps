@@ -1,10 +1,18 @@
 import { useState } from "react";
 import axios from "axios";
 import Nav from "./Nav";
+import { Link } from "react-router-dom";
 const BASE_URL = 'http://localhost:3001/api';
 
 
 export default function ListingForm() {
+
+  const listingInitalState = {
+    _id: '',
+    submitted: false
+  };
+
+  const [listing, setListing] = useState(listingInitalState);
 
   const initialValues = {
     name: '',
@@ -18,7 +26,7 @@ export default function ListingForm() {
     overallRating: undefined,
     description: '',
     contributors: undefined,
-    img: undefined
+    img: undefined,
   };
 
   const [formValues, setFormValues] = useState(initialValues);
@@ -31,19 +39,21 @@ export default function ListingForm() {
   const handleSubmit = e => {
     e.preventDefault();
     const postListing = async (input) => {
-      await axios.post(`${BASE_URL}/listings`, input)
-        .then(response => {
-          console.log(response);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-
+      try {
+        await axios.post(`${BASE_URL}/listings`, input);
+        let get = await axios.get(`${BASE_URL}/listings/`);
+        const newListing = {
+          _id: get.data.listings[get.data.listings.length - 1]._id,
+          submitted: true
+        };
+        setListing(newListing);
+      } catch (err) {
+        console.log(err.message);
+      }
     };
     postListing(formValues);
     setFormValues(initialValues);
   };
-
   return (
     <>
       <Nav />
@@ -160,7 +170,13 @@ export default function ListingForm() {
         />
         <button className="button" type="submit" onSubmit={handleSubmit}>Submit</button>
       </form>
-      <div className="listing-form-background"></div>
+      {listing.submitted && (
+        <div className="listing-detail-overlay">Thank you for your contribution!
+          <Link to={`/listings/${listing._id}`}>
+            <button className="button">view listing</button>
+          </Link>
+        </div>
+      )}
     </>
   );
 }
