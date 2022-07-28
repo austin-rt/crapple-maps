@@ -225,8 +225,6 @@ textarea {
   overflow: hidden;
 }
 
-.listing a:hover {}
-
 .listing-img {
   display: flex;
   height: 400px;
@@ -312,3 +310,5 @@ h4 {
 .listing-detail-city {
   margin-bottom: 20px;
 }
+
+.listing-detail-overlay {}

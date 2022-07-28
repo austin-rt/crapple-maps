@@ -7,6 +7,12 @@ const BASE_URL = 'http://localhost:3001/api';
 export default function ListingDetails(props) {
   const [listing, setListing] = useState({});
 
+  const [confirmation, setConfirmation] = useState({
+    message: '',
+    deleteRequested: false,
+    deleteConfirmed: false
+  });
+
   let { id } = useParams();
 
   useEffect(() => {
@@ -23,16 +29,18 @@ export default function ListingDetails(props) {
 
     switch (button) {
       case 'delete-listing':
-        deleteListing(id);
+        deleteRequest();
         break;
       case 'update-listing':
-        updateListing(id);
+        updateListing();
         break;
     }
   };
 
-  const deleteListing = () => {
-    console.log(`are you sure you want to delete ${listing.name} id no ${id}?`);
+  const deleteRequest = async () => {
+    const { message, deleteRequested, deleteConfirmed } = confirmation;
+    setConfirmation(...confirmation, [message]: `are you sure you want to delete ${listing.name}?`);
+    if (deleteConfirmed) await axios.delete(`${BASE_URL}/listings/${id}`);
   };
 
   const updateListing = () => {
@@ -59,6 +67,10 @@ export default function ListingDetails(props) {
             <img src={listing.img} className="listing-detail-img" />
           </div>
         </div>
+      </div>
+      <div className="listing-detail-overlay hidden">
+        {confirmation.message}
+        {confirmation.deleteRequested && (<div><button>delete</button><button>cancel</button></div>)}
       </div>
     </>
   );

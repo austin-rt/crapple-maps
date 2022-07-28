@@ -40,7 +40,6 @@ export default function ListingForm() {
         });
 
     };
-    console.log(formValues);
     postListing(formValues);
     setFormValues(initialValues);
   };
