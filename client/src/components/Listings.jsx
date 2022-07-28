@@ -16,12 +16,6 @@ export default function Listings() {
     showAllListings();
   }, []);
 
-  const deleteListing = async (id, e) => {
-    e.preventDefault();
-    console.log(e);
-  };
-
-
   return (
     <>
       <div className="listings-container">
@@ -40,7 +34,6 @@ export default function Listings() {
                 zip={listing.zip}
                 description={listing.description}
               />
-              <button className="delete-listing" onClick={deleteListing}>X</button>
             </Link>
           ))}
         </div>

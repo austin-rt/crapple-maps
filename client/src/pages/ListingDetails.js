@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Nav from '../components/Nav';
-import Listing from '../components/Listing';
 const BASE_URL = 'http://localhost:3001/api';
 
 export default function ListingDetails(props) {
@@ -18,6 +17,28 @@ export default function ListingDetails(props) {
     getListingDetails();
   }, [id]);
 
+  const handleClick = (e) => {
+    e.preventDefault();
+    let button = e.target.id;
+
+    switch (button) {
+      case 'delete-listing':
+        deleteListing(id);
+        break;
+      case 'update-listing':
+        updateListing(id);
+        break;
+    }
+  };
+
+  const deleteListing = () => {
+    console.log(`are you sure you want to delete ${listing.name} id no ${id}?`);
+  };
+
+  const updateListing = () => {
+    console.log(`are you sure you want to update ${listing.name} id no ${id}?`);
+  };
+
   return (
     <>
       <Nav />
@@ -28,14 +49,14 @@ export default function ListingDetails(props) {
           <h3 className="listing-detail-address">{listing.streetAddress} {listing.streetAddressTwo} </h3>
           <h4 className="listing-detail-city">{listing.city}, {listing.state} {listing.zip} </h4>
           <p className="listing-detail-description">{listing.description}</p>
+          <div className="listing-detail-buttons-container">
+            <button id="update-listing" className="button update-listing-button" onClick={handleClick}>update listing</button>
+            <button id="delete-listing" className="button delete-listing-button" onClick={handleClick}>delete listing</button>
+          </div>
         </div>
         <div className="right-column">
           <div className="listing-detail-img-container">
             <img src={listing.img} className="listing-detail-img" />
-          </div>
-          <div className="listing-detail-buttons-container">
-            <button className="button update-listing-button">update listing</button>
-            <button className="button delete-listing-button">delete listing</button>
           </div>
         </div>
       </div>

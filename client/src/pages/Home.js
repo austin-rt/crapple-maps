@@ -1,6 +1,3 @@
-import Nav from "../components/Nav";
-import UserForm from "../components/UserForm";
-import Listings from "../components/Listings";
 import { Link } from "react-router-dom";
 
 export default function Home() {
@@ -20,7 +17,6 @@ export default function Home() {
         <div className="splash-page-listings-link-container">
           <Link className="splash-page-listings-link" to="/listings">
             <button className="button" id="splash-page-button">View Listings</button>
-            {/* <img className="splash-page-logo" src="https://i.imgur.com/7jPAI3G.png" /> */}
           </Link>
         </div>
       </div>
