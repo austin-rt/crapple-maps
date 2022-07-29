@@ -4,9 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Nav from '../components/Nav';
 import UpdateListingForm from '../components/UpdateListingForm';
-require('dotenv').config();
-
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+const BASE_URL = 'http://localhost:3001/api';
 
 export default function ListingDetails() {
 
