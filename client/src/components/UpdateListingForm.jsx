@@ -125,8 +125,6 @@ export default function UpdateListingForm(props) {
                     id="zip"
                     type="number"
                     size="15"
-                    min="5"
-                    max="5"
                     onChange={handleChange}
                     value={formValues.zip}
                     placeholder="10001"
