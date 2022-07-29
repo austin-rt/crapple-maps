@@ -124,7 +124,7 @@ export default function UpdateListingForm(props) {
                   <label htmlFor="zip">Zip</label>
                   <input
                     id="zip"
-                    type="text"
+                    type="number"
                     size="15"
                     onChange={handleChange}
                     value={formValues.zip}
