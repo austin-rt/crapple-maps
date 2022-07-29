@@ -46,6 +46,7 @@ export default function ListingDetails() {
       case 'update-listing':
         updateRequest();
         break;
+      default:
     }
   };
 
@@ -163,7 +164,7 @@ export default function ListingDetails() {
         </div>
         <div className="right-column">
           <div className="listing-detail-img-container">
-            <img src={listing.img} className="listing-detail-img" />
+            <img src={listing.img} alt={`user submitted pic of ${listing.name}`} className="listing-detail-img" />
           </div>
         </div>
       </div>

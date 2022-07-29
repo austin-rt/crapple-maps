@@ -6,7 +6,7 @@ export default function Nav() {
     <header>
       <nav>
         <Link to="/" className="nav--logo-title-container">
-          <img className="nav--logo" src="https://i.imgur.com/7jPAI3G.png" />
+          <img className="nav--logo" alt="crapple maps icon" src="https://i.imgur.com/7jPAI3G.png" />
           <h1 className="nav--title">Crapple Maps</h1>
         </Link>
         <div className="nav--links">

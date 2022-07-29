@@ -7,8 +7,6 @@ const BASE_URL = 'http://localhost:3001/api';
 
 export default function UpdateListingForm(props) {
 
-  let originalListing = props.listing;
-
   const listingInitalState = {
     submitted: false
   };
@@ -27,28 +25,34 @@ export default function UpdateListingForm(props) {
     overallRating: [],
     description: '',
     contributors: [],
-    img: [],
   };
 
-  const [formValues, setFormValues] = useState(originalListing);
+  const originalListing = props.listing;
+
+  const [formValues, setFormValues] = useState(initialValues);
 
   const handleChange = e => {
     const { id, value } = e.target;
     setFormValues({ ...formValues, [id]: value });
   };
-  let updatedListing;
 
   const handleSubmit = e => {
     e.preventDefault();
     const postListing = async (input) => {
+      Object.keys(input).forEach(key => {
+        console.log(key, input[key]);
+        if (!input[key]) {
+          input[key] = originalListing[key];
+        }
+      });
+      console.log(input);
       try {
         await axios.put(`${BASE_URL}/listings/${input._id}`, input);
       } catch (err) {
         console.log(err.message);
       }
     };
-    postListing(formValues);
-    updatedListing = formValues;
+    postListing({ ...originalListing, ...formValues });
     setFormValues(initialValues);
     const listingUpdated = {
       submitted: true
