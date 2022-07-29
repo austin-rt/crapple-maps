@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-const BASE_URL = 'http://localhost:3001/api';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 
 export default function UpdateListingForm(props) {
@@ -40,12 +40,10 @@ export default function UpdateListingForm(props) {
     e.preventDefault();
     const postListing = async (input) => {
       Object.keys(input).forEach(key => {
-        console.log(key, input[key]);
         if (!input[key]) {
           input[key] = originalListing[key];
         }
       });
-      console.log(input);
       try {
         await axios.put(`${BASE_URL}/listings/${input._id}`, input);
       } catch (err) {
