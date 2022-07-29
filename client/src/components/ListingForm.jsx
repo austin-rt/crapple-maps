@@ -171,7 +171,7 @@ export default function ListingForm(props) {
       {listing.submitted && (
         <div className="listing-detail-overlay">Thank you for your contribution!
           <Link to={`/listings/${listing._id}`}>
-            <button className="button">view listing</button>
+            <button className="button">View Listing</button>
           </Link>
         </div>
       )}
