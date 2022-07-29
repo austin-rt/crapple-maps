@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Listing from './Listing';
-const BASE_URL = '/api';
+require('dotenv').config();
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function Listings() {
 
