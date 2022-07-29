@@ -56,10 +56,6 @@ export default function UpdateListingForm(props) {
 
   };
 
-  const viewUpdatedListing = () => {
-    console.log(`${originalListing._id}`);
-  };
-
 
   return (
     <>
