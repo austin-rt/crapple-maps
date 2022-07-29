@@ -2,8 +2,9 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import Nav from "./Nav";
+require('dotenv').config();
 
-const BASE_URL = 'http://localhost:3001/api';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function UserForm() {
 
