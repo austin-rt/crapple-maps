@@ -20,11 +20,11 @@ export default function ListingForm(props) {
     city: '',
     state: '',
     zip: '',
-    cleanlinessRating: undefined,
-    accessibilityRating: undefined,
-    overallRating: undefined,
+    cleanlinessRating: [],
+    accessibilityRating: [],
+    overallRating: [],
     description: '',
-    contributors: undefined,
+    contributors: [],
     img: undefined,
   };
 
