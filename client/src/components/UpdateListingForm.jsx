@@ -117,7 +117,6 @@ export default function UpdateListingForm(props) {
                     onChange={handleChange}
                     value={formValues.state}
                     placeholder="NY"
-
                   />
                 </div>
                 <div className="zip-label-and-field">
@@ -126,10 +125,11 @@ export default function UpdateListingForm(props) {
                     id="zip"
                     type="number"
                     size="15"
+                    min="5"
+                    max="5"
                     onChange={handleChange}
                     value={formValues.zip}
                     placeholder="10001"
-
                   />
                 </div>
               </div>
