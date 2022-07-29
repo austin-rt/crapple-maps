@@ -20,9 +20,7 @@ The MVP form of this application will function as a simple crowdsourced public r
 
 When a user is in need of a public restroom, they will be able to access the database in list form and filter by city and rating. If a listing is perceived as inaccurate, users will be able to update or delete the listing.
 
-Upon first load, the user will be directed to a landing page at which they must enter their information. If the user already exists (until authentication is a viable option) their unique ID will be stored to credit them if they make contributions. (?)
-
-A post MVP version sees a social media layer on top of the current idea. Obviously this much freedom by a pseudo-anonymous user would be ill advised in a true production setting.
+A post MVP version sees user authentication and a social media layer on top of the current idea.
 
 ### Intended Crud Functionality
 
@@ -45,37 +43,23 @@ A post MVP version sees a social media layer on top of the current idea. Obvious
 ![Entity Relationship Diagram](./images/CrappleMapsEntityRelationshipDiagram.jpg "Entity Relationship Diagram")
 
 
-#### **_Main Concepts:_**
-```js
-// TBD
-```
-
-### **_Getting Started_**
-
-- TBD
-
-### **_Known Bugs_**
-
-- TBA
-
 ### **_Screen Shots_**
 
-- TBD
 
-<!-- ##### Landing Page
-![placeholder](https://www.url.com "Landing Page")
+##### Landing Page
+![placeholder](./images/crapple-maps-landing-page.jpg "Landing Page")
 
-##### Add User Info 
-![placeholder](https://www.url.com "Landing Page")
+##### Listings Page
+![placeholder](./images/crapple-maps-listings-page.jpg "Listings Page")
 
-##### Create Listing
-![placeholder](https://www.url.com "Landing Page")
+##### Individual Listing Page
+![placeholder](./images/crapple-maps-listing-page.jpg "Listing Page")
 
-##### Update Listing
-![placeholder](https://www.url.com "Landing Page")
+##### Add Listing Page
+![placeholder](./images/crapple-maps-contribute-page.jpg "Contribute Page")
 
 ##### Delete Listing
-![placeholder](https://www.url.com "Landing Page") -->
+![placeholder](./images/crapple-maps-delete-listing-page.jpg "Landing Page")
 
 
 
@@ -86,7 +70,6 @@ Style and organization will be inspired by [Airbnb's](https://www.airbnb.com) 20
 ### ***Trello Board***
 
 [Crapple Maps Trello Board](https://trello.com/b/xqud8mOJ/crapple-maps)
-##### Trello Board is a work in progress
 
 <br />
 
