@@ -98,10 +98,10 @@ const getListingById = async (req, res) => {
   }
 };
 
-const updateListing = async (req, res) => {
+const updateListing = (req, res) => {
   try {
     const { id } = req.params;
-    await Listing.findByIdAndUpdate(id, req.body, { new: true }, (err, listing) => {
+    Listing.findByIdAndUpdate(id, req.body, { new: true }, (err, listing) => {
       if (err) {
         res.status(500).send(err);
       }
@@ -110,8 +110,8 @@ const updateListing = async (req, res) => {
       }
       return res.status(200).json(listing);
     });
-  } catch (e) {
-    return res.status(500).send(e.message);
+  } catch (error) {
+    return res.status(500).send(error.message);
   }
 };
 

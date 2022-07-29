@@ -54,10 +54,6 @@ export default function ListingForm(props) {
     setFormValues(initialValues);
   };
 
-  ListingForm.defaultProps = {
-    onSubmit: handleSubmit
-  };
-
   return (
     <>
       <form className="listing-form" onSubmit={handleSubmit}>

@@ -7,6 +7,9 @@ import UpdateListingForm from '../components/UpdateListingForm';
 const BASE_URL = 'http://localhost:3001/api';
 
 export default function ListingDetails() {
+
+  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+
   const overlay = document.querySelector('.listing-detail-overlay');
 
   const initialConfirmationValues = {
@@ -44,10 +47,6 @@ export default function ListingDetails() {
         updateRequest();
         break;
     }
-  };
-
-  const putListing = async () => {
-    console.log(listing);
   };
 
   const deleteRequest = async () => {
@@ -93,7 +92,6 @@ export default function ListingDetails() {
       updateConfirmed: true
     };
     setConfirmation(newConfirmation);
-    console.log(listing);
   };
 
   let overlayDisplay;
@@ -126,11 +124,10 @@ export default function ListingDetails() {
       </div >;
   } else if (confirmation.updateConfirmed) {
     overlay.style.backgroundColor = 'transparent';
-    console.log(id);
     overlayDisplay =
       <div id="update-listing-form-container">
         <div className="update-listing-form-spacer"></div>
-        <UpdateListingForm id={id} />
+        <UpdateListingForm listing={listing} id={id} />
       </div>;
   } else if (confirmation.updateRequest) {
     overlayDisplay =

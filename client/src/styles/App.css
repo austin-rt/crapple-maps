@@ -120,6 +120,7 @@ a:hover {
 }
 
 form {
+  color: white;
   text-align: center;
   margin: 0 auto;
   padding: 20px 0;
@@ -350,4 +351,11 @@ h4 {
 
 .update-listing-form-spacer {
   height: 150px
+}
+
+#updated-listing {
+  position: fixed;
+  top: 0;
+  left: 25%;
+  right: 25%
 }
