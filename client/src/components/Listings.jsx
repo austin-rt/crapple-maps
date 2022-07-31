@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Listing from './Listing';
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+const BASE_URL = '/api';
 
 export default function Listings() {
 
