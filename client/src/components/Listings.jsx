@@ -21,7 +21,7 @@ export default function Listings() {
   return (
     <>
       <div className="listings-container">
-        <h1 className="listings-title">Listings - test</h1>
+        <h1 className="listings-title">Listings</h1>
         <div className="listings-grid">
           {listings.map((listing) => (
             <Link to={`/listings/${listing._id}`} key={listing._id} className="listing">
