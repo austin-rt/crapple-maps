@@ -41,3 +41,7 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Personal launch checklist (local only)
+FOUNDER-TODO.md
+.secrets/

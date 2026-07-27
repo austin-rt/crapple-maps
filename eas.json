@@ -1,0 +1,34 @@
+{
+  "cli": {
+    "version": ">= 21.2.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": { "simulator": false },
+      "channel": "development"
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": { "simulator": false },
+      "channel": "preview"
+    },
+    "production": {
+      "autoIncrement": true,
+      "channel": "production"
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleTeamId": "ZLDX72HQWU",
+        "ascAppId": "6795301489",
+        "ascApiKeyPath": "./.secrets/AuthKey_Y2YF5P5593.p8",
+        "ascApiKeyId": "Y2YF5P5593",
+        "ascApiKeyIssuerId": "81d35fdb-c8e5-4617-a00f-bfed08a246d1"
+      }
+    }
+  }
+}
