@@ -13,9 +13,6 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.austin-rt.crapple-maps",
       "usesAppleSignIn": true,
-      "config": {
-        "googleMapsApiKey": "AIzaSyCcweawJSlVDM6eeEsqbCaW2jIbnpeM-TI"
-      },
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -29,12 +26,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.austinrt.crapplemaps",
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyCcweawJSlVDM6eeEsqbCaW2jIbnpeM-TI"
-        }
-      }
+      "package": "com.austinrt.crapplemaps"
     },
     "web": {
       "output": "static",
