@@ -31,6 +31,17 @@ export default function MapWeb() {
   const [showFilters, setShowFilters] = useState(false);
   const filterActive = showFilters || f.activeFilterCount > 0;
 
+  // Only one left drawer at a time: opening the app nav slides the results
+  // drawer away, and closing the nav brings it back.
+  const openNav = () => {
+    setDrawerOpen(false);
+    setNavOpen(true);
+  };
+  const closeNav = () => {
+    setNavOpen(false);
+    setDrawerOpen(true);
+  };
+
   return (
     <View className="flex-1 bg-surface">
       <AppMapView
@@ -70,7 +81,7 @@ export default function MapWeb() {
       <LeftDrawer open={drawerOpen} width={DRAWER_W} zIndex={10}>
         <View style={{ padding: 12, paddingTop: 14 }}>
           <View className="flex-row items-center rounded-full bg-surface-2 pl-1 pr-1">
-            <Pressable onPress={() => setNavOpen(true)} className="items-center justify-center" style={{ width: 42, height: 42 }}>
+            <Pressable onPress={openNav} className="items-center justify-center" style={{ width: 42, height: 42 }}>
               <Ionicons name="menu" size={22} color="#6B7280" />
             </Pressable>
             <TextInput
@@ -190,7 +201,7 @@ export default function MapWeb() {
         </Pressable>
       ) : null}
 
-      <WebNavDrawer open={navOpen} onClose={() => setNavOpen(false)} />
+      <WebNavDrawer open={navOpen} onClose={closeNav} />
     </View>
   );
 }

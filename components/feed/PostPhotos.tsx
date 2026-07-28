@@ -1,0 +1,27 @@
+import { Image } from 'expo-image';
+import { useWindowDimensions, View } from 'react-native';
+
+// Post-detail photo layout: a single photo goes full-width; two or more tile
+// into a 2-up grid. Column is capped so it stays readable on wide web screens.
+export function PostPhotos({ photos }: { photos: string[] }) {
+  const { width } = useWindowDimensions();
+  const W = Math.min(width, 600) - 32; // minus the px-4 gutters
+  if (photos.length === 0) return null;
+
+  if (photos.length === 1) {
+    return (
+      <View className="mt-3 px-4">
+        <Image source={{ uri: photos[0] }} style={{ width: W, height: Math.round(W * 0.72), borderRadius: 16 }} contentFit="cover" />
+      </View>
+    );
+  }
+
+  const size = (W - 8) / 2;
+  return (
+    <View className="mt-3 px-4" style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, maxWidth: W + 32 }}>
+      {photos.slice(0, 4).map((uri, i) => (
+        <Image key={`${uri}-${i}`} source={{ uri }} style={{ width: size, height: size, borderRadius: 14 }} contentFit="cover" />
+      ))}
+    </View>
+  );
+}
