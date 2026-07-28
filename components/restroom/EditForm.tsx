@@ -53,7 +53,7 @@ export function EditForm({
     <View>
       {isCreate ? (
         <>
-          <SectionHeader>Name (optional)</SectionHeader>
+          <SectionHeader>Name if you know it</SectionHeader>
           <InputComponent
             value={draft.name}
             onChangeText={(t) => onChange({ name: t })}
@@ -68,7 +68,7 @@ export function EditForm({
       <InputComponent
         value={draft.directions}
         onChangeText={(t) => onChange({ directions: t })}
-        placeholder="e.g. Around back — separate entrance to the left of the bar…"
+        placeholder="e.g. Around back, separate entrance to the left of the bar…"
         placeholderTextColor={MUTED}
         multiline
         className={`${INPUT_CLS} min-h-16`}
@@ -100,7 +100,7 @@ export function EditForm({
           <CodePills
             value={draft.codes}
             onChange={(codes) => onChange({ codes })}
-            placeholder="Type a code — space or comma to add"
+            placeholder="Type a code, then space or comma to add"
             InputComponent={InputComponent}
           />
         </>

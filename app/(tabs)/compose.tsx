@@ -152,10 +152,10 @@ export default function ComposeScreen() {
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets>
       <Text className="mt-4 text-2xl font-bold text-neutral-900 dark:text-neutral-50">Log a visit</Text>
-      <Text className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">Drop it anywhere — it’s your map.</Text>
+      <Text className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">Drop it anywhere. It’s your map.</Text>
 
       <Field>
-        <Label>Location — required</Label>
+        <Label>Location · required</Label>
         <LocationPicker
           coords={coords}
           label={locLabel}

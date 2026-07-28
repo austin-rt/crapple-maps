@@ -51,7 +51,7 @@ export default function NewRestroom() {
     // Gate at submit (not entry): toast, stash the draft, send them to sign in, and
     // the ContributionProvider brings them back here with it intact.
     if (!session) {
-      toast.info('Account required', 'Sign in to add a restroom — we saved what you typed.');
+      toast.info('Account required', 'Sign in to add a restroom. We saved what you typed.');
       stashRestroom(draft);
       router.navigate('/(tabs)/profile');
       return;
@@ -74,7 +74,7 @@ export default function NewRestroom() {
       if (draft.codes.length) await addCodes(id, draft.codes, session.user.id);
       qc.invalidateQueries({ queryKey: ['finder'] });
       router.replace({ pathname: '/(tabs)', params: { flat: String(draft.lat), flng: String(draft.lng) } });
-      toast.success('Added', 'Thanks — your restroom is on the map.');
+      toast.success('Added', 'Thanks. Your restroom is on the map.');
     } catch (e: any) {
       toast.error('Could not add', e?.message);
     } finally {

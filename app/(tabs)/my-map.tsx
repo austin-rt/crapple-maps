@@ -108,7 +108,7 @@ export default function MyMapScreen() {
             <Text className="text-5xl">🚽</Text>
             <Text className="mt-4 text-center text-lg font-semibold text-content">Nothing logged yet</Text>
             <Text className="mt-1 text-center text-sm text-content-2">
-              Hit the Log tab to drop your first pin — it’ll show up here.
+              Hit the Log tab to drop your first pin. It’ll show up here.
             </Text>
             <Pressable onPress={() => router.push('/(tabs)/compose')} className="mt-5 rounded-xl px-5 py-3" style={{ backgroundColor: ACCENT }}>
               <Text className="font-semibold text-white">Log a visit</Text>

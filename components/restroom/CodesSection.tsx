@@ -45,7 +45,7 @@ export function CodesSection({
         ))
       ) : (
         <Text className="text-sm text-neutral-400">
-          {requiresCode === true ? 'Needs a code — none posted yet. Add one below.' : 'No codes reported yet.'}
+          {requiresCode === true ? 'Needs a code. None posted yet. Add one below.' : 'No codes reported yet.'}
         </Text>
       )}
       {adding ? (
