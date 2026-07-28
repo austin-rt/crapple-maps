@@ -155,7 +155,7 @@ export default function ComposeScreen() {
       <Text className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">Drop it anywhere. It’s your map.</Text>
 
       <Field>
-        <Label>Location · required</Label>
+        <Label>Location required</Label>
         <LocationPicker
           coords={coords}
           label={locLabel}

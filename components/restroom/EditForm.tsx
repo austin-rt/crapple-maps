@@ -53,7 +53,7 @@ export function EditForm({
     <View>
       {isCreate ? (
         <>
-          <SectionHeader>Name if you know it</SectionHeader>
+          <SectionHeader>Name optional</SectionHeader>
           <InputComponent
             value={draft.name}
             onChangeText={(t) => onChange({ name: t })}
