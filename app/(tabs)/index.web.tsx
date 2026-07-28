@@ -1,9 +1,9 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Animated, Easing, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { FilterSheet, PlaceCard } from '@/components/finder';
+import { AddRestroomCard, FilterSheet, PlaceCard } from '@/components/finder';
 import { AppMapView, AppMarker } from '@/components/map';
 import { RestroomSheet } from '@/components/restroom';
 import { Avatar } from '@/components/ui';
@@ -24,6 +24,10 @@ export default function MapWeb() {
   const { data: me } = useProfile(f.session?.user.id ?? '');
   const [navOpen, setNavOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const drawerX = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(drawerX, { toValue: drawerOpen ? 0 : -428, duration: 240, easing: Easing.out(Easing.cubic), useNativeDriver: false }).start();
+  }, [drawerOpen, drawerX]);
 
   return (
     <View className="flex-1 bg-surface">
@@ -53,21 +57,17 @@ export default function MapWeb() {
         ))}
       </AppMapView>
 
-      {/* top-right: filter + account, pinned right, outside the search */}
-      <View style={{ position: 'absolute', top: 14, right: 16, flexDirection: 'row', alignItems: 'center', gap: 10, zIndex: 20 }}>
-        <Pressable onPress={() => f.setFilterOpen(true)} className="items-center justify-center rounded-full bg-surface" style={[{ width: 44, height: 44 }, styles.shadow]}>
-          <Ionicons name="options-outline" size={20} color={f.activeFilterCount ? ACCENT : '#4B5563'} />
-        </Pressable>
+      {/* top-right: account only, pinned right */}
+      <View style={{ position: 'absolute', top: 14, right: 16, zIndex: 20 }}>
         <Pressable onPress={() => router.push('/profile')} className="items-center justify-center overflow-hidden rounded-full bg-surface" style={[{ width: 44, height: 44 }, styles.shadow]}>
           {f.session ? <Avatar seed={me?.avatar_seed || me?.username || f.session.user.id} size={40} /> : <Ionicons name="person-circle-outline" size={30} color="#4B5563" />}
         </Pressable>
       </View>
 
-      {/* left drawer: search + results */}
-      {drawerOpen ? (
-        <View className="bg-surface" style={[{ position: 'absolute', top: 0, bottom: 0, left: 0, width: 408, zIndex: 10 }, styles.shadow]}>
+      {/* left drawer: search + results (animated slide) */}
+      <Animated.View pointerEvents={drawerOpen ? 'auto' : 'none'} className="bg-surface" style={[{ position: 'absolute', top: 0, bottom: 0, left: 0, width: 408, zIndex: 10, transform: [{ translateX: drawerX }] }, styles.shadow]}>
           <View style={{ padding: 12, paddingTop: 14 }}>
-            <View className="flex-row items-center rounded-full bg-surface-2 pl-1 pr-2">
+            <View className="flex-row items-center rounded-full bg-surface-2 pl-1 pr-1">
               <Pressable onPress={() => setNavOpen(true)} className="items-center justify-center" style={{ width: 42, height: 42 }}>
                 <Ionicons name="menu" size={22} color="#6B7280" />
               </Pressable>
@@ -80,12 +80,16 @@ export default function MapWeb() {
                 className="flex-1 px-1 py-2.5 text-base text-content"
               />
               {f.searching ? (
-                <ActivityIndicator size="small" color={MUTED} style={{ marginRight: 6 }} />
+                <ActivityIndicator size="small" color={MUTED} style={{ marginRight: 4 }} />
               ) : f.query.length > 0 ? (
                 <Pressable onPress={() => f.setQuery('')} className="px-1">
                   <Ionicons name="close-circle" size={18} color={MUTED} />
                 </Pressable>
               ) : null}
+              <View className="mx-0.5 h-5 w-px bg-line" />
+              <Pressable onPress={() => f.setFilterOpen(true)} className="items-center justify-center" style={{ width: 40, height: 40 }}>
+                <Ionicons name="options" size={20} color={f.activeFilterCount ? ACCENT : '#6B7280'} />
+              </Pressable>
             </View>
 
             {f.results.length > 0 ? (
@@ -124,15 +128,9 @@ export default function MapWeb() {
                     )}
                     {f.list.length ? <Text className="text-xs text-content-2">{f.list.length}{f.hasNextPage ? '+' : ''}</Text> : null}
                   </View>
-                  <Pressable onPress={f.addHere} className="mb-1 flex-row items-center gap-3 rounded-2xl border border-dashed border-line p-3 active:opacity-70">
-                    <View className="h-9 w-9 items-center justify-center rounded-full" style={{ backgroundColor: ACCENT + '18' }}>
-                      <Ionicons name="add" size={20} color={ACCENT} />
-                    </View>
-                    <View className="flex-1">
-                      <Text className="text-base font-semibold" style={{ color: ACCENT }}>Add a restroom</Text>
-                      <Text className="text-xs text-content-2">Long-press the map or click here.</Text>
-                    </View>
-                  </Pressable>
+                  <View className="mb-1">
+                    <AddRestroomCard onPress={f.addHere} />
+                  </View>
                 </View>
               }
               ListFooterComponent={f.isFetchingNextPage ? <ActivityIndicator style={{ marginVertical: 16 }} color={ACCENT} /> : null}
@@ -143,7 +141,7 @@ export default function MapWeb() {
                     <Text className="mt-3 text-sm text-content-2">Finding restrooms near you…</Text>
                   </View>
                 ) : (
-                  <Text className="mt-10 px-6 text-center text-sm text-content-2">No restrooms nearby yet. Long-press the map to add one.</Text>
+                  <Text className="mt-10 px-6 text-center text-sm text-content-2">No restrooms nearby yet.</Text>
                 )
               }
               renderItem={({ item }) => {
@@ -161,15 +159,15 @@ export default function MapWeb() {
             style={[{ top: '50%', right: -15, width: 16, height: 52, borderTopRightRadius: 8, borderBottomRightRadius: 8 }, styles.shadow]}>
             <Ionicons name="chevron-back" size={16} color="#6B7280" />
           </Pressable>
-        </View>
-      ) : (
+      </Animated.View>
+      {!drawerOpen ? (
         <Pressable
           onPress={() => setDrawerOpen(true)}
           className="absolute items-center justify-center bg-surface"
           style={[{ top: '50%', left: 0, width: 22, height: 56, borderTopRightRadius: 10, borderBottomRightRadius: 10, zIndex: 10 }, styles.shadow]}>
           <Ionicons name="chevron-forward" size={18} color="#6B7280" />
         </Pressable>
-      )}
+      ) : null}
 
       <WebNavDrawer open={navOpen} onClose={() => setNavOpen(false)} />
       <FilterSheet
