@@ -87,21 +87,26 @@ const PIN_DARK: Record<string, number> = {
 // Resolve lazily + guarded: Image.resolveAssetSource doesn't exist in the web
 // static-render (SSR) pass, and google.maps isn't loaded there either.
 function pinUri(pinColor: string | undefined, dark: boolean): string | undefined {
-  const mod = pinColor ? (dark ? PIN_DARK : PIN_LIGHT)[pinColor] : undefined;
-  const resolve = (Image as any).resolveAssetSource;
-  return mod != null && typeof resolve === 'function' ? resolve(mod)?.uri : undefined;
+  const mod: any = pinColor ? (dark ? PIN_DARK : PIN_LIGHT)[pinColor] : undefined;
+  if (mod == null) return undefined;
+  // On web, require('*.png') already resolves to { uri, width, height };
+  // resolveAssetSource doesn't exist in react-native-web.
+  if (typeof mod === 'string') return mod;
+  return mod.uri ?? (Image as any).resolveAssetSource?.(mod)?.uri;
 }
 
 export const AppMarker = ({ coordinate, onPress, pinColor }: { coordinate: { latitude: number; longitude: number }; onPress?: () => void; pinColor?: string }) => {
-  // Re-render once the Maps JS API finishes loading; otherwise the marker is
-  // created with icon=undefined and Google shows its default red pin forever.
   const loaded = useApiIsLoaded();
   const g = (globalThis as any).google as typeof google | undefined;
   const { scheme } = useThemePref();
+  // Only mount the marker once the Maps API is ready, so it's created WITH our
+  // icon from the start — @vis.gl's Marker doesn't reliably swap the icon after
+  // creation, which otherwise left every pin on Google's default red icon.
+  if (!loaded || !g?.maps?.Size) return null;
   const uri = pinUri(pinColor, scheme === 'dark');
-  const icon =
-    loaded && uri && g?.maps?.Size
-      ? { url: uri, scaledSize: new g.maps.Size(27, 43), anchor: new g.maps.Point(13.5, 43) }
-      : undefined;
-  return <GMarker position={{ lat: coordinate.latitude, lng: coordinate.longitude }} onClick={onPress} icon={icon as any} />;
+  const icon = uri
+    ? { url: uri, scaledSize: new g.maps.Size(27, 43), anchor: new g.maps.Point(13.5, 43) }
+    : undefined;
+  // Key by the resolved icon so select (red) / theme changes remount cleanly.
+  return <GMarker key={uri ?? 'default'} position={{ lat: coordinate.latitude, lng: coordinate.longitude }} onClick={onPress} icon={icon as any} />;
 };
