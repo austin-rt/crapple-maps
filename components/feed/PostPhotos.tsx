@@ -16,11 +16,17 @@ export function PostPhotos({ photos }: { photos: string[] }) {
     );
   }
 
-  const size = (W - 8) / 2;
+  // Percentage widths + space-between wrap cleanly into 2-up without the
+  // exact-pixel rounding that can force a single column.
   return (
-    <View className="mt-3 px-4" style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, maxWidth: W + 32 }}>
+    <View className="mt-3 px-4" style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', maxWidth: W + 32 }}>
       {photos.slice(0, 4).map((uri, i) => (
-        <Image key={`${uri}-${i}`} source={{ uri }} style={{ width: size, height: size, borderRadius: 14 }} contentFit="cover" />
+        <Image
+          key={`${uri}-${i}`}
+          source={{ uri }}
+          style={{ width: '48.5%', aspectRatio: 1, borderRadius: 14, marginBottom: 8 }}
+          contentFit="cover"
+        />
       ))}
     </View>
   );
