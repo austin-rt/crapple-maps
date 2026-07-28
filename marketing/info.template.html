@@ -1,0 +1,236 @@
+<title>Crapple Maps: Gotta go? We got you.</title>
+<style>
+  :root {
+    --bg: #0a0e11;
+    --bg-2: #0d1317;
+    --panel: #121a20;
+    --line: rgba(94, 234, 212, 0.10);
+    --ink: #e8eef2;
+    --ink-2: #9fb2bf;
+    --ink-3: #6b7d8a;
+    --teal: #22b8cf;
+    --purple: #a78bfa;
+    --hair: rgba(255,255,255,0.08);
+    --maxw: 1160px;
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.6; overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  .bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; background: #0a0e11; }
+  .grid {
+    position: absolute; inset: -2px;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 80%);
+  }
+  .glow { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; }
+  .glow.teal { width: 620px; height: 620px; background: radial-gradient(circle, rgba(34,184,207,0.55), transparent 65%); top: -220px; left: -160px; }
+  .glow.purple { width: 560px; height: 560px; background: radial-gradient(circle, rgba(167,139,250,0.45), transparent 65%); top: 120px; right: -200px; }
+
+  main { position: relative; z-index: 1; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+  .brand { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: -0.02em; font-size: 26px; }
+  .pin { width: 22px; height: 35px; flex: none; filter: drop-shadow(0 3px 8px rgba(34,184,207,0.5)); }
+  .brand .maps { color: var(--teal); }
+
+  .hero { padding: 44px 0 30px; text-align: center; }
+  .eyebrow { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--teal); margin: 0 0 20px; }
+  h1 { font-size: clamp(44px, 8.5vw, 96px); line-height: 0.98; letter-spacing: -0.035em; font-weight: 850; margin: 0; text-wrap: balance; }
+  h1 .accent { color: var(--teal); }
+  .lede { max-width: 620px; margin: 22px auto 0; font-size: clamp(17px, 2.4vw, 21px); color: var(--ink-2); text-wrap: pretty; }
+
+  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+  .store {
+    display: inline-flex; align-items: center; gap: 11px; text-decoration: none;
+    background: rgba(255,255,255,0.05); color: var(--ink); border: 1px solid var(--hair); border-radius: 13px; padding: 10px 18px;
+    transition: border-color .15s ease;
+  }
+  .store:hover { border-color: var(--teal); }
+  .store svg { flex: none; }
+  .store .lbl { text-align: left; line-height: 1.1; }
+  .store .lbl small { display: block; font-size: 10.5px; letter-spacing: 0.02em; opacity: 0.72; }
+  .store .lbl b { display: block; font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font-weight: 650; font-size: 15px; padding: 12px 18px; border-radius: 13px; transition: border-color .15s ease; }
+  .btn.ghost { background: rgba(255,255,255,0.04); color: var(--ink); border: 1px solid var(--hair); }
+  .btn.ghost:hover { border-color: var(--teal); }
+  .btn svg { flex: none; }
+  .nav-cta { padding: 9px 16px; font-size: 14px; }
+
+  .cluster { display: flex; align-items: flex-end; justify-content: center; margin: 56px auto 0; perspective: 1600px; }
+  .phone { position: relative; width: 236px; flex: none; border-radius: 38px; background: linear-gradient(#1b2228, #0f161b); padding: 9px; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.06) inset; }
+  .phone::before { content: ""; position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 78px; height: 17px; background: #0b1015; border-radius: 11px; z-index: 3; }
+  .phone img { display: block; width: 100%; border-radius: 30px; }
+  .phone.p1 { transform: rotate(-6deg) translateX(38px) translateY(20px); z-index: 1; }
+  .phone.p2 { transform: rotate(5deg) translateX(-38px); z-index: 2; box-shadow: 0 50px 90px -28px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.07) inset, 0 0 60px -20px rgba(167,139,250,0.5); }
+
+  .platforms { padding: 96px 0 40px; }
+  .band-head { text-align: center; max-width: 680px; margin: 0 auto 46px; }
+  .kicker { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--purple); margin: 0 0 14px; }
+  h2 { font-size: clamp(28px, 4.6vw, 42px); letter-spacing: -0.03em; line-height: 1.08; margin: 0; font-weight: 800; text-wrap: balance; }
+  .band-head p { color: var(--ink-2); font-size: 17px; margin: 16px 0 0; }
+  .browser { max-width: 940px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 1px solid var(--hair); background: #12171b; box-shadow: 0 40px 90px -34px rgba(0,0,0,0.85); }
+  .browser .bar { display: flex; align-items: center; gap: 7px; padding: 0 16px; height: 44px; background: #191f25; border-bottom: 1px solid var(--hair); }
+  .browser .d { width: 11px; height: 11px; border-radius: 50%; }
+  .url { margin-left: 14px; flex: 1; font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); background: #0d1216; border: 1px solid var(--hair); border-radius: 8px; padding: 5px 13px; display: flex; align-items: center; gap: 8px; }
+  .url svg { flex: none; opacity: 0.7; }
+  .browser img { display: block; width: 100%; }
+  .plat-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 34px; }
+  .plat { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 14px; background: var(--panel); border: 1px solid var(--hair); font-weight: 600; font-size: 15px; }
+  .plat b { color: var(--teal); font-weight: 700; }
+  .plat small { color: var(--ink-3); font-weight: 500; font-size: 12.5px; display: block; }
+
+  .features { padding: 90px 0 30px; }
+  .grid-f { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .card { background: linear-gradient(180deg, var(--panel), rgba(18,26,32,0.4)); border: 1px solid var(--hair); border-radius: 18px; padding: 26px 24px; }
+  .card .ico { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(34,184,207,0.12); margin-bottom: 16px; font-size: 22px; }
+  .card h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.01em; }
+  .card p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+
+  .closer { padding: 96px 0 30px; text-align: center; }
+  .closer h2 { max-width: 640px; margin: 0 auto; }
+  .closer .cta-row { margin-top: 34px; }
+
+  footer { border-top: 1px solid var(--hair); margin-top: 80px; padding: 34px 0 56px; }
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  .foot .brand { font-size: 16px; }
+  .foot .pin { width: 20px; height: 25px; }
+  .foot-links { display: flex; gap: 22px; flex-wrap: wrap; }
+  .foot-links a { color: var(--ink-2); text-decoration: none; font-size: 14px; }
+  .foot-links a:hover { color: var(--teal); }
+  .copy { color: var(--ink-3); font-size: 13px; width: 100%; margin-top: 22px; }
+
+  @media (max-width: 760px) {
+    .grid-f { grid-template-columns: 1fr; }
+    .phone { width: 168px; }
+    .phone.p1 { transform: rotate(-5deg) translateX(24px) translateY(14px); }
+    .phone.p2 { transform: rotate(4deg) translateX(-24px); }
+  }
+</style>
+
+<div class="bg" aria-hidden="true">
+  <div class="grid"></div>
+  <div class="glow teal"></div>
+  <div class="glow purple"></div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <svg class="pin" viewBox="0 0 27 43" fill="none"><path d="M13.5 43C13.5 43 25 27 25 13.5a11.5 11.5 0 10-23 0C2 27 13.5 43 13.5 43z" fill="#22b8cf" stroke="#0a0e11" stroke-width="1.5"/><circle cx="13.5" cy="13.5" r="4.6" fill="#0a0e11"/></svg>
+        <span>Crapple <span class="maps">Maps</span></span>
+      </div>
+      <a class="btn ghost nav-cta" href="https://crapplemaps.com">Open web app</a>
+    </div>
+
+    <section class="hero">
+      <p class="eyebrow">Never hold it again</p>
+      <h1>Gotta go?<br><span class="accent">We got you.</span></h1>
+      <p class="lede">Every bathroom near you on one map, with the stuff that actually matters. Is it public? Is there a code? Do you have to buy something? Real answers from people who've been there.</p>
+      <div class="cta-row">
+        <a class="store" href="#">
+          <svg width="22" height="26" viewBox="0 0 22 26" fill="#ffffff"><path d="M15.4 13.7c0-2.5 2-3.7 2.1-3.8-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.6.9-.8 0-1.9-.9-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.6.8 1.2 1.7 2.5 3 2.4 1.2-.1 1.6-.8 3.1-.8 1.5 0 1.8.8 3.1.8 1.3 0 2.1-1.2 2.9-2.4.9-1.4 1.3-2.7 1.3-2.8-.1 0-2.6-1-2.6-3.8zM13 5.9c.7-.8 1.1-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.3z"/></svg>
+          <span class="lbl"><small>Download on the</small><b>App Store</b></span>
+        </a>
+        <a class="store" href="#">
+          <svg width="22" height="24" viewBox="0 0 22 24" fill="none"><path d="M2 1.3C1.7 1.6 1.5 2 1.5 2.6v18.8c0 .6.2 1 .5 1.3l11-11.7L2 1.3z" fill="#00d4ff"/><path d="M17 8.6l-3.6-2.1L2.4.9C2.6.8 2.9.8 3.2 1l13.8 7.6z" fill="#00e676"/><path d="M17 15.4L3.2 23c-.3.2-.6.2-.8 0l11-11.7L17 15.4z" fill="#ff3d57"/><path d="M21 11.1c.4.2.6.6.6 1s-.2.8-.6 1l-4 2.3-3.2-3.3 3.2-3.3 4 2.3z" fill="#ffc107"/></svg>
+          <span class="lbl"><small>Get it on</small><b>Google Play</b></span>
+        </a>
+        <a class="store" href="https://crapplemaps.com">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.7 2.6 15.3 0 18M12 3c-2.6 2.7-2.6 15.3 0 18"/></svg>
+          <span class="lbl"><small>Open it in your</small><b>Browser</b></span>
+        </a>
+      </div>
+
+      <div class="cluster">
+        <div class="phone p1"><img src="__PHONE1__" alt="A live map of nearby restrooms in Crapple Maps" /></div>
+        <div class="phone p2"><img src="__PHONE2__" alt="Restroom details, amenities, and directions in Crapple Maps" /></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="platforms" id="platforms">
+    <div class="wrap">
+      <div class="band-head">
+        <p class="kicker">Everywhere you are</p>
+        <h2>On your phone. In your browser. In a pinch.</h2>
+        <p>Same map and same spots on your phone, your laptop, or someone else's in an emergency. Always in your pocket, and a much better backup plan than the water bottle in your car.</p>
+      </div>
+      <div class="browser">
+        <div class="bar">
+          <span class="d" style="background:#ff5f57"></span>
+          <span class="d" style="background:#febc2e"></span>
+          <span class="d" style="background:#28c840"></span>
+          <span class="url"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 10V8a6 6 0 1112 0v2m-9 0h6a3 3 0 013 3v5a3 3 0 01-3 3H9a3 3 0 01-3-3v-5a3 3 0 013-3z" stroke="#9fb2bf" stroke-width="2"/></svg>crapplemaps.com</span>
+        </div>
+        <img src="__WEB__" alt="Crapple Maps in a web browser" />
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="wrap">
+      <div class="band-head">
+        <p class="kicker">The good stuff</p>
+        <h2>Everything you need, right when you need it.</h2>
+      </div>
+      <div class="grid-f">
+        <div class="card"><div class="ico">&#128205;</div><h3>The nearest one, now</h3><p>Every bathroom around you on a live map, closest first. Filter for accessible, gender-neutral, no code, and no purchase.</p></div>
+        <div class="card"><div class="ico">&#9989;</div><h3>Know before you go</h3><p>Public or customers-only? Is there a code? Gotta buy something first? The details that matter, from folks who've been there.</p></div>
+        <div class="card"><div class="ico">&#10133;</div><h3>Found a good one? Add it</h3><p>Long-press the map, drop a pin, and it's there for the next person who's cutting it close.</p></div>
+        <div class="card"><div class="ico">&#128506;&#65039;</div><h3>Your regulars, saved</h3><p>Log the ones that came through and save your go-tos, so they're always a tap away.</p></div>
+        <div class="card"><div class="ico">&#128240;</div><h3>The scoop from friends</h3><p>Follow people you trust and see their finds. Ratings, photos, and notes on the spots worth knowing.</p></div>
+        <div class="card"><div class="ico">&#127379;</div><h3>Free. For real.</h3><p>Every feature is free for everyone. No ads, no subscriptions. It's open source too, so anyone can peek under the hood.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="closer">
+    <div class="wrap">
+      <p class="kicker" style="color:var(--teal)">Go with confidence</p>
+      <h2>Never get caught out again.</h2>
+      <div class="cta-row">
+        <a class="store" href="#">
+          <svg width="22" height="26" viewBox="0 0 22 26" fill="#ffffff"><path d="M15.4 13.7c0-2.5 2-3.7 2.1-3.8-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.6.9-.8 0-1.9-.9-3.1-.8-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.6.8 1.2 1.7 2.5 3 2.4 1.2-.1 1.6-.8 3.1-.8 1.5 0 1.8.8 3.1.8 1.3 0 2.1-1.2 2.9-2.4.9-1.4 1.3-2.7 1.3-2.8-.1 0-2.6-1-2.6-3.8zM13 5.9c.7-.8 1.1-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.3z"/></svg>
+          <span class="lbl"><small>Download on the</small><b>App Store</b></span>
+        </a>
+        <a class="store" href="#">
+          <svg width="22" height="24" viewBox="0 0 22 24" fill="none"><path d="M2 1.3C1.7 1.6 1.5 2 1.5 2.6v18.8c0 .6.2 1 .5 1.3l11-11.7L2 1.3z" fill="#00d4ff"/><path d="M17 8.6l-3.6-2.1L2.4.9C2.6.8 2.9.8 3.2 1l13.8 7.6z" fill="#00e676"/><path d="M17 15.4L3.2 23c-.3.2-.6.2-.8 0l11-11.7L17 15.4z" fill="#ff3d57"/><path d="M21 11.1c.4.2.6.6.6 1s-.2.8-.6 1l-4 2.3-3.2-3.3 3.2-3.3 4 2.3z" fill="#ffc107"/></svg>
+          <span class="lbl"><small>Get it on</small><b>Google Play</b></span>
+        </a>
+        <a class="store" href="https://crapplemaps.com">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.7 2.6 15.3 0 18M12 3c-2.6 2.7-2.6 15.3 0 18"/></svg>
+          <span class="lbl"><small>Open it in your</small><b>Browser</b></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot">
+      <div class="brand">
+        <svg class="pin" viewBox="0 0 27 43" fill="none"><path d="M13.5 43C13.5 43 25 27 25 13.5a11.5 11.5 0 10-23 0C2 27 13.5 43 13.5 43z" fill="#22b8cf" stroke="#0a0e11" stroke-width="1.5"/><circle cx="13.5" cy="13.5" r="4.6" fill="#0a0e11"/></svg>
+        <span>Crapple <span class="maps">Maps</span></span>
+      </div>
+      <div class="foot-links">
+        <a href="https://crapplemaps.com">Web app</a>
+        <a href="#">Open source</a>
+        <a href="#">Privacy</a>
+        <a href="#">Support</a>
+      </div>
+      <div class="copy">&copy; 2026 Crapple Maps. All rights reserved.</div>
+    </div>
+  </footer>
+</main>

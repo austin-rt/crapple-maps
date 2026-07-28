@@ -13,6 +13,7 @@ const ThemeCtx = createContext<Ctx>({ pref: 'system', setPref: () => {}, scheme:
 export function ThemePrefProvider({ children }: { children: React.ReactNode }) {
   const system = (useRNColorScheme() ?? 'light') as 'light' | 'dark';
   const [pref, setPrefState] = useState<ThemePref>('system');
+  const scheme = pref === 'system' ? system : pref;
 
   useEffect(() => {
     if (Platform.OS === 'web') return;
@@ -25,12 +26,18 @@ export function ThemePrefProvider({ children }: { children: React.ReactNode }) {
     nwColorScheme.set(pref); // NativeWind honours 'system'
   }, [pref]);
 
+  // Web: Tailwind darkMode:'class' needs a `dark` class on <html> for dark:
+  // utilities to apply. NativeWind's 'system' mode doesn't add it on web, so the
+  // page content stays light while the nav chrome (themed separately) goes dark.
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+    document.documentElement.classList.toggle('dark', scheme === 'dark');
+  }, [scheme]);
+
   const setPref = (p: ThemePref) => {
     setPrefState(p);
     if (Platform.OS !== 'web') AsyncStorage.setItem(KEY, p);
   };
-
-  const scheme = pref === 'system' ? system : pref;
   return <ThemeCtx.Provider value={{ pref, setPref, scheme }}>{children}</ThemeCtx.Provider>;
 }
 

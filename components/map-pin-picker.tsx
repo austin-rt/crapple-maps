@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Constants from 'expo-constants';
 import { Platform, Text, View } from 'react-native';
 
-import { ACCENT } from '@/lib/auth';
+import { ACCENT, MUTED } from '@/lib/tokens';
 
 // Uber/Lyft-style precise pin: a fixed pin sits at screen center and the map
 // pans under it — wherever the map settles is the chosen point.
@@ -25,7 +25,7 @@ export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (
   if (!mapsAvailable) {
     return (
       <View className="mt-3 items-center rounded-xl border border-dashed border-neutral-300 p-4 dark:border-neutral-700">
-        <Ionicons name="map-outline" size={22} color="#9CA3AF" />
+        <Ionicons name="map-outline" size={22} color={MUTED} />
         <Text className="mt-1 text-center text-xs text-neutral-400">
           Drag-a-pin map appears in the dev build. Using the selected location.
         </Text>
@@ -40,7 +40,7 @@ export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (
         onRegionChangeComplete={(reg: any) => onChange({ latitude: reg.latitude, longitude: reg.longitude })}
       />
       <View pointerEvents="none" className="absolute inset-0 items-center justify-center">
-        <Ionicons name="location" size={40} color={ACCENT} style={{ marginBottom: 40 }} />
+        <Ionicons name="location" size={42} color={ACCENT} style={{ marginBottom: 42 }} />
       </View>
     </View>
   );

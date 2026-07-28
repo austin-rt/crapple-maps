@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { AppMapView, AppMarker } from '@/components/map';
@@ -71,7 +71,10 @@ export default function RestroomDetail() {
   });
 
   const requireAuth = () => {
-    Alert.alert('Sign in', 'Sign in on the Profile tab to contribute.');
+    Alert.alert('Sign in', 'Sign in to contribute a code or review.', [
+      { text: 'Not now', style: 'cancel' },
+      { text: 'Sign in', onPress: () => router.navigate('/(tabs)/profile') },
+    ]);
     return false;
   };
 

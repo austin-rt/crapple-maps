@@ -1,9 +1,13 @@
 // Web map — Google Maps JS via @vis.gl/react-google-maps. Mirrors the subset of
 // the react-native-maps API the app uses (initialRegion, onPress, animateToRegion
 // via ref, markers with coordinate/onPress/pinColor).
-import { APIProvider, Map as GMap, Marker as GMarker, useMap } from '@vis.gl/react-google-maps';
+import { APIProvider, Map as GMap, Marker as GMarker, useApiIsLoaded, useMap } from '@vis.gl/react-google-maps';
 import { forwardRef, useImperativeHandle } from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
+
+import { DARK_MAP_STYLE } from '@/lib/maps';
+import { useThemePref } from '@/lib/theme';
+import { ACCENT } from '@/lib/tokens';
 
 export type Region = { latitude: number; longitude: number; latitudeDelta: number; longitudeDelta: number };
 export type AppMapHandle = { animateToRegion: (r: Region, duration?: number) => void };
@@ -34,6 +38,7 @@ Handle.displayName = 'MapHandle';
 
 export const AppMapView = forwardRef<AppMapHandle, any>(function AppMapView(props, ref) {
   const r: Region | undefined = props.initialRegion;
+  const { scheme } = useThemePref();
   return (
     <View style={props.style}>
       <APIProvider apiKey={KEY}>
@@ -41,10 +46,20 @@ export const AppMapView = forwardRef<AppMapHandle, any>(function AppMapView(prop
           id="main"
           defaultCenter={{ lat: r?.latitude ?? 0, lng: r?.longitude ?? 0 }}
           defaultZoom={r ? deltaToZoom(r.latitudeDelta) : 13}
+          styles={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
           gestureHandling="greedy"
           disableDefaultUI
           clickableIcons={false}
           onClick={props.onPress}
+          onContextmenu={(e: any) => {
+            // Long-press (touch) / right-click (desktop) → add-a-restroom. Normalize
+            // {lat,lng} to the native onLongPress event shape so the finder reads
+            // e.nativeEvent.coordinate the same way on every platform.
+            const ll = e?.detail?.latLng;
+            if (ll && props.onLongPress) {
+              props.onLongPress({ nativeEvent: { coordinate: { latitude: ll.lat, longitude: ll.lng } } });
+            }
+          }}
           style={{ width: '100%', height: '100%' }}>
           {props.children}
         </GMap>
@@ -54,30 +69,39 @@ export const AppMapView = forwardRef<AppMapHandle, any>(function AppMapView(prop
   );
 });
 
-// Teardrop pin path, tip anchored at (0,0) pointing down — matches the native
-// react-native-maps pin shape so web/iOS/Android look consistent.
-const PIN_PATH = 'M 0,0 C -2,-20 -11,-22 -11,-31 A 11,11 0 1,1 11,-31 C 11,-22 2,-20 0,0 z';
+// Web pins reuse the same high-res PNG art as native (components/map.tsx): a
+// Google-style teardrop with a transparent center cutout and a theme-aware
+// outline (white on the light map, #1f2023 on the dark map). Displayed at 27x43
+// from the 81x129 source so the browser downscales -> crisp on retina.
+const PIN_LIGHT: Record<string, number> = {
+  [ACCENT]: require('@/assets/markers/pin-teal-web.png'), // default
+  '#DC2626': require('@/assets/markers/pin-red-web.png'), // selected
+  '#7C3AED': require('@/assets/markers/pin-purple-web.png'), // visited
+};
+const PIN_DARK: Record<string, number> = {
+  [ACCENT]: require('@/assets/markers/pin-teal-web-dark.png'),
+  '#DC2626': require('@/assets/markers/pin-red-web-dark.png'),
+  '#7C3AED': require('@/assets/markers/pin-purple-web-dark.png'),
+};
+
+// Resolve lazily + guarded: Image.resolveAssetSource doesn't exist in the web
+// static-render (SSR) pass, and google.maps isn't loaded there either.
+function pinUri(pinColor: string | undefined, dark: boolean): string | undefined {
+  const mod = pinColor ? (dark ? PIN_DARK : PIN_LIGHT)[pinColor] : undefined;
+  const resolve = (Image as any).resolveAssetSource;
+  return mod != null && typeof resolve === 'function' ? resolve(mod)?.uri : undefined;
+}
 
 export const AppMarker = ({ coordinate, onPress, pinColor }: { coordinate: { latitude: number; longitude: number }; onPress?: () => void; pinColor?: string }) => {
+  // Re-render once the Maps JS API finishes loading; otherwise the marker is
+  // created with icon=undefined and Google shows its default red pin forever.
+  const loaded = useApiIsLoaded();
   const g = (globalThis as any).google as typeof google | undefined;
+  const { scheme } = useThemePref();
+  const uri = pinUri(pinColor, scheme === 'dark');
   const icon =
-    pinColor && g
-      ? {
-          path: PIN_PATH,
-          fillColor: pinColor,
-          fillOpacity: 1,
-          strokeColor: '#ffffff',
-          strokeWeight: 1.5,
-          scale: 1,
-          anchor: new g.maps.Point(0, 0),
-          labelOrigin: new g.maps.Point(0, -30),
-        }
+    loaded && uri && g?.maps?.Size
+      ? { url: uri, scaledSize: new g.maps.Size(27, 43), anchor: new g.maps.Point(13.5, 43) }
       : undefined;
-  return (
-    <GMarker
-      position={{ lat: coordinate.latitude, lng: coordinate.longitude }}
-      onClick={onPress}
-      icon={icon as any}
-    />
-  );
+  return <GMarker position={{ lat: coordinate.latitude, lng: coordinate.longitude }} onClick={onPress} icon={icon as any} />;
 };

@@ -1,0 +1,138 @@
+import { useEffect, useState } from 'react';
+import { Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+
+import { MarkerBadge } from '@/components/ui';
+import { useAuth } from '@/lib/auth';
+import { ACCENT, MUTED } from '@/lib/tokens';
+
+import { OAuthButtons } from './OAuthButtons';
+
+const inputCls = 'rounded-xl border border-neutral-300 px-4 py-3 text-neutral-900 dark:border-neutral-700 dark:text-neutral-50';
+
+export function AuthForm() {
+  const { signInWithEmail, signUpWithEmail, signInWithProvider, signInWithApple } = useAuth();
+  const [mode, setMode] = useState<'in' | 'up'>('in');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [msg, setMsg] = useState<string | undefined>();
+  const [busy, setBusy] = useState(false);
+  const [appleAvailable, setAppleAvailable] = useState(false);
+
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    try {
+      require('expo-apple-authentication').isAvailableAsync().then(setAppleAvailable).catch(() => {});
+    } catch {}
+  }, []);
+
+  const apple = async () => {
+    setBusy(true);
+    setMsg(undefined);
+    const { error } = await signInWithApple();
+    setBusy(false);
+    if (error) setMsg(error);
+  };
+
+  const google = async () => {
+    setBusy(true);
+    setMsg(undefined);
+    const { error } = await signInWithProvider('google');
+    setBusy(false);
+    if (error) setMsg(error);
+  };
+
+  const submit = async () => {
+    setBusy(true);
+    setMsg(undefined);
+    const raw = email.trim();
+    // Dev-only convenience (never in published builds): bare username → @test.com,
+    // and the seeded test/test account signs in regardless of the typed password.
+    const normalizedEmail = __DEV__ && !raw.includes('@') ? `${raw}@test.com` : raw;
+    const pw = __DEV__ && mode === 'in' && normalizedEmail === 'test@test.com' ? 'testtest' : password;
+    const fn = mode === 'in' ? signInWithEmail : signUpWithEmail;
+    const { error } = await fn(normalizedEmail, pw);
+    setBusy(false);
+    if (error) setMsg(error);
+  };
+
+  return (
+    <ScrollView
+      className="flex-1 bg-white dark:bg-neutral-950"
+      contentContainerClassName="gap-3 px-6 pt-20 pb-10"
+      keyboardShouldPersistTaps="handled"
+      automaticallyAdjustKeyboardInsets>
+      <View className="mb-3 flex-row items-center gap-2.5">
+        <MarkerBadge size={44} />
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          className="flex-1 font-extrabold text-neutral-900 dark:text-neutral-50"
+          style={{ fontSize: 36 }}>
+          Crapple <Text style={{ color: ACCENT }}>Maps</Text>
+        </Text>
+      </View>
+      <Text className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">
+        {mode === 'in' ? 'Welcome back' : 'Create account'}
+      </Text>
+      <Text className="mb-2 text-neutral-500 dark:text-neutral-400">Sign in to log visits, add restrooms, and follow friends.</Text>
+
+      <OAuthButtons appleAvailable={appleAvailable} busy={busy} onApple={apple} onGoogle={google} />
+
+      <View className="my-2 flex-row items-center gap-3">
+        <View className="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
+        <Text className="text-xs text-neutral-400">or use email</Text>
+        <View className="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
+      </View>
+
+      <View className="mb-2 flex-row gap-2">
+        {(['in', 'up'] as const).map((m) => (
+          <Pressable
+            key={m}
+            onPress={() => setMode(m)}
+            className={`flex-1 items-center rounded-xl border py-2 ${mode === m ? 'border-transparent' : 'border-neutral-300 dark:border-neutral-700'}`}
+            style={mode === m ? { backgroundColor: ACCENT } : undefined}>
+            <Text className={`font-semibold ${mode === m ? 'text-white' : 'text-neutral-700 dark:text-neutral-300'}`}>
+              {m === 'in' ? 'Sign in' : 'Sign up'}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
+      <TextInput
+        placeholder="Email"
+        placeholderTextColor={MUTED}
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        autoCorrect={false}
+        keyboardType="email-address"
+        textContentType="username"
+        autoComplete="email"
+        importantForAutofill="yes"
+        className={inputCls}
+      />
+      <TextInput
+        placeholder="Password"
+        placeholderTextColor={MUTED}
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        textContentType={mode === 'in' ? 'password' : 'newPassword'}
+        autoComplete={mode === 'in' ? 'password' : 'password-new'}
+        importantForAutofill="yes"
+        className={inputCls}
+      />
+      {msg ? <Text className="text-sm text-red-500">{msg}</Text> : null}
+
+      <Pressable
+        onPress={submit}
+        disabled={busy || !email || !password}
+        className={`mt-1 items-center rounded-xl py-3 ${busy || !email || !password ? 'opacity-50' : ''}`}
+        style={{ backgroundColor: ACCENT }}>
+        <Text className="font-semibold text-white">{busy ? 'Please wait…' : mode === 'in' ? 'Sign in' : 'Sign up'}</Text>
+      </Pressable>
+
+      {__DEV__ ? <Text className="mt-1 text-center text-xs text-neutral-400">Dev login: test / test</Text> : null}
+    </ScrollView>
+  );
+}
