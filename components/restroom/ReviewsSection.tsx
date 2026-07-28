@@ -51,7 +51,7 @@ export function ReviewsSection({
       {editing ? (
         <View className="mt-2 flex-row items-center gap-1.5 self-start opacity-40">
           <Ionicons name="add-circle-outline" size={18} color={MUTED} />
-          <Text className="text-sm font-semibold text-neutral-400">Add a review (finish editing first)</Text>
+          <Text className="text-sm font-semibold text-neutral-400">Finish editing to add a review</Text>
         </View>
       ) : writing ? (
         <View className="mt-2 rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800">

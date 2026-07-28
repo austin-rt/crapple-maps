@@ -109,7 +109,7 @@ export function RestroomSheet({
   const share = async () => {
     const url = `https://www.google.com/maps/search/?api=1&query=${restroom.lat},${restroom.lng}`;
     try {
-      await Share.share({ message: `${title} — ${url}` });
+      await Share.share({ message: `${title}\n${url}` });
     } catch {
       try {
         await navigator.clipboard?.writeText(url);

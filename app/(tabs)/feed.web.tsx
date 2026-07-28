@@ -65,7 +65,7 @@ export default function FeedScreen() {
                 <Text className="text-5xl">🚽</Text>
                 <Text className="mt-4 text-center text-lg font-semibold text-content">Your feed is empty</Text>
                 <Text className="mt-1 text-center text-sm text-content-2">
-                  Follow friends, or tap Post to add your first one — it’ll show up here.
+                  Follow friends, or tap Post to add your first one. It’ll show up here.
                 </Text>
               </View>
             )
