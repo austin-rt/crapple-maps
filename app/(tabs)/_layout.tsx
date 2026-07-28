@@ -3,6 +3,7 @@ import { router, Tabs } from 'expo-router';
 import { Platform, Pressable } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
+import { WebHeader } from '@/components/web/WebHeader';
 import { ACCENT } from '@/lib/auth';
 
 export default function TabLayout() {
@@ -12,8 +13,10 @@ export default function TabLayout() {
         tabBarActiveTintColor: ACCENT,
         tabBarButton: HapticTab,
         headerShown: true,
-        // Web uses the hamburger nav (WebNav) instead of a bottom tab bar.
+        // Web hides the bottom tab bar and shows a persistent top header (with
+        // the hamburger nav + user menu) instead — except on the map (below).
         tabBarStyle: Platform.OS === 'web' ? { display: 'none' } : undefined,
+        ...(Platform.OS === 'web' ? { header: ({ options }: any) => <WebHeader title={options.title as string} /> } : null),
       }}>
       <Tabs.Screen
         name="index"
