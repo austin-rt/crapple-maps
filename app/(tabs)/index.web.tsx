@@ -1,12 +1,13 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Animated, Easing, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useState } from 'react';
+import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { AddRestroomCard, FilterSheet, PlaceCard } from '@/components/finder';
+import { AddRestroomCard, FilterControls, PlaceCard } from '@/components/finder';
 import { AppMapView, AppMarker } from '@/components/map';
 import { RestroomSheet } from '@/components/restroom';
 import { Avatar } from '@/components/ui';
+import { LeftDrawer } from '@/components/web/LeftDrawer';
 import { WebNavDrawer } from '@/components/web/WebNavDrawer';
 import { DEFAULT_REGION, VISITED, useFinder } from '@/hooks/useFinder';
 import { useProfile } from '@/hooks/useProfile';
@@ -16,18 +17,19 @@ import { useThemePref } from '@/lib/theme';
 import { ACCENT, MUTED } from '@/lib/tokens';
 import type { Restroom } from '@/lib/types';
 
+const DRAWER_W = 408;
+
 // Web map page — Google-Maps-style layout: full-bleed map, a collapsible left
-// drawer (search + results), hamburger app-nav, and a top-right filter + avatar.
+// results drawer (search + filters + list), hamburger app-nav, and a top-right
+// avatar. All finder logic is shared with native via useFinder().
 export default function MapWeb() {
   const { scheme } = useThemePref();
   const f = useFinder();
   const { data: me } = useProfile(f.session?.user.id ?? '');
   const [navOpen, setNavOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const drawerX = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    Animated.timing(drawerX, { toValue: drawerOpen ? 0 : -428, duration: 240, easing: Easing.out(Easing.cubic), useNativeDriver: false }).start();
-  }, [drawerOpen, drawerX]);
+  const [showFilters, setShowFilters] = useState(false);
+  const filterActive = showFilters || f.activeFilterCount > 0;
 
   return (
     <View className="flex-1 bg-surface">
@@ -64,122 +66,131 @@ export default function MapWeb() {
         </Pressable>
       </View>
 
-      {/* left drawer: search + results (animated slide) */}
-      <Animated.View pointerEvents={drawerOpen ? 'auto' : 'none'} className="bg-surface" style={[{ position: 'absolute', top: 0, bottom: 0, left: 0, width: 408, zIndex: 10, transform: [{ translateX: drawerX }] }, styles.shadow]}>
-          <View style={{ padding: 12, paddingTop: 14 }}>
-            <View className="flex-row items-center rounded-full bg-surface-2 pl-1 pr-1">
-              <Pressable onPress={() => setNavOpen(true)} className="items-center justify-center" style={{ width: 42, height: 42 }}>
-                <Ionicons name="menu" size={22} color="#6B7280" />
+      {/* left results drawer — shared LeftDrawer gives it the slide + opaque bg */}
+      <LeftDrawer open={drawerOpen} width={DRAWER_W} zIndex={10}>
+        <View style={{ padding: 12, paddingTop: 14 }}>
+          <View className="flex-row items-center rounded-full bg-surface-2 pl-1 pr-1">
+            <Pressable onPress={() => setNavOpen(true)} className="items-center justify-center" style={{ width: 42, height: 42 }}>
+              <Ionicons name="menu" size={22} color="#6B7280" />
+            </Pressable>
+            <TextInput
+              placeholder="Search address, city, or ZIP…"
+              placeholderTextColor={MUTED}
+              value={f.query}
+              onChangeText={f.setQuery}
+              autoCapitalize="words"
+              className="flex-1 px-1 py-2.5 text-base text-content"
+            />
+            {f.searching ? (
+              <ActivityIndicator size="small" color={MUTED} style={{ marginRight: 4 }} />
+            ) : f.query.length > 0 ? (
+              <Pressable onPress={() => f.setQuery('')} className="px-1">
+                <Ionicons name="close-circle" size={18} color={MUTED} />
               </Pressable>
-              <TextInput
-                placeholder="Search address, city, or ZIP…"
-                placeholderTextColor={MUTED}
-                value={f.query}
-                onChangeText={f.setQuery}
-                autoCapitalize="words"
-                className="flex-1 px-1 py-2.5 text-base text-content"
-              />
-              {f.searching ? (
-                <ActivityIndicator size="small" color={MUTED} style={{ marginRight: 4 }} />
-              ) : f.query.length > 0 ? (
-                <Pressable onPress={() => f.setQuery('')} className="px-1">
-                  <Ionicons name="close-circle" size={18} color={MUTED} />
-                </Pressable>
-              ) : null}
-              <View className="mx-0.5 h-5 w-px bg-line" />
-              <Pressable onPress={() => f.setFilterOpen(true)} className="items-center justify-center" style={{ width: 40, height: 40 }}>
-                <Ionicons name="options" size={20} color={f.activeFilterCount ? ACCENT : '#6B7280'} />
-              </Pressable>
-            </View>
-
-            {f.results.length > 0 ? (
-              <View className="mt-1.5 overflow-hidden rounded-xl bg-surface" style={styles.shadow}>
-                {f.results.map((p, i) => (
-                  <Pressable
-                    key={`${p.lat}-${p.lon}-${i}`}
-                    onPress={() => f.pickPlace(p)}
-                    className="flex-row items-center gap-2 border-b border-line px-3 py-2.5 active:bg-surface-2">
-                    <Ionicons name="location-outline" size={16} color={MUTED} />
-                    <Text numberOfLines={2} className="flex-1 text-sm text-content-2">{p.display_name}</Text>
-                  </Pressable>
-                ))}
-              </View>
             ) : null}
+            <View className="mx-0.5 h-5 w-px bg-line" />
+            <Pressable onPress={() => setShowFilters((v) => !v)} className="items-center justify-center" style={{ width: 40, height: 40 }}>
+              <Ionicons name="options" size={20} color={filterActive ? ACCENT : '#6B7280'} />
+            </Pressable>
           </View>
 
-          {f.selected ? (
-            <View className="flex-1">
-              <RestroomSheet restroom={f.selected} title={f.titleFor(f.selected)} onBack={() => f.setSelected(null)} onTitlePress={() => {}} />
+          {/* geocode autocomplete results */}
+          {f.results.length > 0 ? (
+            <View className="mt-1.5 overflow-hidden rounded-xl bg-surface" style={styles.shadow}>
+              {f.results.map((p, i) => (
+                <Pressable
+                  key={`${p.lat}-${p.lon}-${i}`}
+                  onPress={() => f.pickPlace(p)}
+                  className="flex-row items-center gap-2 border-b border-line px-3 py-2.5 active:bg-surface-2">
+                  <Ionicons name="location-outline" size={16} color={MUTED} />
+                  <Text numberOfLines={2} className="flex-1 text-sm text-content-2">{p.display_name}</Text>
+                </Pressable>
+              ))}
             </View>
-          ) : (
-            <FlatList
-              data={f.list}
-              keyExtractor={(i, idx) => (i as Restroom).id + idx}
-              contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 24, gap: 8 }}
-              onEndReachedThreshold={0.6}
-              onEndReached={() => f.hasNextPage && !f.isFetchingNextPage && f.fetchNextPage()}
-              ListHeaderComponent={
-                <View className="pb-1">
-                  <View className="flex-row items-center justify-between px-1 pb-2">
-                    {f.nearest != null ? (
-                      <Text className="text-sm font-semibold" style={{ color: ACCENT }}>Nearest {distLabel(f.nearest)} away</Text>
-                    ) : (
-                      <Text className="text-sm font-semibold text-content">Restrooms nearby</Text>
-                    )}
-                    {f.list.length ? <Text className="text-xs text-content-2">{f.list.length}{f.hasNextPage ? '+' : ''}</Text> : null}
-                  </View>
-                  <View className="mb-1">
-                    <AddRestroomCard onPress={f.addHere} />
-                  </View>
-                </View>
-              }
-              ListFooterComponent={f.isFetchingNextPage ? <ActivityIndicator style={{ marginVertical: 16 }} color={ACCENT} /> : null}
-              ListEmptyComponent={
-                !f.locReady || f.isLoading ? (
-                  <View className="mt-10 items-center">
-                    <ActivityIndicator color={ACCENT} />
-                    <Text className="mt-3 text-sm text-content-2">Finding restrooms near you…</Text>
-                  </View>
-                ) : (
-                  <Text className="mt-10 px-6 text-center text-sm text-content-2">No restrooms nearby yet.</Text>
-                )
-              }
-              renderItem={({ item }) => {
-                const it = item as Restroom;
-                return (
-                  <PlaceCard item={it} title={f.titleFor(it)} active={it.id === f.activeId} saved={f.savedIds?.has(it.id)} onSelect={() => f.select(it)} onResolve={f.resolveTitle} />
-                );
-              }}
-            />
-          )}
+          ) : null}
+        </View>
 
-          <Pressable
-            onPress={() => setDrawerOpen(false)}
-            className="absolute items-center justify-center bg-surface"
-            style={[{ top: '50%', right: -15, width: 16, height: 52, borderTopRightRadius: 8, borderBottomRightRadius: 8 }, styles.shadow]}>
-            <Ionicons name="chevron-back" size={16} color="#6B7280" />
-          </Pressable>
-      </Animated.View>
+        {showFilters ? (
+          <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}>
+            <View className="mb-3 flex-row items-center justify-between">
+              <Text className="text-base font-bold text-content">Sort & filter</Text>
+              {f.activeFilterCount > 0 ? (
+                <Pressable onPress={() => f.setFilters({})} hitSlop={8}>
+                  <Text className="text-sm font-semibold" style={{ color: ACCENT }}>Clear all</Text>
+                </Pressable>
+              ) : null}
+            </View>
+            <FilterControls sort={f.sort} setSort={f.setSort} filters={f.filters} toggleFilter={f.toggleFilter} />
+            <Pressable onPress={() => setShowFilters(false)} className="mt-6 items-center rounded-2xl py-3" style={{ backgroundColor: ACCENT }}>
+              <Text className="text-base font-semibold text-white">Show {f.list.length}{f.hasNextPage ? '+' : ''} results</Text>
+            </Pressable>
+          </ScrollView>
+        ) : f.selected ? (
+          <View className="flex-1">
+            <RestroomSheet restroom={f.selected} title={f.titleFor(f.selected)} onBack={() => f.setSelected(null)} onTitlePress={() => {}} />
+          </View>
+        ) : (
+          <FlatList
+            data={f.list}
+            keyExtractor={(i, idx) => (i as Restroom).id + idx}
+            contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 24, gap: 8 }}
+            onEndReachedThreshold={0.6}
+            onEndReached={() => f.hasNextPage && !f.isFetchingNextPage && f.fetchNextPage()}
+            ListHeaderComponent={
+              <View className="pb-1">
+                <View className="flex-row items-center justify-between px-1 pb-2">
+                  {f.nearest != null ? (
+                    <Text className="text-sm font-semibold" style={{ color: ACCENT }}>Nearest {distLabel(f.nearest)} away</Text>
+                  ) : (
+                    <Text className="text-sm font-semibold text-content">Restrooms nearby</Text>
+                  )}
+                  {f.list.length ? <Text className="text-xs text-content-2">{f.list.length}{f.hasNextPage ? '+' : ''}</Text> : null}
+                </View>
+                <View className="mb-1">
+                  <AddRestroomCard onPress={f.addHere} />
+                </View>
+              </View>
+            }
+            ListFooterComponent={f.isFetchingNextPage ? <ActivityIndicator style={{ marginVertical: 16 }} color={ACCENT} /> : null}
+            ListEmptyComponent={
+              !f.locReady || f.isLoading ? (
+                <View className="mt-10 items-center">
+                  <ActivityIndicator color={ACCENT} />
+                  <Text className="mt-3 text-sm text-content-2">Finding restrooms near you…</Text>
+                </View>
+              ) : (
+                <Text className="mt-10 px-6 text-center text-sm text-content-2">No restrooms nearby yet.</Text>
+              )
+            }
+            renderItem={({ item }) => {
+              const it = item as Restroom;
+              return (
+                <PlaceCard item={it} title={f.titleFor(it)} active={it.id === f.activeId} saved={f.savedIds?.has(it.id)} onSelect={() => f.select(it)} onResolve={f.resolveTitle} />
+              );
+            }}
+          />
+        )}
+
+        {/* collapse handle, rides the drawer's right edge */}
+        <Pressable
+          onPress={() => setDrawerOpen(false)}
+          className="absolute items-center justify-center bg-surface"
+          style={[{ top: '50%', right: -15, width: 16, height: 52, borderTopRightRadius: 8, borderBottomRightRadius: 8 }, styles.shadow]}>
+          <Ionicons name="chevron-back" size={16} color="#6B7280" />
+        </Pressable>
+      </LeftDrawer>
+
+      {/* reopen handle when the drawer is collapsed */}
       {!drawerOpen ? (
         <Pressable
           onPress={() => setDrawerOpen(true)}
           className="absolute items-center justify-center bg-surface"
-          style={[{ top: '50%', left: 0, width: 22, height: 56, borderTopRightRadius: 10, borderBottomRightRadius: 10, zIndex: 10 }, styles.shadow]}>
+          style={[{ top: '50%', left: 0, width: 22, height: 56, borderTopRightRadius: 10, borderBottomRightRadius: 10, zIndex: 12 }, styles.shadow]}>
           <Ionicons name="chevron-forward" size={18} color="#6B7280" />
         </Pressable>
       ) : null}
 
       <WebNavDrawer open={navOpen} onClose={() => setNavOpen(false)} />
-      <FilterSheet
-        visible={f.filterOpen}
-        onClose={() => f.setFilterOpen(false)}
-        sort={f.sort}
-        setSort={f.setSort}
-        filters={f.filters}
-        toggleFilter={f.toggleFilter}
-        clearFilters={() => f.setFilters({})}
-        resultLabel={`Show ${f.list.length}${f.hasNextPage ? '+' : ''} results`}
-      />
     </View>
   );
 }
