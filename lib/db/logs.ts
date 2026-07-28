@@ -2,9 +2,18 @@ import { fetchLogPhotos } from '@/lib/photos';
 import { supabase } from '@/lib/supabase';
 import type { FeedLog, LogItem, Visibility } from '@/lib/types';
 
-// Shared select for a log joined with its author profile (feed + single log).
+// Shared select for a log joined with its author profile + like/comment counts
+// (feed + single log). reactions(count)/comments(count) are PostgREST aggregates.
 const LOG_WITH_AUTHOR =
-  'id,user_id,lat,lng,rating,bristol_type,caption,visibility,created_at, author:profiles(username,display_name,avatar_url,avatar_seed)';
+  'id,user_id,lat,lng,rating,bristol_type,caption,visibility,created_at, author:profiles(username,display_name,avatar_url,avatar_seed), reactions(count), comments(count)';
+
+// Flatten the [{count}] aggregate arrays into plain numbers.
+const withCounts = <T extends Record<string, any>>(rows: T[]): (T & { likes_count: number; comments_count: number })[] =>
+  rows.map((r) => ({
+    ...r,
+    likes_count: Array.isArray(r.reactions) ? (r.reactions[0]?.count ?? 0) : 0,
+    comments_count: Array.isArray(r.comments) ? (r.comments[0]?.count ?? 0) : 0,
+  }));
 
 const withPhotos = async <T extends { id: string }>(rows: T[]): Promise<(T & { photos: string[] })[]> => {
   const photos = await fetchLogPhotos(rows.map((r) => r.id));
@@ -19,14 +28,14 @@ export async function fetchFeed(offset: number, limit: number): Promise<FeedLog[
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
   if (error) throw error;
-  return withPhotos((data ?? []) as any[]) as Promise<FeedLog[]>;
+  return withPhotos(withCounts((data ?? []) as any[])) as Promise<FeedLog[]>;
 }
 
 export async function fetchLog(id: string): Promise<FeedLog | null> {
   const { data, error } = await supabase.from('logs').select(LOG_WITH_AUTHOR).eq('id', id).single();
   if (error) throw error;
   if (!data) return null;
-  return (await withPhotos([data as any]))[0] as FeedLog;
+  return (await withPhotos(withCounts([data as any])))[0] as FeedLog;
 }
 
 export async function fetchMyLogs(userId: string): Promise<LogItem[]> {

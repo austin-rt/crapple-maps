@@ -51,6 +51,17 @@ export function FeedCard({ log }: { log: FeedLog }) {
             <FeedPhotos photos={log.photos} />
           </View>
         ) : null}
+
+        <View className="mt-2 flex-row items-center gap-6">
+          <View className="flex-row items-center gap-1.5">
+            <Ionicons name="heart-outline" size={17} color={MUTED} />
+            {log.likes_count > 0 ? <Text className="text-xs text-content-2">{log.likes_count}</Text> : null}
+          </View>
+          <View className="flex-row items-center gap-1.5">
+            <Ionicons name="chatbubble-outline" size={16} color={MUTED} />
+            {log.comments_count > 0 ? <Text className="text-xs text-content-2">{log.comments_count}</Text> : null}
+          </View>
+        </View>
       </View>
     </Pressable>
   );

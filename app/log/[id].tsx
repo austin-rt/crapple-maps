@@ -1,20 +1,21 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { ActivityIndicator, Dimensions, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 
+import { CommentsSection, LikeButton, PostPhotos } from '@/components/feed';
 import { Avatar, Stars } from '@/components/ui';
 import { useLog } from '@/hooks/useLogs';
 import { useResolvedPlace } from '@/hooks/useResolvedPlace';
+import { useAuth } from '@/lib/auth';
 import { bristol } from '@/lib/bristol';
 import { fullWhen } from '@/lib/format';
 import { openDirections } from '@/lib/maps';
 import { ACCENT, MUTED } from '@/lib/tokens';
 
-const W = Dimensions.get('window').width;
-
 export default function LogDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { session } = useAuth();
   const { data, isLoading } = useLog(id);
   const place = useResolvedPlace(data?.lat ?? 0, data?.lng ?? 0, !!data);
 
@@ -50,13 +51,7 @@ export default function LogDetail() {
 
       {data.caption ? <Text className="px-4 pt-3 text-[19px] leading-7 text-content">{data.caption}</Text> : null}
 
-      {data.photos.length > 0 ? (
-        <View className="mt-3 gap-2 px-4">
-          {data.photos.map((uri: string, i: number) => (
-            <Image key={`${uri}-${i}`} source={{ uri }} style={{ width: W - 32, height: 260, borderRadius: 16 }} contentFit="cover" />
-          ))}
-        </View>
-      ) : null}
+      <PostPhotos photos={data.photos} />
 
       {(data.rating || b) && (
         <View className="mt-4 flex-row items-center gap-3 px-4">
@@ -75,6 +70,14 @@ export default function LogDetail() {
         {place?.full ? ` · ${place.full}` : ''}
       </Text>
 
+      <View className="mt-4 flex-row items-center gap-7 px-4">
+        <LikeButton logId={data.id} userId={session?.user.id} />
+        <View className="flex-row items-center gap-1.5">
+          <Ionicons name="chatbubble-outline" size={20} color={MUTED} />
+          {data.comments_count > 0 ? <Text className="text-sm text-content-2">{data.comments_count}</Text> : null}
+        </View>
+      </View>
+
       <View className="mx-4 mt-4 h-px bg-line" />
 
       <Pressable
@@ -91,6 +94,10 @@ export default function LogDetail() {
         <Ionicons name="navigate" size={16} color={ACCENT} />
         <Text className="font-semibold text-content">Directions</Text>
       </Pressable>
+
+      <View className="mx-4 mt-6 h-px bg-line" />
+      <View className="mt-4" />
+      <CommentsSection logId={data.id} session={session} />
     </ScrollView>
   );
 }

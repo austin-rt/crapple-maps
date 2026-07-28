@@ -75,7 +75,7 @@ export type LogItem = {
 };
 
 // A feed entry — a log plus its author.
-export type FeedLog = LogItem & { user_id: string; author: Author | null };
+export type FeedLog = LogItem & { user_id: string; author: Author | null; likes_count: number; comments_count: number };
 
 export type Profile = {
   id: string;

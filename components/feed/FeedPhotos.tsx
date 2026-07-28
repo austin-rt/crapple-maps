@@ -1,10 +1,12 @@
 import { Image } from 'expo-image';
-import { Dimensions, View } from 'react-native';
-
-// Content column width = screen − horizontal padding (16·2) − avatar (44) − gap (12).
-const CONTENT_W = Dimensions.get('window').width - 88;
+import { useWindowDimensions, View } from 'react-native';
 
 export function FeedPhotos({ photos }: { photos: string[] }) {
+  const { width } = useWindowDimensions();
+  // Content column width = column (capped at the 600px web timeline) − padding
+  // (16·2) − avatar (44) − gap (12). Capping keeps web photos from ballooning to
+  // the full browser width.
+  const CONTENT_W = Math.min(width, 600) - 88;
   if (photos.length === 0) return null;
   if (photos.length === 1) {
     return <Image source={{ uri: photos[0] }} style={{ width: CONTENT_W, height: 200, borderRadius: 14 }} contentFit="cover" />;
