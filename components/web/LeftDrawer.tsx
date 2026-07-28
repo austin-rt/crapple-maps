@@ -38,12 +38,18 @@ export function LeftDrawer({
     ]).start();
   }, [open, off, x, fade]);
 
+  // On web, pin to the viewport with `fixed` so the overlay fills the whole
+  // screen no matter where it's mounted (e.g. inside the navigator's short,
+  // fixed-height header container) — `absolute` would size to that box and leave
+  // the drawer's lower half transparent. Native uses `absolute`.
+  const POS: any = Platform.OS === 'web' ? 'fixed' : 'absolute';
+
   return (
     <>
       {scrim ? (
         <Animated.View
           pointerEvents={open ? 'auto' : 'none'}
-          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex, backgroundColor: 'rgba(0,0,0,0.45)', opacity: fade }}>
+          style={{ position: POS, top: 0, left: 0, right: 0, bottom: 0, zIndex, backgroundColor: 'rgba(0,0,0,0.45)', opacity: fade }}>
           <Pressable style={{ flex: 1 }} onPress={onScrimPress} />
         </Animated.View>
       ) : null}
@@ -51,7 +57,7 @@ export function LeftDrawer({
         pointerEvents={open ? 'auto' : 'none'}
         style={[
           {
-            position: 'absolute',
+            position: POS,
             top: 0,
             bottom: 0,
             left: 0,
