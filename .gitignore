@@ -45,3 +45,4 @@ app-example
 # Personal launch checklist (local only)
 FOUNDER-TODO.md
 .secrets/
+.vercel

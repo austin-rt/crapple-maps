@@ -7,8 +7,10 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 import { AuthProvider } from '@/lib/auth';
+import { ContributionProvider } from '@/lib/contribution';
 import { ThemePrefProvider, useThemePref } from '@/lib/theme';
 
 export const unstable_settings = {
@@ -23,7 +25,6 @@ function NavStack() {
     <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
     </ThemeProvider>
@@ -37,11 +38,14 @@ export default function RootLayout() {
         <ThemePrefProvider>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
-              <NavStack />
+              <ContributionProvider>
+                <NavStack />
+              </ContributionProvider>
             </AuthProvider>
           </QueryClientProvider>
         </ThemePrefProvider>
       </SafeAreaProvider>
+      <Toast />
     </GestureHandlerRootView>
   );
 }

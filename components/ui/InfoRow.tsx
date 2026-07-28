@@ -1,0 +1,29 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Pressable, View } from 'react-native';
+
+import { MUTED } from '@/lib/tokens';
+
+// Leading-icon info row (Google-Maps place-info style).
+export function InfoRow({
+  icon,
+  children,
+  onPress,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  children: React.ReactNode;
+  onPress?: () => void;
+}) {
+  const body = (
+    <View className="flex-row items-start gap-3 py-2.5">
+      <Ionicons name={icon} size={18} color={MUTED} style={{ marginTop: 1 }} />
+      <View className="flex-1">{children}</View>
+    </View>
+  );
+  return onPress ? (
+    <Pressable onPress={onPress} className="active:opacity-70">
+      {body}
+    </Pressable>
+  ) : (
+    body
+  );
+}

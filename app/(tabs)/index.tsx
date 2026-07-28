@@ -1,140 +1,60 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import * as Location from 'expo-location';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { FilterSheet, PlaceCard } from '@/components/finder';
 import { AppMapView, AppMarker, type AppMapHandle, type Region } from '@/components/map';
-import { RestroomSheet, type SheetRestroom } from '@/components/restroom-sheet';
-import { ACCENT } from '@/lib/auth';
+import { RestroomSheet } from '@/components/restroom';
+import { useLoggedRestroomIds } from '@/hooks/useLogs';
+import { useNearbyRestrooms } from '@/hooks/useNearbyRestrooms';
+import { usePlaceSearch } from '@/hooks/usePlaceSearch';
+import { useSavedIds } from '@/hooks/useSaved';
+import { useAuth } from '@/lib/auth';
 import { bestTitle, isGenericName, reverseGeocode } from '@/lib/geocode';
-import { DARK_MAP_STYLE, MAP_PROVIDER, openDirections } from '@/lib/maps';
-import { supabase } from '@/lib/supabase';
+import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
+import { distLabel, FILTERS, SORTS, type FilterKey, type SortKey } from '@/lib/restrooms/filters';
 import { useThemePref } from '@/lib/theme';
+import { ACCENT, MUTED } from '@/lib/tokens';
+import type { Restroom } from '@/lib/types';
 
 type Coords = { lat: number; lng: number };
-type Row = SheetRestroom & { address: string | null; avg_rating: number | null; review_count?: number; log_count?: number };
-type Place = { lat: string; lon: string; display_name: string };
 
-const ACCESS: Record<string, { label: string; color: string }> = {
-  public: { label: 'Public', color: '#16A34A' },
-  code: { label: 'Code', color: '#D97706' },
-  ask_staff: { label: 'Ask staff', color: '#DC2626' },
-  customers_only: { label: 'Customers', color: '#2563EB' },
-};
-
-const PAGE = 40;
 const DEFAULT_REGION: Region = { latitude: 37.7749, longitude: -122.4194, latitudeDelta: 0.05, longitudeDelta: 0.05 };
-
-const SORTS = [
-  { key: 'near', label: 'Nearest', icon: 'navigate' },
-  { key: 'rating', label: 'Top rated', icon: 'star' },
-  { key: 'popular', label: 'Most logged', icon: 'flame' },
-] as const;
-type SortKey = (typeof SORTS)[number]['key'];
-
-const FILTERS = [
-  { key: 'p_public_only', label: 'Public', icon: 'earth' },
-  { key: 'p_free', label: 'Free', icon: 'pricetag' },
-  { key: 'p_no_code', label: 'No code', icon: 'keypad' },
-  { key: 'p_no_purchase', label: 'No purchase', icon: 'card' },
-  { key: 'p_accessible', label: 'Accessible', icon: 'accessibility' },
-  { key: 'p_changing_table', label: 'Changing table', icon: 'body' },
-  { key: 'p_unisex', label: 'Gender-neutral', icon: 'male-female' },
-] as const;
-type FilterKey = (typeof FILTERS)[number]['key'];
-
-function distLabel(d: number | null) {
-  if (d == null) return null;
-  return d < 0.1 ? `${Math.round(d * 5280)} ft` : `${d.toFixed(1)} mi`;
-}
-
-/* ---- a list card that resolves a real title for generic/unnamed restrooms ---- */
-function PlaceCard({
-  item,
-  title,
-  active,
-  onSelect,
-  onResolve,
-}: {
-  item: Row;
-  title: string;
-  active: boolean;
-  onSelect: () => void;
-  onResolve: (item: Row) => void;
-}) {
-  useEffect(() => {
-    onResolve(item);
-  }, [item.id]);
-
-  const a = item.access_type ? ACCESS[item.access_type] : null;
-  return (
-    <Pressable
-      onPress={onSelect}
-      className={`flex-row items-center gap-3 rounded-2xl border p-3 active:opacity-70 ${
-        active ? 'border-2' : 'border-neutral-200 dark:border-neutral-800'
-      }`}
-      style={active ? { borderColor: ACCENT } : undefined}>
-      <View className="h-10 w-10 items-center justify-center rounded-full" style={{ backgroundColor: ACCENT + '22' }}>
-        <Ionicons name="location" size={20} color={ACCENT} />
-      </View>
-      <View className="flex-1">
-        <Text numberOfLines={1} className="text-base font-semibold text-neutral-900 dark:text-neutral-50">
-          {title}
-        </Text>
-        <View className="mt-0.5 flex-row items-center gap-2">
-          {item.avg_rating != null ? (
-            <Text className="text-xs font-semibold" style={{ color: ACCENT }}>★ {Number(item.avg_rating).toFixed(1)}</Text>
-          ) : null}
-          {a ? <Text className="text-xs font-medium" style={{ color: a.color }}>{a.label}</Text> : null}
-          {item.accessible ? <Ionicons name="accessibility" size={13} color="#6B7280" /> : null}
-          {item.unisex ? <Ionicons name="male-female" size={13} color="#6B7280" /> : null}
-          {item.changing_table ? <Ionicons name="body" size={13} color="#6B7280" /> : null}
-          {item.log_count ? <Text className="text-xs text-neutral-400">· 📍 {item.log_count}</Text> : null}
-          {distLabel(item.dist) ? <Text className="text-xs text-neutral-400">· {distLabel(item.dist)}</Text> : null}
-        </View>
-      </View>
-      <Pressable
-        hitSlop={8}
-        onPress={() => openDirections(item.lat, item.lng, title)}
-        className="items-center justify-center rounded-full px-3 py-2"
-        style={{ backgroundColor: ACCENT + '18' }}>
-        <Ionicons name="navigate" size={18} color={ACCENT} />
-      </Pressable>
-    </Pressable>
-  );
-}
+const VISITED = '#7C3AED'; // purple marker for restrooms you've logged a visit at
 
 export default function MapScreen() {
   const insets = useSafeAreaInsets();
+  const { session } = useAuth();
   const { scheme } = useThemePref();
   const sheetBg = scheme === 'dark' ? '#0a0a0c' : '#ffffff';
   const mapRef = useRef<AppMapHandle>(null);
   const sheetRef = useRef<BottomSheet>(null);
-  const markerTapRef = useRef(0); // guards map onPress from clearing a marker selection on iOS
+  const markerTapRef = useRef(0);
 
   const [me, setMe] = useState<Coords | null>(null);
   const [center, setCenter] = useState<Coords | null>(null);
   const [placeLabel, setPlaceLabel] = useState<string | null>(null);
   const [locReady, setLocReady] = useState(false);
   const [locNote, setLocNote] = useState('');
-  const [selected, setSelected] = useState<Row | null>(null);
+  const [selected, setSelected] = useState<Restroom | null>(null);
   const [titles, setTitles] = useState<Record<string, string>>({});
   const [sort, setSort] = useState<SortKey>('near');
   const [filters, setFilters] = useState<Partial<Record<FilterKey, boolean>>>({});
   const [filterOpen, setFilterOpen] = useState(false);
+  const [query, setQuery] = useState('');
+
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
   const toggleFilter = (k: FilterKey) => setFilters((f) => ({ ...f, [k]: !f[k] }));
-
-  // place search
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<Place[]>([]);
-  const [searching, setSearching] = useState(false);
-
   const active = center ?? me;
+
+  const { results, searching } = usePlaceSearch(query);
+  const { data: savedIds } = useSavedIds(session?.user.id);
+  const { data: loggedIds } = useLoggedRestroomIds(session?.user.id);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useNearbyRestrooms({ active, sort, filters, enabled: locReady });
 
   // Deep-link from a post's "See on map" — recenter here.
   const params = useLocalSearchParams<{ flat?: string; flng?: string }>();
@@ -148,24 +68,33 @@ export default function MapScreen() {
   }, [params.flat, params.flng]);
 
   useEffect(() => {
+    let preciseSet = false;
+    // Fast path: IP geolocation lands us close-ish and lets the list populate
+    // right away, instead of blocking on slow high-accuracy GPS.
     (async () => {
       try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status === 'granted') {
-          const pos = await Location.getCurrentPositionAsync({});
-          setMe({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-          setLocReady(true);
-          return;
-        }
-      } catch {}
-      try {
         const j = await fetch('https://ipwho.is/').then((r) => r.json());
-        if (j?.success && j.latitude) {
+        if (j?.success && j.latitude && !preciseSet) {
           setMe({ lat: j.latitude, lng: j.longitude });
           setLocNote(`Approx location — ${j.city ?? 'your area'}`);
         }
       } catch {}
       setLocReady(true);
+    })();
+    // Precise path (in parallel): refine to real GPS when allowed. Last-known is
+    // instant if cached; Balanced accuracy returns far faster than high-accuracy.
+    (async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') return;
+        const last = await Location.getLastKnownPositionAsync();
+        if (last && !preciseSet) setMe({ lat: last.coords.latitude, lng: last.coords.longitude });
+        const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+        preciseSet = true;
+        setMe({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLocNote('');
+        setLocReady(true);
+      } catch {}
     })();
   }, []);
 
@@ -175,33 +104,11 @@ export default function MapScreen() {
     }
   }, [active?.lat, active?.lng]);
 
-  useEffect(() => {
-    if (query.trim().length < 3) {
-      setResults([]);
-      return;
-    }
-    setSearching(true);
-    const t = setTimeout(async () => {
-      try {
-        const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=6&q=${encodeURIComponent(query)}`, {
-          headers: { 'User-Agent': 'CrappleMaps/1.0 (poc)' },
-        });
-        setResults((await r.json()) as Place[]);
-      } catch {
-        setResults([]);
-      } finally {
-        setSearching(false);
-      }
-    }, 450);
-    return () => clearTimeout(t);
-  }, [query]);
-
-  const pickPlace = (p: Place) => {
+  const pickPlace = (p: { lat: string; lon: string; display_name: string }) => {
     Keyboard.dismiss();
     setCenter({ lat: parseFloat(p.lat), lng: parseFloat(p.lon) });
     setPlaceLabel(p.display_name.split(',').slice(0, 2).join(',').trim());
     setQuery('');
-    setResults([]);
     setSelected(null);
   };
 
@@ -209,58 +116,37 @@ export default function MapScreen() {
     setCenter(null);
     setPlaceLabel(null);
     setQuery('');
-    setResults([]);
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['finder', active?.lat, active?.lng, sort, JSON.stringify(filters)],
-    enabled: locReady,
-    initialPageParam: 0,
-    getNextPageParam: (last: Row[], all) => (last.length === PAGE ? all.length * PAGE : undefined),
-    queryFn: async ({ pageParam }): Promise<Row[]> => {
-      if (active) {
-        const { data, error } = await supabase.rpc('nearby_restrooms_v2', {
-          in_lat: active.lat,
-          in_lng: active.lng,
-          in_limit: PAGE,
-          in_offset: pageParam,
-          p_sort: sort,
-          ...filters,
-        });
-        if (error) throw error;
-        return (data ?? []).map((r: any) => ({ ...r, dist: r.dist_m != null ? r.dist_m / 1609.34 : null }));
-      }
-      const { data, error } = await supabase
-        .from('restrooms')
-        .select('id,name,lat,lng,address,access_type,accessible,unisex,changing_table')
-        .range(pageParam, pageParam + PAGE - 1);
-      if (error) throw error;
-      return (data ?? []).map((r: any) => ({ ...r, dist: null }));
-    },
-  });
-
-  const list = data?.pages.flat() ?? [];
-  const activeId: string | undefined = selected?.id;
+  const list = (data?.pages.flat() ?? []) as Restroom[];
+  const activeId = selected?.id;
   const currentSort = SORTS.find((s) => s.key === sort) ?? SORTS[0];
+  const nearest = list.reduce<number | null>((m, r) => (r.dist != null && (m == null || r.dist < m) ? r.dist : m), null);
 
-  // Reverse-geocode a real title for generic/unnamed restrooms (throttled + cached).
-  const resolveTitle = useCallback((item: Row) => {
+  const resolveTitle = useCallback((item: Restroom) => {
     if (!isGenericName(item.name)) return;
     reverseGeocode(item.lat, item.lng).then((p) => {
       if (p?.title) setTitles((t) => (t[item.id] ? t : { ...t, [item.id]: p.title }));
     });
   }, []);
 
-  const titleFor = (item: Row) => bestTitle(item.name, titles[item.id] ? { title: titles[item.id], full: '' } : null);
+  const titleFor = (item: Restroom) => bestTitle(item.name, titles[item.id] ? { title: titles[item.id], full: '' } : null);
 
-  const select = (item: Row) => {
+  const select = (item: Restroom) => {
     Keyboard.dismiss();
-    setResults([]);
     markerTapRef.current = Date.now();
     setSelected(item);
     mapRef.current?.animateToRegion({ latitude: item.lat, longitude: item.lng, latitudeDelta: 0.01, longitudeDelta: 0.01 }, 400);
-    sheetRef.current?.snapToIndex(0); // open the place card as a peek — map stays dominant (Google Maps)
+    sheetRef.current?.snapToIndex(0);
   };
+
+  // Add-a-restroom: open the form seeded with a coordinate (long-press = pressed
+  // point, results-sheet row = current location / map center). Anyone can open and
+  // fill it; sign-in is only required at submit (form is persisted across it).
+  const addRestroomAt = (coord: Coords) => {
+    router.push({ pathname: '/restroom/new', params: { lat: String(coord.lat), lng: String(coord.lng) } });
+  };
+  const addHere = () => addRestroomAt(active ?? { lat: DEFAULT_REGION.latitude, lng: DEFAULT_REGION.longitude });
 
   return (
     <View className="flex-1 bg-white dark:bg-neutral-950">
@@ -271,11 +157,12 @@ export default function MapScreen() {
         showsUserLocation
         showsMyLocationButton={false}
         customMapStyle={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
+        onLongPress={(e: any) => {
+          const c = e?.nativeEvent?.coordinate;
+          if (c) addRestroomAt({ lat: c.latitude, lng: c.longitude });
+        }}
         onPress={() => {
-          // Any tap on the map closes the search keyboard and drops the search focus.
           Keyboard.dismiss();
-          setResults([]);
-          // Ignore the map tap that iOS fires immediately after a marker tap.
           if (Date.now() - markerTapRef.current < 500) return;
           setSelected(null);
         }}
@@ -284,7 +171,7 @@ export default function MapScreen() {
           <AppMarker
             key={item.id}
             coordinate={{ latitude: item.lat, longitude: item.lng }}
-            pinColor={item.id === activeId ? '#DC2626' : ACCENT}
+            pinColor={item.id === activeId ? '#DC2626' : loggedIds?.has(item.id) ? VISITED : ACCENT}
             onPress={() => select(item)}
           />
         ))}
@@ -293,29 +180,28 @@ export default function MapScreen() {
       {/* floating search — geocodes an address / city / ZIP and recenters */}
       <View style={{ position: 'absolute', top: insets.top + 8, left: 16, right: 16 }}>
         <View className="flex-row items-center rounded-2xl bg-white px-3 dark:bg-neutral-900" style={styles.shadow}>
-          <Ionicons name="search" size={16} color="#9CA3AF" />
+          <Ionicons name="search" size={16} color={MUTED} />
           <TextInput
             placeholder="Search address, city, or ZIP…"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor={MUTED}
             value={query}
             onChangeText={setQuery}
             autoCapitalize="words"
             returnKeyType="search"
             className="flex-1 px-2 py-3 text-base text-neutral-900 dark:text-neutral-50"
           />
-          {searching ? <ActivityIndicator size="small" color="#9CA3AF" /> : null}
+          {searching ? <ActivityIndicator size="small" color={MUTED} /> : null}
           {query.length > 0 && !searching ? (
             <Pressable hitSlop={8} onPress={() => setQuery('')}>
-              <Ionicons name="close-circle" size={18} color="#9CA3AF" />
+              <Ionicons name="close-circle" size={18} color={MUTED} />
             </Pressable>
           ) : null}
           <View className="mx-1.5 h-5 w-px bg-neutral-200 dark:bg-neutral-700" />
           <Pressable hitSlop={8} onPress={() => setFilterOpen(true)} className="pr-0.5">
-            <Ionicons name="menu" size={22} color={activeFilterCount ? ACCENT : '#4B5563'} />
+            <Ionicons name="options" size={22} color={activeFilterCount ? ACCENT : '#4B5563'} />
           </Pressable>
         </View>
 
-        {/* active filters as removable pills (Google-Maps style, below the search bar) */}
         {activeFilterCount > 0 && results.length === 0 ? (
           <ScrollView
             horizontal
@@ -344,10 +230,8 @@ export default function MapScreen() {
                 key={`${p.lat}-${p.lon}-${i}`}
                 onPress={() => pickPlace(p)}
                 className="flex-row items-center gap-2 border-b border-neutral-100 px-3 py-3 active:bg-neutral-100 dark:border-neutral-800 dark:active:bg-neutral-800">
-                <Ionicons name="location-outline" size={16} color="#9CA3AF" />
-                <Text numberOfLines={2} className="flex-1 text-sm text-neutral-800 dark:text-neutral-200">
-                  {p.display_name}
-                </Text>
+                <Ionicons name="location-outline" size={16} color={MUTED} />
+                <Text numberOfLines={2} className="flex-1 text-sm text-neutral-800 dark:text-neutral-200">{p.display_name}</Text>
               </Pressable>
             ))}
           </View>
@@ -367,14 +251,6 @@ export default function MapScreen() {
           <Ionicons name="locate" size={20} color={ACCENT} />
         </Pressable>
       ) : null}
-
-      {/* floating sort/filter button on the map */}
-      <Pressable
-        onPress={() => setFilterOpen(true)}
-        style={{ position: 'absolute', left: 16, bottom: '47%', ...styles.shadow }}
-        className="h-11 w-11 items-center justify-center rounded-full bg-white dark:bg-neutral-900">
-        <Ionicons name="options" size={20} color={activeFilterCount ? ACCENT : '#4B5563'} />
-      </Pressable>
 
       <BottomSheet
         ref={sheetRef}
@@ -399,10 +275,16 @@ export default function MapScreen() {
                 <Text className="text-base font-semibold text-neutral-900 dark:text-neutral-50">
                   {list.length ? `${list.length}${hasNextPage ? '+' : ''} nearby` : 'Restrooms'}
                 </Text>
-                <Text className="text-xs text-neutral-400" numberOfLines={1}>
-                  Sorted by {currentSort.label.toLowerCase()}
-                  {activeFilterCount ? ` · ${activeFilterCount} filter${activeFilterCount > 1 ? 's' : ''}` : ''}
-                  {placeLabel ? ` · near ${placeLabel}` : ''}
+                <Text className="text-xs" numberOfLines={1}>
+                  {nearest != null ? (
+                    <Text className="font-semibold" style={{ color: ACCENT }}>Nearest {distLabel(nearest)} away</Text>
+                  ) : null}
+                  {nearest != null ? <Text className="text-neutral-400">{'  ·  '}</Text> : null}
+                  <Text className="text-neutral-400">
+                    Sorted by {currentSort.label.toLowerCase()}
+                    {activeFilterCount ? ` · ${activeFilterCount} filter${activeFilterCount > 1 ? 's' : ''}` : ''}
+                    {placeLabel ? ` · near ${placeLabel}` : ''}
+                  </Text>
                 </Text>
               </View>
               <Pressable
@@ -415,18 +297,42 @@ export default function MapScreen() {
             </View>
             <BottomSheetFlatList
               data={list}
-              keyExtractor={(i, idx) => (i as Row).id + idx}
+              keyExtractor={(i, idx) => (i as Restroom).id + idx}
               contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: insets.bottom + 24, gap: 8 }}
               onEndReachedThreshold={0.6}
               onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}
+              ListHeaderComponent={
+                <Pressable
+                  onPress={addHere}
+                  className="mb-2 flex-row items-center gap-3 rounded-2xl border border-dashed border-neutral-300 p-3 active:opacity-70 dark:border-neutral-700">
+                  <View className="h-10 w-10 items-center justify-center rounded-full" style={{ backgroundColor: ACCENT + '18' }}>
+                    <Ionicons name="add" size={22} color={ACCENT} />
+                  </View>
+                  <View className="flex-1">
+                    <Text className="text-base font-semibold" style={{ color: ACCENT }}>Add a restroom</Text>
+                    <Text className="text-xs text-neutral-400">Don’t see it? Long-press the map or tap here.</Text>
+                  </View>
+                </Pressable>
+              }
               ListFooterComponent={isFetchingNextPage ? <ActivityIndicator style={{ marginVertical: 16 }} color={ACCENT} /> : null}
+              ListEmptyComponent={
+                !locReady || isLoading ? (
+                  <View className="mt-10 items-center">
+                    <ActivityIndicator color={ACCENT} />
+                    <Text className="mt-3 text-sm text-neutral-400">Finding restrooms near you…</Text>
+                  </View>
+                ) : (
+                  <Text className="mt-10 px-8 text-center text-sm text-neutral-400">No restrooms nearby yet. Long-press the map to add one.</Text>
+                )
+              }
               renderItem={({ item }) => {
-                const it = item as Row;
+                const it = item as Restroom;
                 return (
                   <PlaceCard
                     item={it}
                     title={titleFor(it)}
                     active={it.id === activeId}
+                    saved={savedIds?.has(it.id)}
                     onSelect={() => select(it)}
                     onResolve={resolveTitle}
                   />
@@ -437,62 +343,16 @@ export default function MapScreen() {
         )}
       </BottomSheet>
 
-      <Modal visible={filterOpen} transparent animationType="slide" onRequestClose={() => setFilterOpen(false)}>
-        <Pressable className="flex-1 justify-end" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onPress={() => setFilterOpen(false)}>
-          <Pressable
-            onPress={(e) => e.stopPropagation()}
-            className="rounded-t-3xl bg-white px-5 pt-3 dark:bg-neutral-900"
-            style={{ paddingBottom: insets.bottom + 20 }}>
-            <View className="mb-3 h-1 w-10 self-center rounded-full bg-neutral-300 dark:bg-neutral-700" />
-            <View className="mb-3 flex-row items-center justify-between">
-              <Text className="text-lg font-bold text-neutral-900 dark:text-neutral-50">Sort & filter</Text>
-              {activeFilterCount > 0 ? (
-                <Pressable onPress={() => setFilters({})} hitSlop={8}>
-                  <Text className="text-sm font-semibold" style={{ color: ACCENT }}>Clear all</Text>
-                </Pressable>
-              ) : null}
-            </View>
-
-            <Text className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">Sort by</Text>
-            <View className="flex-row gap-2">
-              {SORTS.map((s) => {
-                const on = sort === s.key;
-                return (
-                  <Pressable
-                    key={s.key}
-                    onPress={() => setSort(s.key)}
-                    className={`flex-1 items-center gap-1 rounded-2xl border py-3 ${on ? 'border-transparent' : 'border-neutral-300 dark:border-neutral-700'}`}
-                    style={on ? { backgroundColor: ACCENT } : undefined}>
-                    <Ionicons name={s.icon as any} size={18} color={on ? '#fff' : '#6B7280'} />
-                    <Text className={on ? 'text-xs font-semibold text-white' : 'text-xs text-neutral-600 dark:text-neutral-300'}>{s.label}</Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-
-            <Text className="mb-2 mt-5 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">Filters</Text>
-            <View className="flex-row flex-wrap gap-2">
-              {FILTERS.map((f) => {
-                const on = !!filters[f.key];
-                return (
-                  <Pressable
-                    key={f.key}
-                    onPress={() => toggleFilter(f.key)}
-                    className={`flex-row items-center gap-1.5 rounded-full border px-4 py-2.5 ${on ? 'border-transparent' : 'border-neutral-300 dark:border-neutral-700'}`}
-                    style={on ? { backgroundColor: ACCENT } : undefined}>
-                    <Ionicons name={f.icon as any} size={15} color={on ? '#fff' : '#6B7280'} />
-                    <Text className={on ? 'text-sm font-semibold text-white' : 'text-sm text-neutral-700 dark:text-neutral-300'}>{f.label}</Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-
-            <Pressable onPress={() => setFilterOpen(false)} className="mt-6 items-center rounded-2xl py-3.5" style={{ backgroundColor: ACCENT }}>
-              <Text className="text-base font-semibold text-white">Show {list.length}{hasNextPage ? '+' : ''} results</Text>
-            </Pressable>
-          </Pressable>
-        </Pressable>
-      </Modal>
+      <FilterSheet
+        visible={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        sort={sort}
+        setSort={setSort}
+        filters={filters}
+        toggleFilter={toggleFilter}
+        clearFilters={() => setFilters({})}
+        resultLabel={`Show ${list.length}${hasNextPage ? '+' : ''} results`}
+      />
     </View>
   );
 }
@@ -505,5 +365,4 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 4,
   },
-  sheetBg: { backgroundColor: '#fff' },
 });

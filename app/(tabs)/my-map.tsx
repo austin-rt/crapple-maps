@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -9,11 +9,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMapView, AppMarker, type AppMapHandle, type Region } from '@/components/map';
 import { LogSheet, type LogItem } from '@/components/log-sheet';
-import { ACCENT, useAuth } from '@/lib/auth';
+import { SignInRequired } from '@/components/ui';
+import { useMyLogs } from '@/hooks/useLogs';
+import { useAuth } from '@/lib/auth';
 import { bristol } from '@/lib/bristol';
+import { shortWhen } from '@/lib/format';
 import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
-import { fetchLogPhotos } from '@/lib/photos';
-import { supabase } from '@/lib/supabase';
+import { ACCENT } from '@/lib/tokens';
 import { useThemePref } from '@/lib/theme';
 
 const DEFAULT_REGION: Region = { latitude: 37.7749, longitude: -122.4194, latitudeDelta: 0.08, longitudeDelta: 0.08 };
@@ -31,10 +33,6 @@ function regionFor(logs: LogItem[]): Region {
   };
 }
 
-function shortWhen(iso: string) {
-  return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-}
-
 export default function MyMapScreen() {
   const { session } = useAuth();
   const qc = useQueryClient();
@@ -47,22 +45,7 @@ export default function MyMapScreen() {
   const [selected, setSelected] = useState<LogItem | null>(null);
   const [tab, setTab] = useState<'list' | 'gallery'>('list');
 
-  const { data: logs = [] } = useQuery({
-    queryKey: ['my-logs', session?.user.id],
-    enabled: !!session,
-    queryFn: async (): Promise<LogItem[]> => {
-      const { data, error } = await supabase
-        .from('logs')
-        .select('id,lat,lng,rating,bristol_type,caption,visibility,created_at')
-        .eq('user_id', session!.user.id)
-        .is('deleted_at', null)
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      const rows = data ?? [];
-      const photos = await fetchLogPhotos(rows.map((r: any) => r.id));
-      return rows.map((r: any) => ({ ...r, photos: photos[r.id] ?? [] }));
-    },
-  });
+  const { data: logs = [] } = useMyLogs(session?.user.id);
 
   useEffect(() => {
     if (logs.length && mapRef.current) mapRef.current.animateToRegion(regionFor(logs), 500);
@@ -81,14 +64,7 @@ export default function MyMapScreen() {
   };
 
   if (!session) {
-    return (
-      <View className="flex-1 items-center justify-center bg-surface px-8">
-        <Ionicons name="trail-sign-outline" size={40} color="#9CA3AF" />
-        <Text className="mt-3 text-center text-lg text-content-2">
-          Sign in on the Profile tab to see everywhere you’ve gone.
-        </Text>
-      </View>
-    );
+    return <SignInRequired icon="trail-sign-outline" message="Everywhere you’ve gone, mapped." />;
   }
 
   const gallery = logs.flatMap((l) => l.photos.map((url) => ({ url, log: l })));

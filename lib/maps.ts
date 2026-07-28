@@ -3,28 +3,40 @@ import { ActionSheetIOS, Alert, Linking, Platform } from 'react-native';
 // Map tile provider. 'google' === PROVIDER_GOOGLE, undefined === PROVIDER_DEFAULT.
 // Kept as a plain string so this module never imports react-native-maps (which is
 // native-only and breaks the web bundle). The native map wrapper applies it.
-export const USE_GOOGLE_MAPS = true;
-export const MAP_PROVIDER: 'google' | undefined = USE_GOOGLE_MAPS ? 'google' : undefined;
+//
+// Google Maps is the app's primary provider and ships in production on every
+// platform. But the Google native renderer is unusable on simulators: the iOS
+// Simulator crashes in the Google Maps OpenGL shader compiler (Apple Silicon),
+// and the Android emulator can't rasterize custom map styles. So in development
+// on iOS we fall back to the platform default (Apple Maps — Metal-based, renders
+// reliably on the simulator and does dark mode natively) to keep the app
+// testable. Production, and Android, always use Google.
+export const MAP_PROVIDER: 'google' | undefined = __DEV__ && Platform.OS === 'ios' ? undefined : 'google';
 
 // Google "night" map style, applied when the app is in dark mode so the map
 // tiles match the theme. Pass to <MapView customMapStyle={...}> (Google only).
+// Google's canonical "night" style — the recognizable Google Maps dark look:
+// blue-gray land, dark-blue water, dark-green parks, and the characteristic warm
+// tan major roads (the color differentiation our old flat style was missing).
 export const DARK_MAP_STYLE = [
-  { elementType: 'geometry', stylers: [{ color: '#1f2023' }] },
-  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#9aa0a6' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#1f2023' }] },
-  { featureType: 'administrative', elementType: 'geometry', stylers: [{ color: '#5a5f66' }] },
-  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#c8ccd1' }] },
-  { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#9aa0a6' }] },
-  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#1b2a1f' }] },
-  { featureType: 'poi.park', elementType: 'labels.text.fill', stylers: [{ color: '#7a8a7f' }] },
-  { featureType: 'road', elementType: 'geometry.fill', stylers: [{ color: '#2c2f34' }] },
-  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#9aa0a6' }] },
-  { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#373b40' }] },
-  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#414750' }] },
-  { featureType: 'transit', elementType: 'labels.text.fill', stylers: [{ color: '#9aa0a6' }] },
-  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#12283a' }] },
-  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#4e6a86' }] },
+  { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#d59563' }] },
+  { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#d59563' }] },
+  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#263c3f' }] },
+  { featureType: 'poi.park', elementType: 'labels.text.fill', stylers: [{ color: '#6b9a76' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#38414e' }] },
+  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#212a37' }] },
+  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#9ca5b3' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#746855' }] },
+  { featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{ color: '#1f2835' }] },
+  { featureType: 'road.highway', elementType: 'labels.text.fill', stylers: [{ color: '#f3d19c' }] },
+  { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#2f3948' }] },
+  { featureType: 'transit.station', elementType: 'labels.text.fill', stylers: [{ color: '#d59563' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#17263c' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#515c6d' }] },
+  { featureType: 'water', elementType: 'labels.text.stroke', stylers: [{ color: '#17263c' }] },
 ];
 
 // Open a destination in the user's maps app of choice (Apple / Google / Waze).
@@ -42,7 +54,10 @@ export function openDirections(lat: number, lng: number, label?: string) {
     if (i >= 0 && i < targets.length) Linking.openURL(targets[i].url).catch(() => {});
   };
 
-  if (Platform.OS === 'ios') {
+  if (Platform.OS === 'web') {
+    // Alert/ActionSheet are unavailable on web — just open Google Maps directly.
+    go(1);
+  } else if (Platform.OS === 'ios') {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         title: 'Get directions',

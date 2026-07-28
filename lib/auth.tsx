@@ -17,6 +17,7 @@ type AuthState = {
   signUpWithEmail: (email: string, password: string) => Promise<{ error?: string }>;
   signInWithProvider: (provider: Provider) => Promise<{ error?: string }>;
   signInWithApple: () => Promise<{ error?: string }>;
+  changePassword: (password: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
 };
 
@@ -82,6 +83,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error: e?.message ?? 'Apple sign-in unavailable.' };
       }
     },
+    changePassword: async (password) => {
+      const { error } = await supabase.auth.updateUser({ password });
+      return { error: error?.message };
+    },
     signOut: async () => {
       await supabase.auth.signOut();
     },
@@ -96,5 +101,5 @@ export function useAuth() {
   return ctx;
 }
 
-// Single purple accent used for icons/map (styling elsewhere is Tailwind/NativeWind).
-export const ACCENT = '#7C3AED';
+// Re-exported for back-compat; the canonical definition now lives in lib/tokens.
+export { ACCENT } from '@/lib/tokens';

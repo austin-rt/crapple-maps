@@ -1,3 +1,5 @@
+const { ACCENT } = require('./theme/brand');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./app/**/*.{js,jsx,ts,tsx}', './components/**/*.{js,jsx,ts,tsx}'],
@@ -8,9 +10,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Single accent — purple.
+        // Single accent — sourced from theme/brand.js (change it there).
         accent: {
-          DEFAULT: '#7C3AED',
+          DEFAULT: ACCENT,
           fg: '#FFFFFF',
           muted: '#C4B5FD',
         },

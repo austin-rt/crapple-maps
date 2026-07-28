@@ -1,0 +1,10 @@
+{
+  "buildCommand": "bash scripts/build-web.sh",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/restroom/:id", "destination": "/restroom/[id]" },
+    { "source": "/log/:id", "destination": "/log/[id]" }
+  ]
+}
