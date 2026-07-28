@@ -13,6 +13,11 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.austin-rt.crapple-maps",
       "usesAppleSignIn": true,
+      "icon": {
+        "light": "./assets/images/icon.png",
+        "dark": "./assets/images/icon-dark.png",
+        "tinted": "./assets/images/icon-tinted.png"
+      },
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
