@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Platform, Pressable } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { ACCENT } from '@/lib/auth';
@@ -12,6 +12,8 @@ export default function TabLayout() {
         tabBarActiveTintColor: ACCENT,
         tabBarButton: HapticTab,
         headerShown: true,
+        // Web uses the hamburger nav (WebNav) instead of a bottom tab bar.
+        tabBarStyle: Platform.OS === 'web' ? { display: 'none' } : undefined,
       }}>
       <Tabs.Screen
         name="index"
