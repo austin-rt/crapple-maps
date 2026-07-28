@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 
 import { CommentsSection, LikeButton, PostPhotos } from '@/components/feed';
 import { Avatar, Stars } from '@/components/ui';
@@ -12,6 +12,10 @@ import { bristol } from '@/lib/bristol';
 import { fullWhen } from '@/lib/format';
 import { openDirections } from '@/lib/maps';
 import { ACCENT, MUTED } from '@/lib/tokens';
+
+// Web-only: frame the centered column with side borders (theme-aware via the
+// --line CSS var), matching the feed timeline.
+const webColumn: any = { borderLeftWidth: 1, borderRightWidth: 1, borderColor: 'rgb(var(--line))' };
 
 export default function LogDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -33,7 +37,17 @@ export default function LogDetail() {
   const b = bristol(data.bristol_type);
 
   return (
-    <ScrollView className="flex-1 bg-surface" contentContainerClassName="pb-16">
+    <ScrollView
+      className="flex-1 bg-surface"
+      // Center in a readable 600px column on web (like the feed); a no-op on
+      // native, where the phone is already narrower than the cap.
+      contentContainerStyle={{
+        paddingBottom: 64,
+        width: '100%',
+        maxWidth: 600,
+        alignSelf: 'center',
+        ...(Platform.OS === 'web' ? webColumn : null),
+      }}>
       <Stack.Screen options={{ title: 'Post' }} />
 
       <View className="flex-row items-center gap-3 px-4 pt-4">
