@@ -4,19 +4,22 @@ import { Platform, Pressable } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { WebHeader } from '@/components/web/WebHeader';
+import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { ACCENT } from '@/lib/auth';
 
 export default function TabLayout() {
+  const isMobileWeb = useIsMobileWeb();
+  // Desktop web hides the tab bar and shows a top header (hamburger nav + user
+  // menu). Mobile web and native keep the bottom tab bar + per-screen headers.
+  const webDesktop = Platform.OS === 'web' && !isMobileWeb;
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: ACCENT,
         tabBarButton: HapticTab,
         headerShown: true,
-        // Web hides the bottom tab bar and shows a persistent top header (with
-        // the hamburger nav + user menu) instead — except on the map (below).
-        tabBarStyle: Platform.OS === 'web' ? { display: 'none' } : undefined,
-        ...(Platform.OS === 'web' ? { header: ({ options }: any) => <WebHeader title={options.title as string} /> } : null),
+        tabBarStyle: webDesktop ? { display: 'none' } : undefined,
+        ...(webDesktop ? { header: ({ options }: any) => <WebHeader title={options.title as string} /> } : null),
       }}>
       <Tabs.Screen
         name="index"

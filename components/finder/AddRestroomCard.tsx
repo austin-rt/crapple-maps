@@ -14,7 +14,7 @@ export function AddRestroomCard({ onPress }: { onPress: () => void }) {
         <Ionicons name="add" size={22} color={ACCENT} />
       </View>
       <Text className="flex-1 text-base font-semibold" style={{ color: ACCENT }}>
-        Know a spot? Add it
+        Contribute
       </Text>
     </Pressable>
   );
