@@ -87,7 +87,7 @@ export function CodePills({
         autoCorrect={false}
         placeholder={value.length ? '' : placeholder}
         placeholderTextColor={c.content2}
-        className="min-w-[96px] flex-1 px-1 py-1.5 text-base text-neutral-900 dark:text-neutral-50"
+        className="min-w-[96px] flex-1 px-1 py-1.5 text-base text-content"
       />
     </View>
   );

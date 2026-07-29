@@ -158,8 +158,8 @@ export function RestroomSheet({
       </Pressable>
 
       <Pressable onPress={onTitlePress} className="active:opacity-70">
-        <Text className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">{displayTitle}</Text>
-        <Text className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+        <Text className="text-2xl font-bold text-content">{displayTitle}</Text>
+        <Text className="mt-1 text-sm text-content-2">
           {revAvg ? `★ ${revAvg.toFixed(1)} (${rated.length})  ·  ` : ''}
           {restroom.access_type ? '' : 'Restroom'}
           {distLabel(restroom.dist) ? `  ·  ${distLabel(restroom.dist)} away` : ''}

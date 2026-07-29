@@ -28,7 +28,7 @@ export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (
     return (
       <View className="mt-3 items-center rounded-xl border border-dashed border-neutral-300 p-4 dark:border-neutral-700">
         <Ionicons name="map-outline" size={22} color={c.content2} />
-        <Text className="mt-1 text-center text-xs text-neutral-400">
+        <Text className="mt-1 text-center text-xs text-content-2">
           Drag-a-pin map appears in the dev build. Using the selected location.
         </Text>
       </View>

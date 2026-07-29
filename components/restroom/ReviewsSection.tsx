@@ -43,22 +43,22 @@ export function ReviewsSection({
         reviews.map((rv) => (
           <View key={rv.id} className="mb-2 rounded-xl bg-neutral-100 p-3 dark:bg-neutral-900">
             {rv.overall_rating ? <Text style={{ color: ACCENT }}>{'★'.repeat(rv.overall_rating)}</Text> : null}
-            {rv.description ? <Text className="mt-1 text-neutral-800 dark:text-neutral-200">{rv.description}</Text> : null}
-            <Text className="mt-1 text-xs text-neutral-400">{daysAgo(rv.created_at)}</Text>
+            {rv.description ? <Text className="mt-1 text-content">{rv.description}</Text> : null}
+            <Text className="mt-1 text-xs text-content-2">{daysAgo(rv.created_at)}</Text>
           </View>
         ))
       ) : (
-        <Text className="text-sm text-neutral-400">No reviews yet.</Text>
+        <Text className="text-sm text-content-2">No reviews yet.</Text>
       )}
 
       {editing ? (
         <View className="mt-2 flex-row items-center gap-1.5 self-start opacity-40">
           <Ionicons name="add-circle-outline" size={18} color={c.content2} />
-          <Text className="text-sm font-semibold text-neutral-400">Finish editing to add a review</Text>
+          <Text className="text-sm font-semibold text-content-2">Finish editing to add a review</Text>
         </View>
       ) : writing ? (
         <View className="mt-2 rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800">
-          <Text className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">Leave a review</Text>
+          <Text className="mb-2 text-sm text-content-2">Leave a review</Text>
           <Stars value={rating} onChange={setRating} />
           <SheetTextInput
             placeholder="How was it?"
@@ -79,7 +79,7 @@ export function ReviewsSection({
                 setText('');
               }}
               className="items-center justify-center rounded-xl border border-neutral-300 px-5 dark:border-neutral-700">
-              <Text className="font-semibold text-neutral-700 dark:text-neutral-300">Cancel</Text>
+              <Text className="font-semibold text-content-2">Cancel</Text>
             </Pressable>
           </View>
         </View>

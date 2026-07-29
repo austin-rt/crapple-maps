@@ -21,7 +21,7 @@ const PIN_ICON =
 // set the exact spot). Mirrors the native Uber-style picker.
 export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (c: Coords) => void }) {
   return (
-    <View className="mt-3 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800" style={{ height: 200 }}>
+    <View className="mt-3 overflow-hidden rounded-xl border border-line" style={{ height: 200 }}>
       <APIProvider apiKey={KEY}>
         <GMap
           defaultCenter={{ lat: coords.latitude, lng: coords.longitude }}

@@ -29,9 +29,9 @@ function Toggle({ label, on, onPress }: { label: string; on: boolean; onPress: (
   return (
     <Pressable
       onPress={onPress}
-      className={`rounded-full border px-4 py-2 ${on ? 'border-transparent' : 'border-neutral-300 dark:border-neutral-700'}`}
+      className={`rounded-full border px-4 py-2 ${on ? 'border-transparent' : 'border-line'}`}
       style={on ? { backgroundColor: ACCENT } : undefined}>
-      <Text className={on ? 'text-sm font-semibold text-white' : 'text-sm text-neutral-700 dark:text-neutral-300'}>{label}</Text>
+      <Text className={on ? 'text-sm font-semibold text-white' : 'text-sm text-content-2'}>{label}</Text>
     </Pressable>
   );
 }

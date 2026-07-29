@@ -21,11 +21,11 @@ export function ActionButton({
   return (
     <Pressable onPress={onPress} hitSlop={6} className="items-center gap-1">
       <View
-        className={`h-12 w-12 items-center justify-center rounded-full ${filled ? '' : 'border border-neutral-300 dark:border-neutral-700'}`}
+        className={`h-12 w-12 items-center justify-center rounded-full ${filled ? '' : 'border border-line'}`}
         style={filled ? { backgroundColor: tint } : undefined}>
         <Ionicons name={icon} size={20} color={filled ? ON_ACCENT : tint} />
       </View>
-      <Text className="text-xs text-neutral-600 dark:text-neutral-300" style={tint === ACCENT ? undefined : { color: tint }}>
+      <Text className="text-xs text-content-2" style={tint === ACCENT ? undefined : { color: tint }}>
         {label}
       </Text>
     </Pressable>

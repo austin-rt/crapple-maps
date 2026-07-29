@@ -5,7 +5,7 @@ import { GoogleG } from '@/components/ui';
 import { useColors } from '@/lib/theme';
 
 const btn = 'flex-row items-center justify-center gap-2 rounded-xl border border-neutral-300 py-3.5 active:opacity-70 dark:border-neutral-700';
-const txt = 'font-semibold text-neutral-800 dark:text-neutral-100';
+const txt = 'font-semibold text-content';
 
 export function OAuthButtons({
   appleAvailable,

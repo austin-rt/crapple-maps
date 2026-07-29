@@ -24,10 +24,10 @@ export function AppearanceCard() {
             <Pressable
               key={key}
               onPress={() => setPref(key)}
-              className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-xl border py-2.5 ${on ? 'border-transparent' : 'border-neutral-300 dark:border-neutral-700'}`}
+              className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-xl border py-2.5 ${on ? 'border-transparent' : 'border-line'}`}
               style={on ? { backgroundColor: ACCENT } : undefined}>
               <Ionicons name={icon} size={16} color={on ? ON_ACCENT : c.content2} />
-              <Text className={on ? 'font-semibold text-white' : 'text-neutral-700 dark:text-neutral-300'}>{label}</Text>
+              <Text className={on ? 'font-semibold text-white' : 'text-content-2'}>{label}</Text>
             </Pressable>
           );
         })}

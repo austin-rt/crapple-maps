@@ -1,4 +1,8 @@
+const plugin = require('tailwindcss/plugin');
 const { ACCENT } = require('./theme/brand');
+const { PALETTE } = require('./theme/palette');
+
+const toVars = (obj) => Object.fromEntries(Object.entries(obj).map(([k, v]) => [`--${k}`, v]));
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -27,5 +31,14 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Emit the semantic CSS variables from the single palette source, flipped
+    // by the `.dark` class (web) / color scheme (native).
+    plugin(({ addBase }) => {
+      addBase({
+        ':root': toVars(PALETTE.light),
+        '.dark:root': toVars(PALETTE.dark),
+      });
+    }),
+  ],
 };
