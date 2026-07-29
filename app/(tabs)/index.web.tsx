@@ -7,8 +7,8 @@ import { AddRestroomCard, FilterControls, PlaceCard } from '@/components/finder'
 import { AppMapView, AppMarker } from '@/components/map';
 import { RestroomSheet } from '@/components/restroom';
 import { Avatar } from '@/components/ui';
+import { MobileMap } from '@/components/finder/MobileMap';
 import { LeftDrawer } from '@/components/web/LeftDrawer';
-import { MobileFinder } from '@/components/web/MobileFinder';
 import { WebNavDrawer } from '@/components/web/WebNavDrawer';
 import { DEFAULT_REGION, VISITED, useFinder } from '@/hooks/useFinder';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
@@ -26,7 +26,7 @@ const DRAWER_W = 408;
 // Google-Maps-style layout below (left results drawer + hamburger nav).
 export default function MapWeb() {
   const isMobileWeb = useIsMobileWeb();
-  if (isMobileWeb) return <MobileFinder />;
+  if (isMobileWeb) return <MobileMap />;
   return <DesktopMapWeb />;
 }
 
