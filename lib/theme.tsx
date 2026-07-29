@@ -3,6 +3,8 @@ import { colorScheme as nwColorScheme } from 'nativewind';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Platform, useColorScheme as useRNColorScheme } from 'react-native';
 
+import { PALETTE } from '@/theme/palette';
+
 export type ThemePref = 'light' | 'dark' | 'system';
 const KEY = 'theme-pref';
 
@@ -50,10 +52,18 @@ export const useThemePref = () => useContext(ThemeCtx);
 // instead of inline hex or `scheme === 'dark' ? …` checks anywhere in the app.
 export type ThemeColors = { surface: string; surface2: string; surface3: string; content: string; content2: string; line: string };
 
-const COLORS: Record<'light' | 'dark', ThemeColors> = {
-  light: { surface: '#ffffff', surface2: '#f5f6f8', surface3: '#e9e9ed', content: '#171717', content2: '#646c78', line: '#d1d5db' },
-  dark: { surface: '#0a0a0c', surface2: '#17171b', surface3: '#26262c', content: '#fafafa', content2: '#a1a1aa', line: '#3f3f46' },
-};
+// Resolved from the single palette source (theme/palette.js), the same one the
+// tailwind classes read — so a color changes in exactly one place.
+const rgb = (triple: string) => `rgb(${triple.split(' ').join(', ')})`;
+const resolve = (p: Record<string, string>): ThemeColors => ({
+  surface: rgb(p.surface),
+  surface2: rgb(p['surface-2']),
+  surface3: rgb(p['surface-3']),
+  content: rgb(p.content),
+  content2: rgb(p['content-2']),
+  line: rgb(p.line),
+});
+const COLORS: Record<'light' | 'dark', ThemeColors> = { light: resolve(PALETTE.light), dark: resolve(PALETTE.dark) };
 
 export function useColors(): ThemeColors {
   const { scheme } = useThemePref();

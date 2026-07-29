@@ -20,9 +20,9 @@ export function Segmented<T>({
           <Pressable
             key={label}
             onPress={() => onChange(val)}
-            className={`flex-1 items-center rounded-xl border py-2.5 ${on ? 'border-transparent' : 'border-neutral-300 dark:border-neutral-700'}`}
+            className={`flex-1 items-center rounded-xl border py-2.5 ${on ? 'border-transparent' : 'border-line'}`}
             style={on ? { backgroundColor: ACCENT } : undefined}>
-            <Text className={on ? 'font-semibold text-white' : 'text-neutral-700 dark:text-neutral-300'}>{label}</Text>
+            <Text className={on ? 'font-semibold text-white' : 'text-content-2'}>{label}</Text>
           </Pressable>
         );
       })}

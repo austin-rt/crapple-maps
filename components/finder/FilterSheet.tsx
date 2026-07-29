@@ -31,9 +31,9 @@ export function FilterSheet({
   return (
     <SwipeDownModal visible={visible} onClose={onClose}>
       <View className="rounded-t-3xl bg-white px-5 pt-3 dark:bg-neutral-900" style={{ paddingBottom: insets.bottom + 20 }}>
-        <View className="mb-3 h-1 w-10 self-center rounded-full bg-neutral-300 dark:bg-neutral-700" />
+        <View className="mb-3 h-1 w-10 self-center rounded-full bg-surface-3" />
         <View className="mb-3 flex-row items-center justify-between">
-          <Text className="text-lg font-bold text-neutral-900 dark:text-neutral-50">Sort & filter</Text>
+          <Text className="text-lg font-bold text-content">Sort & filter</Text>
           {activeCount > 0 ? (
             <Pressable onPress={clearFilters} hitSlop={8}>
               <Text className="text-sm font-semibold" style={{ color: ACCENT }}>Clear all</Text>

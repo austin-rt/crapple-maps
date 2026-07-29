@@ -63,10 +63,10 @@ export function LogSheet({ log, onBack, onDeleted }: { log: LogItem; onBack: () 
       ) : null}
 
       <View className="px-5">
-        <Text className="mt-4 text-2xl font-bold text-neutral-900 dark:text-neutral-50">
+        <Text className="mt-4 text-2xl font-bold text-content">
           {place?.title || weekdayDate(log.created_at)}
         </Text>
-        <Text className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+        <Text className="mt-1 text-sm text-content-2">
           {weekdayDate(log.created_at)} · {timeOf(log.created_at)}
           {place?.full ? ` · ${place.full}` : ''}
           {log.visibility === 'private' ? ' · 🔒 Private' : ' · Friends'}
@@ -78,21 +78,21 @@ export function LogSheet({ log, onBack, onDeleted }: { log: LogItem; onBack: () 
             {b ? (
               <View className="flex-row items-center gap-1 rounded-full bg-neutral-100 px-3 py-1 dark:bg-neutral-800">
                 <Text className="text-base">{b.emoji}</Text>
-                <Text className="text-xs font-medium text-neutral-600 dark:text-neutral-300">{b.label}</Text>
+                <Text className="text-xs font-medium text-content-2">{b.label}</Text>
               </View>
             ) : null}
           </View>
         )}
 
         {log.caption ? (
-          <Text className="mt-3 text-[15px] leading-6 text-neutral-800 dark:text-neutral-200">{log.caption}</Text>
+          <Text className="mt-3 text-[15px] leading-6 text-content">{log.caption}</Text>
         ) : null}
 
         <Pressable
           onPress={() => openDirections(log.lat, log.lng, place?.title || 'Log location')}
           className="mt-5 flex-row items-center justify-center gap-2 rounded-xl border border-neutral-300 py-3 active:opacity-70 dark:border-neutral-700">
           <Ionicons name="navigate" size={16} color={ACCENT} />
-          <Text className="font-semibold text-neutral-800 dark:text-neutral-100">Directions</Text>
+          <Text className="font-semibold text-content">Directions</Text>
         </Pressable>
 
         <Pressable onPress={del} className="mt-3 flex-row items-center justify-center gap-2 rounded-xl py-3 active:opacity-70">

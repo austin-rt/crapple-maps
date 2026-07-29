@@ -59,7 +59,7 @@ export function LocationPicker({
       {coords ? (
         <View className="mb-3 flex-row items-start gap-2 rounded-xl bg-neutral-100 p-3 dark:bg-neutral-900">
           <Ionicons name="location" size={18} color={ACCENT} style={{ marginTop: 1 }} />
-          <Text className="flex-1 text-sm text-neutral-800 dark:text-neutral-200">{label}</Text>
+          <Text className="flex-1 text-sm text-content">{label}</Text>
         </View>
       ) : null}
 
@@ -71,19 +71,19 @@ export function LocationPicker({
           value={query}
           onChangeText={setQuery}
           autoCapitalize="none"
-          className="flex-1 px-2 py-3 text-base text-neutral-900 dark:text-neutral-50"
+          className="flex-1 px-2 py-3 text-base text-content"
         />
         {searching ? <ActivityIndicator size="small" color={c.content2} /> : null}
       </View>
 
       {results.length > 0 ? (
-        <View className="mt-2 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800">
+        <View className="mt-2 overflow-hidden rounded-xl border border-line">
           {results.map((p, i) => (
             <Pressable
               key={`${p.lat}-${p.lon}-${i}`}
               onPress={() => pick(p)}
               className="border-b border-neutral-100 px-3 py-3 active:bg-neutral-100 dark:border-neutral-900 dark:active:bg-neutral-900">
-              <Text numberOfLines={2} className="text-sm text-neutral-800 dark:text-neutral-200">
+              <Text numberOfLines={2} className="text-sm text-content">
                 {p.display_name}
               </Text>
             </Pressable>
@@ -96,7 +96,7 @@ export function LocationPicker({
         disabled={locating}
         className="mt-3 flex-row items-center justify-center gap-2 rounded-xl border border-neutral-300 py-3 active:opacity-70 dark:border-neutral-700">
         <Ionicons name="navigate" size={16} color={ACCENT} />
-        <Text className="font-semibold text-neutral-800 dark:text-neutral-100">
+        <Text className="font-semibold text-content">
           {locating ? 'Locating…' : 'Use my current location'}
         </Text>
       </Pressable>

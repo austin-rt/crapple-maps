@@ -84,7 +84,7 @@ export default function NewRestroom() {
 
   return (
     <ScrollView
-      className="flex-1 bg-white dark:bg-neutral-950"
+      className="flex-1 bg-surface"
       contentContainerClassName="px-5 pb-16"
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets>

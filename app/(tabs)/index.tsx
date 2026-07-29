@@ -32,7 +32,7 @@ export default function MapScreen() {
   };
 
   return (
-    <View className="flex-1 bg-white dark:bg-neutral-950">
+    <View className="flex-1 bg-surface">
       <AppMapView
         ref={f.mapRef}
         provider={MAP_PROVIDER}
@@ -72,7 +72,7 @@ export default function MapScreen() {
             onChangeText={f.setQuery}
             autoCapitalize="words"
             returnKeyType="search"
-            className="flex-1 px-2 py-3 text-base text-neutral-900 dark:text-neutral-50"
+            className="flex-1 px-2 py-3 text-base text-content"
           />
           {f.searching ? <ActivityIndicator size="small" color={c.content2} /> : null}
           {f.query.length > 0 && !f.searching ? (
@@ -80,7 +80,7 @@ export default function MapScreen() {
               <Ionicons name="close-circle" size={18} color={c.content2} />
             </Pressable>
           ) : null}
-          <View className="mx-1.5 h-5 w-px bg-neutral-200 dark:bg-neutral-700" />
+          <View className="mx-1.5 h-5 w-px bg-surface-3" />
           <Pressable hitSlop={8} onPress={() => f.setFilterOpen(true)} className="pr-0.5">
             <Ionicons name="options" size={22} color={f.activeFilterCount ? ACCENT : c.content2} />
           </Pressable>
@@ -108,21 +108,21 @@ export default function MapScreen() {
         ) : null}
 
         {f.results.length > 0 ? (
-          <View className="mt-2 overflow-hidden rounded-2xl bg-white dark:bg-neutral-900" style={styles.shadow}>
+          <View className="mt-2 overflow-hidden rounded-2xl bg-surface" style={styles.shadow}>
             {f.results.map((p, i) => (
               <Pressable
                 key={`${p.lat}-${p.lon}-${i}`}
                 onPress={() => f.pickPlace(p)}
-                className="flex-row items-center gap-2 border-b border-neutral-100 px-3 py-3 active:bg-neutral-100 dark:border-neutral-800 dark:active:bg-neutral-800">
+                className="flex-row items-center gap-2 border-b border-neutral-100 px-3 py-3 active:bg-neutral-100 dark:border-neutral-800 active:bg-surface-2">
                 <Ionicons name="location-outline" size={16} color={c.content2} />
-                <Text numberOfLines={2} className="flex-1 text-sm text-neutral-800 dark:text-neutral-200">{p.display_name}</Text>
+                <Text numberOfLines={2} className="flex-1 text-sm text-content">{p.display_name}</Text>
               </Pressable>
             ))}
           </View>
         ) : f.placeLabel || f.locNote ? (
           <View className="mt-2 flex-row items-center gap-1 self-start rounded-full bg-white/95 px-3 py-1 dark:bg-neutral-900/95" style={styles.shadow}>
             <Ionicons name={f.placeLabel ? 'location' : 'navigate'} size={12} color={ACCENT} />
-            <Text className="text-xs text-neutral-600 dark:text-neutral-300">{f.placeLabel || f.locNote}</Text>
+            <Text className="text-xs text-content-2">{f.placeLabel || f.locNote}</Text>
           </View>
         ) : null}
       </View>
@@ -131,7 +131,7 @@ export default function MapScreen() {
         <Pressable
           onPress={f.backToMe}
           style={{ position: 'absolute', right: 16, bottom: '47%', ...styles.shadow }}
-          className="h-11 w-11 items-center justify-center rounded-full bg-white dark:bg-neutral-900">
+          className="h-11 w-11 items-center justify-center rounded-full bg-surface">
           <Ionicons name="locate" size={20} color={ACCENT} />
         </Pressable>
       ) : null}
@@ -156,15 +156,15 @@ export default function MapScreen() {
           <>
             <View className="flex-row items-center justify-between border-b border-neutral-100 px-5 pb-2 dark:border-neutral-800">
               <View className="flex-1 pr-3">
-                <Text className="text-base font-semibold text-neutral-900 dark:text-neutral-50">
+                <Text className="text-base font-semibold text-content">
                   {f.list.length ? `${f.list.length}${f.hasNextPage ? '+' : ''} nearby` : 'Restrooms'}
                 </Text>
                 <Text className="text-xs" numberOfLines={1}>
                   {f.nearest != null ? (
                     <Text className="font-semibold" style={{ color: ACCENT }}>Nearest {distLabel(f.nearest)} away</Text>
                   ) : null}
-                  {f.nearest != null ? <Text className="text-neutral-400">{'  ·  '}</Text> : null}
-                  <Text className="text-neutral-400">
+                  {f.nearest != null ? <Text className="text-content-2">{'  ·  '}</Text> : null}
+                  <Text className="text-content-2">
                     Sorted by {f.currentSort.label.toLowerCase()}
                     {f.activeFilterCount ? ` · ${f.activeFilterCount} filter${f.activeFilterCount > 1 ? 's' : ''}` : ''}
                     {f.placeLabel ? ` · near ${f.placeLabel}` : ''}
@@ -195,10 +195,10 @@ export default function MapScreen() {
                 !f.locReady || f.isLoading ? (
                   <View className="mt-10 items-center">
                     <ActivityIndicator color={ACCENT} />
-                    <Text className="mt-3 text-sm text-neutral-400">Finding restrooms near you…</Text>
+                    <Text className="mt-3 text-sm text-content-2">Finding restrooms near you…</Text>
                   </View>
                 ) : (
-                  <Text className="mt-10 px-8 text-center text-sm text-neutral-400">No restrooms nearby yet.</Text>
+                  <Text className="mt-10 px-8 text-center text-sm text-content-2">No restrooms nearby yet.</Text>
                 )
               }
               renderItem={({ item }) => {

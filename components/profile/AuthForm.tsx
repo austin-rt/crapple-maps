@@ -59,7 +59,7 @@ export function AuthForm() {
   const c = useColors();
   return (
     <ScrollView
-      className="flex-1 bg-white dark:bg-neutral-950"
+      className="flex-1 bg-surface"
       contentContainerClassName="gap-3 px-6 pt-20 pb-10"
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets>
@@ -68,22 +68,22 @@ export function AuthForm() {
         <Text
           numberOfLines={1}
           adjustsFontSizeToFit
-          className="flex-1 font-extrabold text-neutral-900 dark:text-neutral-50"
+          className="flex-1 font-extrabold text-content"
           style={{ fontSize: 36 }}>
           Crapple <Text style={{ color: ACCENT }}>Maps</Text>
         </Text>
       </View>
-      <Text className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">
+      <Text className="text-2xl font-bold text-content">
         {mode === 'in' ? 'Welcome back' : 'Create account'}
       </Text>
-      <Text className="mb-2 text-neutral-500 dark:text-neutral-400">Sign in to log visits, add restrooms, and follow friends.</Text>
+      <Text className="mb-2 text-content-2">Sign in to log visits, add restrooms, and follow friends.</Text>
 
       <OAuthButtons appleAvailable={appleAvailable} busy={busy} onApple={apple} onGoogle={google} />
 
       <View className="my-2 flex-row items-center gap-3">
-        <View className="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
-        <Text className="text-xs text-neutral-400">or use email</Text>
-        <View className="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
+        <View className="h-px flex-1 bg-surface-3" />
+        <Text className="text-xs text-content-2">or use email</Text>
+        <View className="h-px flex-1 bg-surface-3" />
       </View>
 
       <View className="mb-2 flex-row gap-2">
@@ -91,9 +91,9 @@ export function AuthForm() {
           <Pressable
             key={m}
             onPress={() => setMode(m)}
-            className={`flex-1 items-center rounded-xl border py-2 ${mode === m ? 'border-transparent' : 'border-neutral-300 dark:border-neutral-700'}`}
+            className={`flex-1 items-center rounded-xl border py-2 ${mode === m ? 'border-transparent' : 'border-line'}`}
             style={mode === m ? { backgroundColor: ACCENT } : undefined}>
-            <Text className={`font-semibold ${mode === m ? 'text-white' : 'text-neutral-700 dark:text-neutral-300'}`}>
+            <Text className={`font-semibold ${mode === m ? 'text-white' : 'text-content-2'}`}>
               {m === 'in' ? 'Sign in' : 'Sign up'}
             </Text>
           </Pressable>
@@ -134,7 +134,7 @@ export function AuthForm() {
         <Text className="font-semibold text-white">{busy ? 'Please wait…' : mode === 'in' ? 'Sign in' : 'Sign up'}</Text>
       </Pressable>
 
-      {__DEV__ ? <Text className="mt-1 text-center text-xs text-neutral-400">Dev login: test / test</Text> : null}
+      {__DEV__ ? <Text className="mt-1 text-center text-xs text-content-2">Dev login: test / test</Text> : null}
     </ScrollView>
   );
 }

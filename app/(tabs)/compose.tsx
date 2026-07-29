@@ -21,7 +21,7 @@ import type { Visibility } from '@/lib/types';
 type Coords = { latitude: number; longitude: number };
 
 function Label({ children }: { children: string }) {
-  return <Text className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">{children}</Text>;
+  return <Text className="mb-2 text-xs font-semibold uppercase tracking-wide text-content-2">{children}</Text>;
 }
 
 function Field({ children }: { children: React.ReactNode }) {
@@ -149,12 +149,12 @@ export default function ComposeScreen() {
   const c = useColors();
   return (
     <ScrollView
-      className="flex-1 bg-white dark:bg-neutral-950"
+      className="flex-1 bg-surface"
       contentContainerClassName="px-5 pb-28"
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets>
-      <Text className="mt-4 text-2xl font-bold text-neutral-900 dark:text-neutral-50">Log a visit</Text>
-      <Text className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">Drop it anywhere. It’s your map.</Text>
+      <Text className="mt-4 text-2xl font-bold text-content">Log a visit</Text>
+      <Text className="mt-1 text-sm text-content-2">Drop it anywhere. It’s your map.</Text>
 
       <Field>
         <Label>Location required</Label>
@@ -177,8 +177,8 @@ export default function ComposeScreen() {
               {alsoPublish ? <Ionicons name="checkmark" size={16} color={ON_ACCENT} /> : null}
             </View>
             <View className="flex-1">
-              <Text className="text-[15px] font-medium text-neutral-900 dark:text-neutral-50">This spot isn’t on the map yet</Text>
-              <Text className="text-xs text-neutral-500 dark:text-neutral-400">Add it so others can find this restroom</Text>
+              <Text className="text-[15px] font-medium text-content">This spot isn’t on the map yet</Text>
+              <Text className="text-xs text-content-2">Add it so others can find this restroom</Text>
             </View>
           </Pressable>
         </Field>
@@ -199,9 +199,9 @@ export default function ComposeScreen() {
                 key={n}
                 onPress={() => setBristol(active ? null : n)}
                 style={{ width: '22%', backgroundColor: active ? ACCENT : undefined }}
-                className={`items-center rounded-xl border py-2.5 ${active ? 'border-transparent' : 'border-neutral-300 dark:border-neutral-700'}`}>
+                className={`items-center rounded-xl border py-2.5 ${active ? 'border-transparent' : 'border-line'}`}>
                 <Text className="text-2xl">{emoji}</Text>
-                <Text className={`mt-1 text-[11px] ${active ? 'font-semibold text-white' : 'text-neutral-600 dark:text-neutral-300'}`}>{label}</Text>
+                <Text className={`mt-1 text-[11px] ${active ? 'font-semibold text-white' : 'text-content-2'}`}>{label}</Text>
               </Pressable>
             );
           })}
@@ -238,7 +238,7 @@ export default function ComposeScreen() {
           {photoUris.length < 4 ? (
             <Pressable
               onPress={addPhotos}
-              className="h-[72px] w-[72px] items-center justify-center rounded-xl border border-dashed border-neutral-300 dark:border-neutral-700">
+              className="h-[72px] w-[72px] items-center justify-center rounded-xl border border-dashed border-line">
               <Ionicons name="camera-outline" size={22} color={c.content2} />
             </Pressable>
           ) : null}
@@ -254,10 +254,10 @@ export default function ComposeScreen() {
               <Pressable
                 key={v}
                 onPress={() => setVisibility(v)}
-                className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-xl border py-2.5 ${active ? 'border-transparent' : 'border-neutral-300 dark:border-neutral-700'}`}
+                className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-xl border py-2.5 ${active ? 'border-transparent' : 'border-line'}`}
                 style={active ? { backgroundColor: ACCENT } : undefined}>
                 <Ionicons name={v === 'friends' ? 'people-outline' : 'lock-closed-outline'} size={16} color={active ? ON_ACCENT : c.content2} />
-                <Text className={active ? 'font-semibold text-white' : 'text-neutral-700 dark:text-neutral-300'}>
+                <Text className={active ? 'font-semibold text-white' : 'text-content-2'}>
                   {v === 'friends' ? 'Friends' : 'Private'}
                 </Text>
               </Pressable>

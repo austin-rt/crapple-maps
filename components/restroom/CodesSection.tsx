@@ -42,12 +42,12 @@ export function CodesSection({
       {codes.length > 0 ? (
         codes.map((c) => (
           <View key={c.id} className="mb-2 flex-row items-center justify-between rounded-xl bg-neutral-100 px-4 py-3 dark:bg-neutral-900">
-            <Text className="text-lg font-bold tracking-widest text-neutral-900 dark:text-neutral-50">{c.code}</Text>
-            <Text className="text-xs text-neutral-500 dark:text-neutral-400">confirmed {daysAgo(c.posted_at)}</Text>
+            <Text className="text-lg font-bold tracking-widest text-content">{c.code}</Text>
+            <Text className="text-xs text-content-2">confirmed {daysAgo(c.posted_at)}</Text>
           </View>
         ))
       ) : (
-        <Text className="text-sm text-neutral-400">
+        <Text className="text-sm text-content-2">
           {requiresCode === true ? 'Needs a code. None posted yet. Add one below.' : 'No codes reported yet.'}
         </Text>
       )}

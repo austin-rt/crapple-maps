@@ -35,12 +35,12 @@ export function PlaceCard({
   return (
     <Pressable
       onPress={onSelect}
-      className={`flex-row items-center gap-3 rounded-2xl border p-3 active:opacity-70 ${active ? 'border-2' : 'border-neutral-200 dark:border-neutral-800'}`}
+      className={`flex-row items-center gap-3 rounded-2xl border p-3 active:opacity-70 ${active ? 'border-2' : 'border-line'}`}
       style={active ? { borderColor: ACCENT } : undefined}>
       <MarkerBadge size={40} />
       <View className="flex-1">
         <View className="flex-row items-center gap-1">
-          <Text numberOfLines={1} className="flex-shrink text-base font-semibold text-neutral-900 dark:text-neutral-50">{title}</Text>
+          <Text numberOfLines={1} className="flex-shrink text-base font-semibold text-content">{title}</Text>
           {saved ? <Ionicons name="bookmark" size={13} color={ACCENT} /> : null}
         </View>
         <View className="mt-0.5 flex-row items-center gap-2">
@@ -51,8 +51,8 @@ export function PlaceCard({
           {item.accessible ? <Ionicons name="accessibility" size={13} color={c.content2} /> : null}
           {item.unisex ? <Ionicons name="male-female" size={13} color={c.content2} /> : null}
           {item.changing_table ? <Ionicons name="body" size={13} color={c.content2} /> : null}
-          {item.log_count ? <Text className="text-xs text-neutral-400">· 📍 {item.log_count}</Text> : null}
-          {distLabel(item.dist) ? <Text className="text-xs text-neutral-400">· {distLabel(item.dist)}</Text> : null}
+          {item.log_count ? <Text className="text-xs text-content-2">· 📍 {item.log_count}</Text> : null}
+          {distLabel(item.dist) ? <Text className="text-xs text-content-2">· {distLabel(item.dist)}</Text> : null}
         </View>
       </View>
       <Pressable

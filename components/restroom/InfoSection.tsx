@@ -4,7 +4,7 @@ import { InfoRow } from '@/components/ui';
 import type { Place } from '@/lib/geocode';
 import type { RestroomInfo } from '@/lib/types';
 
-const line = 'text-[15px] leading-5 text-neutral-700 dark:text-neutral-300';
+const line = 'text-[15px] leading-5 text-content-2';
 
 export function InfoSection({ place, info }: { place: Place | null; info: RestroomInfo | null | undefined }) {
   return (
