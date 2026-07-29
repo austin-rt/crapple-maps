@@ -1,5 +1,4 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 
@@ -7,6 +6,8 @@ import { INPUT_CLS, SectionHeader, Stars } from '@/components/ui';
 import { daysAgo } from '@/lib/format';
 import { ACCENT, MUTED } from '@/lib/tokens';
 import type { Review } from '@/lib/types';
+
+import { SheetTextInput } from './sheet-inputs';
 
 export function ReviewsSection({
   reviews,
@@ -57,7 +58,7 @@ export function ReviewsSection({
         <View className="mt-2 rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800">
           <Text className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">Leave a review</Text>
           <Stars value={rating} onChange={setRating} />
-          <BottomSheetTextInput
+          <SheetTextInput
             placeholder="How was it?"
             placeholderTextColor={MUTED}
             value={text}
