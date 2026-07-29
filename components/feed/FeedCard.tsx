@@ -4,8 +4,11 @@ import { router } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
 import { Avatar, Stars } from '@/components/ui';
+import { useBlock } from '@/hooks/useModeration';
+import { useAuth } from '@/lib/auth';
 import { bristol } from '@/lib/bristol';
 import { timeAgo } from '@/lib/format';
+import { moderationMenu } from '@/lib/moderate';
 import { useColors } from '@/lib/theme';
 import type { FeedLog } from '@/lib/types';
 
@@ -16,6 +19,9 @@ export function FeedCard({ log }: { log: FeedLog }) {
   const name = a?.display_name || a?.username || 'Someone';
   const b = bristol(log.bristol_type);
   const c = useColors();
+  const { session } = useAuth();
+  const { block } = useBlock(session?.user.id);
+  const mine = session?.user.id === log.user_id;
   return (
     <Pressable onPress={() => router.push(`/log/${log.id}`)} className="flex-row gap-3 border-b border-line px-4 py-3 active:bg-surface-2">
       {a?.avatar_url ? (
@@ -30,6 +36,14 @@ export function FeedCard({ log }: { log: FeedLog }) {
             @{a?.username ?? 'user'} · {timeAgo(log.created_at)}
           </Text>
           {log.visibility === 'private' ? <Icon name="lock-closed" size={12} color={c.content2} style={{ marginLeft: 4 }} /> : null}
+          {!mine && session ? (
+            <Pressable
+              hitSlop={10}
+              style={{ marginLeft: 'auto' }}
+              onPress={() => moderationMenu({ targetType: 'log', targetId: log.id, authorName: name, onBlock: () => block(log.user_id) })}>
+              <Icon name="ellipsis-horizontal" size={16} color={c.content2} />
+            </Pressable>
+          ) : null}
         </View>
 
         {log.caption ? <Text className="mt-0.5 text-[15px] leading-5 text-content">{log.caption}</Text> : null}
