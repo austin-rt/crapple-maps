@@ -23,6 +23,7 @@ on:
       - app.config.js
       - package.json
       - package-lock.json
+      - .nvmrc # bundling env — EAS workers need Node 22+ (supabase-js WebSocket)
 
 jobs:
   publish_ota:
