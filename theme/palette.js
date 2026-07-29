@@ -15,7 +15,7 @@ const PALETTE = {
     line: '209 213 219',
   },
   dark: {
-    surface: '36 36 38', // #242426 — dark gray (sheets, drawers, bars), not black
+    surface: '19 19 20', // #131314 — matches Google Maps iOS dark bg
     'surface-2': '48 48 50', // #303032
     'surface-3': '62 62 66', // #3e3e42
     content: '250 250 250',

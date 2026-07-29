@@ -153,14 +153,10 @@ export function MobileMap() {
             <BottomSheetFlatList
               data={f.list}
               keyExtractor={(i, idx) => (i as Restroom).id + idx}
-              contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: insets.bottom + 24, gap: 8 }}
+              contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
               onEndReachedThreshold={0.6}
               onEndReached={() => f.hasNextPage && !f.isFetchingNextPage && f.fetchNextPage()}
-              ListHeaderComponent={
-                <View className="mb-2">
-                  <AddRestroomCard onPress={f.addHere} />
-                </View>
-              }
+              ListHeaderComponent={<AddRestroomCard onPress={f.addHere} />}
               ListFooterComponent={f.isFetchingNextPage ? <ActivityIndicator style={{ marginVertical: 16 }} color={ACCENT} /> : null}
               ListEmptyComponent={
                 !f.locReady || f.isLoading ? (

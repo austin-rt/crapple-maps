@@ -38,7 +38,7 @@ export default function SavedScreen() {
       <FlatList
         data={list as Restroom[]}
         keyExtractor={(i) => (i as Restroom).id}
-        contentContainerStyle={{ padding: 16, gap: 8 }}
+        contentContainerStyle={{ paddingBottom: 24 }}
         renderItem={({ item }) => {
           const it = item as Restroom;
           return (

@@ -161,12 +161,12 @@ function DesktopMapWeb() {
           <FlatList
             data={f.list}
             keyExtractor={(i, idx) => (i as Restroom).id + idx}
-            contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 24, gap: 8 }}
+            contentContainerStyle={{ paddingBottom: 24 }}
             onEndReachedThreshold={0.6}
             onEndReached={() => f.hasNextPage && !f.isFetchingNextPage && f.fetchNextPage()}
             ListHeaderComponent={
-              <View className="pb-1">
-                <View className="flex-row items-center justify-between px-1 pb-2">
+              <View>
+                <View className="flex-row items-center justify-between px-4 pb-2">
                   {f.nearest != null ? (
                     <Text className="text-sm font-semibold" style={{ color: ACCENT }}>Nearest {distLabel(f.nearest)} away</Text>
                   ) : (
@@ -174,9 +174,7 @@ function DesktopMapWeb() {
                   )}
                   {f.list.length ? <Text className="text-xs text-content-2">{f.list.length}{f.hasNextPage ? '+' : ''}</Text> : null}
                 </View>
-                <View className="mb-1">
-                  <AddRestroomCard onPress={f.addHere} />
-                </View>
+                <AddRestroomCard onPress={f.addHere} />
               </View>
             }
             ListFooterComponent={f.isFetchingNextPage ? <ActivityIndicator style={{ marginVertical: 16 }} color={ACCENT} /> : null}
