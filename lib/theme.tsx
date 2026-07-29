@@ -15,7 +15,15 @@ const ThemeCtx = createContext<Ctx>({ pref: 'system', setPref: () => {}, scheme:
 export function ThemePrefProvider({ children }: { children: React.ReactNode }) {
   const system = (useRNColorScheme() ?? 'light') as 'light' | 'dark';
   const [pref, setPrefState] = useState<ThemePref>('system');
-  const scheme = pref === 'system' ? system : pref;
+
+  // Web ships a statically-exported page pre-rendered LIGHT. The first client
+  // render must match that HTML or React never commits the dark inline styles
+  // (hydration doesn't diff style attrs — a value that's dark from render #1
+  // just silently keeps the server's white). So: render light once, then flip
+  // to the real scheme in an effect, which re-renders every useColors consumer.
+  const [hydrated, setHydrated] = useState(Platform.OS !== 'web');
+  useEffect(() => setHydrated(true), []);
+  const scheme = hydrated ? (pref === 'system' ? system : pref) : 'light';
 
   useEffect(() => {
     if (Platform.OS === 'web') return;
