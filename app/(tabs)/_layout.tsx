@@ -6,9 +6,12 @@ import { HapticTab } from '@/components/haptic-tab';
 import { WebHeader } from '@/components/web/WebHeader';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { ACCENT } from '@/lib/auth';
+import { useThemePref } from '@/lib/theme';
 
 export default function TabLayout() {
   const isMobileWeb = useIsMobileWeb();
+  const { scheme } = useThemePref();
+  const dark = scheme === 'dark';
   // Desktop web hides the tab bar and shows a top header (hamburger nav + user
   // menu). Mobile web and native keep the bottom tab bar + per-screen headers.
   const webDesktop = Platform.OS === 'web' && !isMobileWeb;
@@ -16,9 +19,12 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: ACCENT,
+        tabBarInactiveTintColor: dark ? '#8b8b93' : undefined,
         tabBarButton: HapticTab,
         headerShown: true,
-        tabBarStyle: webDesktop ? { display: 'none' } : undefined,
+        tabBarStyle: webDesktop
+          ? { display: 'none' }
+          : { backgroundColor: dark ? '#0a0a0c' : '#ffffff', borderTopColor: dark ? '#1c1c1f' : '#e5e7eb' },
         ...(webDesktop ? { header: ({ options }: any) => <WebHeader title={options.title as string} /> } : null),
       }}>
       <Tabs.Screen

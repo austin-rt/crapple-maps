@@ -199,24 +199,16 @@ function DesktopMapWeb() {
           />
         )}
 
-        {/* collapse handle, rides the drawer's right edge */}
-        <Pressable
-          onPress={() => setDrawerOpen(false)}
-          className="absolute items-center justify-center bg-surface"
-          style={[{ top: '50%', right: -15, width: 16, height: 52, borderTopRightRadius: 8, borderBottomRightRadius: 8 }, styles.shadow]}>
-          <Ionicons name="chevron-back" size={16} color="#6B7280" />
-        </Pressable>
       </LeftDrawer>
 
-      {/* reopen handle when the drawer is collapsed */}
-      {!drawerOpen ? (
-        <Pressable
-          onPress={() => setDrawerOpen(true)}
-          className="absolute items-center justify-center bg-surface"
-          style={[{ top: '50%', left: 0, width: 22, height: 56, borderTopRightRadius: 10, borderBottomRightRadius: 10, zIndex: 12 }, styles.shadow]}>
-          <Ionicons name="chevron-forward" size={18} color="#6B7280" />
-        </Pressable>
-      ) : null}
+      {/* one collapse/expand handle: sits at the drawer's right edge when open,
+          at the screen edge when collapsed. Chevron points the way it will move. */}
+      <Pressable
+        onPress={() => setDrawerOpen((v) => !v)}
+        className="absolute items-center justify-center rounded-r-xl border border-l-0 border-line bg-surface active:bg-surface-2"
+        style={[{ top: '50%', marginTop: -34, left: drawerOpen ? DRAWER_W : 0, width: 26, height: 68, zIndex: 12 }, styles.shadow]}>
+        <Ionicons name={drawerOpen ? 'chevron-back' : 'chevron-forward'} size={20} color="#6B7280" />
+      </Pressable>
 
       <WebNavDrawer open={navOpen} onClose={closeNav} />
     </View>
