@@ -3,8 +3,8 @@
 
 1. Icon-font 404 fix: Vercel drops node_modules/ dirs, and Expo hides the
    @expo/vector-icons fonts under assets/node_modules — rename + rewrite refs.
-2. Pre-paint dark-mode class so the statically-exported (light) HTML doesn't
-   flash light for dark-mode users before hydration.
+2. Pre-paint the dark-mode class so the statically-exported (light) HTML
+   doesn't flash light for dark-mode users before hydration.
 3. Legal pages (privacy + terms) copied in for the App Store listing.
 4. Standalone /info marketing page: replace the app-SPA route's info.html with a
    complete, self-contained HTML doc (from marketing/info.template.html) so it
