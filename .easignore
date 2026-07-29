@@ -1,0 +1,7 @@
+# Excluded from the tarball uploaded to EAS Build — none of it affects the app
+# binary, and leaving it out keeps uploads small.
+store/screenshots/
+marketing/
+docs/
+supabase/
+.playwright-mcp/
