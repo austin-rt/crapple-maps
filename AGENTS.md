@@ -24,4 +24,9 @@ you attach a build whose version string differs from the version record.
 
 Native binaries build only for changes OTA can't deliver (new dependencies,
 app config, native plugins), so nothing needs to be tagged or triggered by
-hand. `v*` tags still force a build if you want one without a native change.
+hand. To force a build without a native change:
+
+    npx eas-cli workflow:run .eas/workflows/release-native.yml
+
+Tags are not a trigger — EAS applies `paths` to tag pushes as well, so a tag
+only fires when the tagged commit happens to touch those files.
