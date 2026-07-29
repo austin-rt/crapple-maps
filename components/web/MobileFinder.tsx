@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
+import BottomSheet, { BottomSheetFlatList, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { useRef, useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { AddRestroomCard, FilterControls, PlaceCard } from '@/components/finder';
 import { AppMapView, AppMarker } from '@/components/map';
@@ -13,21 +14,19 @@ import { ACCENT, MUTED } from '@/lib/tokens';
 import type { Restroom } from '@/lib/types';
 
 // Native-style map layout for phone-sized web: full-bleed map, a floating search
-// bar, and a bottom sheet for results. App nav is the OS bottom tab bar. Mirrors
-// the native index.tsx so mobile web feels like the app, not the desktop site.
+// bar, and a real @gorhom bottom sheet — swipe the handle down to collapse, up to
+// expand. App nav is the OS bottom tab bar. Mirrors native index.tsx.
 export function MobileFinder() {
   const { scheme } = useThemePref();
-  const { height } = useWindowDimensions();
+  const sheetBg = scheme === 'dark' ? '#0a0a0c' : '#ffffff';
+  const sheetRef = useRef<BottomSheet>(null);
   const f = useFinder();
   const [showFilters, setShowFilters] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const sheetH = Math.round(height * (expanded ? 0.86 : 0.44));
-  const filterActive = showFilters || f.activeFilterCount > 0;
 
   const openRestroom = (item: Restroom) => {
-    f.select(item);
     setShowFilters(false);
-    setExpanded(true);
+    f.select(item);
+    sheetRef.current?.snapToIndex(1);
   };
 
   return (
@@ -79,8 +78,14 @@ export function MobileFinder() {
             </Pressable>
           ) : null}
           <View className="mx-1.5 h-5 w-px bg-line" />
-          <Pressable hitSlop={8} onPress={() => setShowFilters((v) => !v)} className="pr-0.5">
-            <Ionicons name="options" size={22} color={filterActive ? ACCENT : '#6B7280'} />
+          <Pressable
+            hitSlop={8}
+            onPress={() => {
+              setShowFilters((v) => !v);
+              sheetRef.current?.snapToIndex(1);
+            }}
+            className="pr-0.5">
+            <Ionicons name="options" size={22} color={showFilters || f.activeFilterCount ? ACCENT : '#6B7280'} />
           </Pressable>
         </View>
 
@@ -99,14 +104,14 @@ export function MobileFinder() {
         ) : null}
       </View>
 
-      {/* bottom sheet */}
-      <View className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-surface" style={[{ height: sheetH }, styles.sheet]}>
-        <Pressable onPress={() => setExpanded((v) => !v)} className="items-center py-3">
-          <View className="h-1 w-10 rounded-full bg-line" />
-        </Pressable>
-
+      <BottomSheet
+        ref={sheetRef}
+        index={1}
+        snapPoints={['13%', '60%', '92%']}
+        backgroundStyle={{ backgroundColor: sheetBg }}
+        handleIndicatorStyle={{ backgroundColor: '#9CA3AF' }}>
         {showFilters ? (
-          <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}>
+          <BottomSheetScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}>
             <View className="mb-3 flex-row items-center justify-between">
               <Text className="text-base font-bold text-content">Sort & filter</Text>
               {f.activeFilterCount > 0 ? (
@@ -119,13 +124,11 @@ export function MobileFinder() {
             <Pressable onPress={() => setShowFilters(false)} className="mt-6 items-center rounded-2xl py-3" style={{ backgroundColor: ACCENT }}>
               <Text className="text-base font-semibold text-white">Show {f.list.length}{f.hasNextPage ? '+' : ''} results</Text>
             </Pressable>
-          </ScrollView>
+          </BottomSheetScrollView>
         ) : f.selected ? (
-          <View className="flex-1">
-            <RestroomSheet restroom={f.selected} title={f.titleFor(f.selected)} onBack={() => f.setSelected(null)} onTitlePress={() => setExpanded((v) => !v)} />
-          </View>
+          <RestroomSheet restroom={f.selected} title={f.titleFor(f.selected)} onBack={() => f.setSelected(null)} onTitlePress={() => sheetRef.current?.snapToIndex(2)} />
         ) : (
-          <FlatList
+          <BottomSheetFlatList
             data={f.list}
             keyExtractor={(i, idx) => (i as Restroom).id + idx}
             contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 24, gap: 8 }}
@@ -165,12 +168,11 @@ export function MobileFinder() {
             }}
           />
         )}
-      </View>
+      </BottomSheet>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   shadow: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 10, shadowOffset: { width: 0, height: 2 } },
-  sheet: { shadowColor: '#000', shadowOpacity: 0.16, shadowRadius: 16, shadowOffset: { width: 0, height: -3 } },
 });

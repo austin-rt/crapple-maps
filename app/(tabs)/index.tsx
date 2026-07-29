@@ -138,7 +138,7 @@ export default function MapScreen() {
       <BottomSheet
         ref={sheetRef}
         index={1}
-        snapPoints={['30%', '58%', '92%']}
+        snapPoints={['13%', '58%', '92%']}
         backgroundStyle={{ backgroundColor: sheetBg }}
         handleIndicatorStyle={{ backgroundColor: '#9CA3AF' }}>
         {f.selected ? (
