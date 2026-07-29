@@ -1,0 +1,33 @@
+# Ships a JS-only OTA update to the production channel whenever app code lands
+# on main. Path-filtered so web-only changes (marketing site, public assets,
+# build scripts, DB migrations) don't ping native users with a pointless update.
+name: Publish OTA update
+
+on:
+  push:
+    branches: ['main']
+    paths:
+      - app/**
+      - components/**
+      - hooks/**
+      - lib/**
+      - theme/**
+      - constants/**
+      - assets/**
+      - plugins/**
+      - global.css
+      - tailwind.config.js
+      - babel.config.js
+      - metro.config.js
+      - app.json
+      - app.config.js
+      - package.json
+      - package-lock.json
+
+jobs:
+  publish_ota:
+    name: eas update → production
+    type: update
+    environment: production # loads the EXPO_PUBLIC_* vars from EAS env storage
+    params:
+      branch: production
