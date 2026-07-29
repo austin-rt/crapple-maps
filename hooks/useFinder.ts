@@ -40,10 +40,22 @@ export function useFinder() {
   const toggleFilter = (k: FilterKey) => setFilters((f) => ({ ...f, [k]: !f[k] }));
   const active = center ?? me;
 
+  // The map viewport center (updated as the user pans/zooms). Restrooms are
+  // fetched around wherever the map is looking, not only the user's location, so
+  // moving the map loads that area. Rounded to ~110m so tiny drags don't refetch.
+  const [region, setRegion] = useState<Coords | null>(null);
+  const onRegionChangeComplete = useCallback((r: any) => {
+    const lat = r?.latitude ?? r?.lat;
+    const lng = r?.longitude ?? r?.lng;
+    if (typeof lat === 'number' && typeof lng === 'number') setRegion({ lat, lng });
+  }, []);
+  const base = region ?? active;
+  const queryCenter = base ? { lat: Math.round(base.lat * 1000) / 1000, lng: Math.round(base.lng * 1000) / 1000 } : null;
+
   const { results, searching } = usePlaceSearch(query);
   const { data: savedIds } = useSavedIds(session?.user.id);
   const { data: loggedIds } = useLoggedRestroomIds(session?.user.id);
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useNearbyRestrooms({ active, sort, filters, enabled: locReady });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useNearbyRestrooms({ active: queryCenter, sort, filters, enabled: locReady });
 
   // Deep-link from a post's "See on map" — recenter here.
   const params = useLocalSearchParams<{ flat?: string; flng?: string }>();
@@ -120,6 +132,7 @@ export function useFinder() {
 
   const pickPlace = (p: { lat: string; lon: string; display_name: string }) => {
     Keyboard.dismiss();
+    setRegion(null); // let the searched center drive the query until the map settles
     setCenter({ lat: parseFloat(p.lat), lng: parseFloat(p.lon) });
     setPlaceLabel(p.display_name.split(',').slice(0, 2).join(',').trim());
     setQuery('');
@@ -127,6 +140,7 @@ export function useFinder() {
   };
 
   const backToMe = () => {
+    setRegion(null);
     setCenter(null);
     setPlaceLabel(null);
     setQuery('');
@@ -142,5 +156,6 @@ export function useFinder() {
     list, activeId, currentSort, nearest,
     hasNextPage, isFetchingNextPage, isLoading, fetchNextPage,
     resolveTitle, titleFor, select, addRestroomAt, addHere, pickPlace, backToMe,
+    onRegionChangeComplete,
   };
 }
