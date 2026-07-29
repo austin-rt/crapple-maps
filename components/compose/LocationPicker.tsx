@@ -6,7 +6,8 @@ import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-nativ
 import { MapPinPicker } from '@/components/map-pin-picker';
 import { usePlaceSearch, type Place } from '@/hooks/usePlaceSearch';
 import { notify } from '@/lib/confirm';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 
 type Coords = { latitude: number; longitude: number };
 
@@ -52,6 +53,7 @@ export function LocationPicker({
     }
   };
 
+  const c = useColors();
   return (
     <View>
       {coords ? (
@@ -62,16 +64,16 @@ export function LocationPicker({
       ) : null}
 
       <View className="flex-row items-center rounded-xl border border-neutral-300 px-3 dark:border-neutral-700">
-        <Ionicons name="search" size={16} color={MUTED} />
+        <Ionicons name="search" size={16} color={c.content2} />
         <TextInput
           placeholder="Search an address or place…"
-          placeholderTextColor={MUTED}
+          placeholderTextColor={c.content2}
           value={query}
           onChangeText={setQuery}
           autoCapitalize="none"
           className="flex-1 px-2 py-3 text-base text-neutral-900 dark:text-neutral-50"
         />
-        {searching ? <ActivityIndicator size="small" color={MUTED} /> : null}
+        {searching ? <ActivityIndicator size="small" color={c.content2} /> : null}
       </View>
 
       {results.length > 0 ? (

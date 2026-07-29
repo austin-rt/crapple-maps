@@ -2,7 +2,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Constants from 'expo-constants';
 import { Platform, Text, View } from 'react-native';
 
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 
 // Uber/Lyft-style precise pin: a fixed pin sits at screen center and the map
 // pans under it — wherever the map settles is the chosen point.
@@ -22,10 +23,11 @@ if (Platform.OS !== 'web' && !isExpoGo) {
 type Coords = { latitude: number; longitude: number };
 
 export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (c: Coords) => void }) {
+  const c = useColors();
   if (!mapsAvailable) {
     return (
       <View className="mt-3 items-center rounded-xl border border-dashed border-neutral-300 p-4 dark:border-neutral-700">
-        <Ionicons name="map-outline" size={22} color={MUTED} />
+        <Ionicons name="map-outline" size={22} color={c.content2} />
         <Text className="mt-1 text-center text-xs text-neutral-400">
           Drag-a-pin map appears in the dev build. Using the selected location.
         </Text>

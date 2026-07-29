@@ -42,3 +42,20 @@ export function ThemePrefProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useThemePref = () => useContext(ThemeCtx);
+
+// Resolved semantic colors for the current scheme — the single source for style
+// props (where a Tailwind class can't reach: sheet/nav backgrounds, icon colors,
+// navigator options). Values MIRROR the CSS variables in global.css, so classes
+// (bg-surface, text-content, border-line) and these stay in lockstep. Use these
+// instead of inline hex or `scheme === 'dark' ? …` checks anywhere in the app.
+export type ThemeColors = { surface: string; surface2: string; surface3: string; content: string; content2: string; line: string };
+
+const COLORS: Record<'light' | 'dark', ThemeColors> = {
+  light: { surface: '#ffffff', surface2: '#f5f6f8', surface3: '#e9e9ed', content: '#171717', content2: '#646c78', line: '#d1d5db' },
+  dark: { surface: '#0a0a0c', surface2: '#17171b', surface3: '#26262c', content: '#fafafa', content2: '#a1a1aa', line: '#3f3f46' },
+};
+
+export function useColors(): ThemeColors {
+  const { scheme } = useThemePref();
+  return COLORS[scheme];
+}

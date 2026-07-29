@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, Platform, Pressable, View, type ViewStyle } from 'react-native';
 
-import { useThemePref } from '@/lib/theme';
+import { useColors } from '@/lib/theme';
 
 // One web drawer used everywhere — the app nav and the results list both slide in
 // from the left with the same animation and an OPAQUE, theme-aware background.
@@ -25,8 +25,8 @@ export function LeftDrawer({
   panelStyle?: ViewStyle;
   children: React.ReactNode;
 }) {
-  const { scheme } = useThemePref();
-  const bg = scheme === 'dark' ? '#0a0a0c' : '#ffffff';
+  const c = useColors();
+  const bg = c.surface;
   const off = -(width + 24); // fully clear of the edge so the shadow doesn't peek
   const x = useRef(new Animated.Value(open ? 0 : off)).current;
   const fade = useRef(new Animated.Value(open ? 1 : 0)).current;

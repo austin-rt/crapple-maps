@@ -15,7 +15,7 @@ import type { Restroom } from '@/lib/types';
 
 export type Coords = { lat: number; lng: number };
 export const DEFAULT_REGION: Region = { latitude: 37.7749, longitude: -122.4194, latitudeDelta: 0.05, longitudeDelta: 0.05 };
-export const VISITED = '#7C3AED'; // purple marker for restrooms you've logged a visit at
+export { VISITED } from '@/lib/tokens'; // purple marker for restrooms you've logged a visit at
 
 // All finder state + logic, shared by the native (bottom-sheet) and web
 // (left-drawer) layouts so the two never drift.

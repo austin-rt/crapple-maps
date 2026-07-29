@@ -9,7 +9,8 @@ import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useFollows } from '@/hooks/useFollows';
 import { useAuth } from '@/lib/auth';
 import { searchProfiles } from '@/lib/db/profiles';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 
 export default function People() {
   const { session } = useAuth();
@@ -25,22 +26,23 @@ export default function People() {
     queryFn: () => searchProfiles(debounced, me!),
   });
 
+  const c = useColors();
   return (
     <ScrollView className="flex-1 bg-surface" keyboardShouldPersistTaps="handled">
       <Stack.Screen options={{ title: 'Find people' }} />
 
       <View className="px-4 pt-3">
         <View className="flex-row items-center rounded-2xl border border-line px-3">
-          <Ionicons name="search" size={16} color={MUTED} />
+          <Ionicons name="search" size={16} color={c.content2} />
           <TextInput
             placeholder="Search by username…"
-            placeholderTextColor={MUTED}
+            placeholderTextColor={c.content2}
             value={q}
             onChangeText={setQ}
             autoCapitalize="none"
             className="flex-1 px-2 py-3 text-base text-content"
           />
-          {isFetching ? <ActivityIndicator size="small" color={MUTED} /> : null}
+          {isFetching ? <ActivityIndicator size="small" color={c.content2} /> : null}
         </View>
       </View>
 

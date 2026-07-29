@@ -3,6 +3,7 @@ import { router, usePathname } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
 import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 
 import { LeftDrawer } from './LeftDrawer';
 
@@ -21,6 +22,7 @@ const ITEMS = [
 // shared LeftDrawer so it can't drift from the results drawer.
 export function WebNavDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const path = usePathname();
+  const c = useColors();
   const go = (href: string) => {
     router.push(href as any);
     onClose();
@@ -37,7 +39,7 @@ export function WebNavDrawer({ open, onClose }: { open: boolean; onClose: () => 
           </Text>
         </View>
         <Pressable onPress={onClose} hitSlop={10} className="items-center justify-center">
-          <Ionicons name="close" size={24} color="#6B7280" />
+          <Ionicons name="close" size={24} color={c.content2} />
         </Pressable>
       </View>
       <View className="px-3 pt-3">
@@ -49,7 +51,7 @@ export function WebNavDrawer({ open, onClose }: { open: boolean; onClose: () => 
               onPress={() => go(it.href)}
               className="mb-1 flex-row items-center gap-3 rounded-xl px-4 py-3"
               style={on ? { backgroundColor: ACCENT + '18' } : undefined}>
-              <Ionicons name={it.icon as any} size={22} color={on ? ACCENT : '#6B7280'} />
+              <Ionicons name={it.icon as any} size={22} color={on ? ACCENT : c.content2} />
               <Text className="text-base font-semibold" style={on ? { color: ACCENT } : undefined}>
                 <Text className={on ? '' : 'text-content'}>{it.label}</Text>
               </Text>

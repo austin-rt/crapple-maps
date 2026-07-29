@@ -11,12 +11,14 @@ import { useLogCount, useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
 import { toast } from '@/lib/toast';
 import { updateAvatarSeed, updateProfile, uploadAvatar } from '@/lib/db/profiles';
-import { ACCENT, DANGER, MUTED } from '@/lib/tokens';
+import { ACCENT, DANGER } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 
 import { AppearanceCard } from './AppearanceCard';
 import { Card } from './Card';
 
 function Stat({ label, value }: { label: string; value: number }) {
+  const c = useColors();
   return (
     <View className="flex-1 items-center">
       <Text className="text-lg font-bold text-neutral-900 dark:text-neutral-50">{value}</Text>
@@ -26,6 +28,7 @@ function Stat({ label, value }: { label: string; value: number }) {
 }
 
 export function ManageProfile() {
+  const c = useColors();
   const { session, signOut, changePassword } = useAuth();
   const qc = useQueryClient();
   const uid = session!.user.id;
@@ -102,11 +105,11 @@ export function ManageProfile() {
         )}
         <View className="mt-3 flex-row gap-2">
           <Pressable onPress={uploadPhoto} className="flex-row items-center gap-1 rounded-full border border-neutral-300 px-3 py-1.5 active:opacity-70 dark:border-neutral-700">
-            <Ionicons name="camera-outline" size={14} color={MUTED} />
+            <Ionicons name="camera-outline" size={14} color={c.content2} />
             <Text className="text-xs font-medium text-neutral-700 dark:text-neutral-300">Upload photo</Text>
           </Pressable>
           <Pressable onPress={shuffle} className="flex-row items-center gap-1 rounded-full border border-neutral-300 px-3 py-1.5 active:opacity-70 dark:border-neutral-700">
-            <Ionicons name="shuffle" size={14} color={MUTED} />
+            <Ionicons name="shuffle" size={14} color={c.content2} />
             <Text className="text-xs font-medium text-neutral-700 dark:text-neutral-300">Shuffle</Text>
           </Pressable>
         </View>
@@ -130,12 +133,12 @@ export function ManageProfile() {
         className="mt-4 flex-row items-center gap-3 rounded-2xl border border-neutral-200 p-4 active:opacity-70 dark:border-neutral-800">
         <Ionicons name="bookmark-outline" size={20} color={ACCENT} />
         <Text className="flex-1 text-base font-medium text-neutral-900 dark:text-neutral-50">Saved restrooms</Text>
-        <Ionicons name="chevron-forward" size={18} color={MUTED} />
+        <Ionicons name="chevron-forward" size={18} color={c.content2} />
       </Pressable>
 
       <Card title="Profile & account">
         <Text className="mb-1 text-sm text-neutral-500 dark:text-neutral-400">Display name</Text>
-        <TextInput placeholder="Your name" placeholderTextColor={MUTED} value={displayName} onChangeText={setDisplayName} className={INPUT_CLS} />
+        <TextInput placeholder="Your name" placeholderTextColor={c.content2} value={displayName} onChangeText={setDisplayName} className={INPUT_CLS} />
         <Pressable
           onPress={saveProfile}
           disabled={savingProfile}
@@ -147,7 +150,7 @@ export function ManageProfile() {
         <View className="my-4 h-px bg-neutral-200 dark:bg-neutral-800" />
 
         <Text className="mb-1 text-sm text-neutral-500 dark:text-neutral-400">New password</Text>
-        <TextInput placeholder="••••••" placeholderTextColor={MUTED} value={newPw} onChangeText={setNewPw} secureTextEntry className={INPUT_CLS} />
+        <TextInput placeholder="••••••" placeholderTextColor={c.content2} value={newPw} onChangeText={setNewPw} secureTextEntry className={INPUT_CLS} />
         <Pressable
           onPress={changePw}
           disabled={savingPw || !newPw}

@@ -15,8 +15,8 @@ import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { useProfile } from '@/hooks/useProfile';
 import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
 import { distLabel } from '@/lib/restrooms/filters';
-import { useThemePref } from '@/lib/theme';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { useColors, useThemePref } from '@/lib/theme';
+import { ACCENT, DANGER } from '@/lib/tokens';
 import type { Restroom } from '@/lib/types';
 
 const DRAWER_W = 408;
@@ -32,6 +32,7 @@ export default function MapWeb() {
 
 function DesktopMapWeb() {
   const { scheme } = useThemePref();
+  const c = useColors();
   const f = useFinder();
   const { data: me } = useProfile(f.session?.user.id ?? '');
   const [navOpen, setNavOpen] = useState(false);
@@ -81,7 +82,7 @@ function DesktopMapWeb() {
           <AppMarker
             key={item.id}
             coordinate={{ latitude: item.lat, longitude: item.lng }}
-            pinColor={item.id === f.activeId ? '#DC2626' : f.loggedIds?.has(item.id) ? VISITED : ACCENT}
+            pinColor={item.id === f.activeId ? DANGER : f.loggedIds?.has(item.id) ? VISITED : ACCENT}
             onPress={() => selectFromMarker(item)}
           />
         ))}
@@ -90,7 +91,7 @@ function DesktopMapWeb() {
       {/* top-right: account only, pinned right */}
       <View style={{ position: 'absolute', top: 14, right: 16, zIndex: 20 }}>
         <Pressable onPress={() => router.push('/profile')} className="items-center justify-center overflow-hidden rounded-full bg-surface" style={[{ width: 44, height: 44 }, styles.shadow]}>
-          {f.session ? <Avatar seed={me?.avatar_seed || me?.username || f.session.user.id} size={40} /> : <Ionicons name="person-circle-outline" size={30} color="#4B5563" />}
+          {f.session ? <Avatar seed={me?.avatar_seed || me?.username || f.session.user.id} size={40} /> : <Ionicons name="person-circle-outline" size={30} color={c.content2} />}
         </Pressable>
       </View>
 
@@ -99,26 +100,26 @@ function DesktopMapWeb() {
         <View style={{ padding: 12, paddingTop: 14 }}>
           <View className="flex-row items-center rounded-full bg-surface-2 pl-1 pr-1">
             <Pressable onPress={openNav} className="items-center justify-center" style={{ width: 42, height: 42 }}>
-              <Ionicons name="menu" size={22} color="#6B7280" />
+              <Ionicons name="menu" size={22} color={c.content2} />
             </Pressable>
             <TextInput
               placeholder="Search address, city, or ZIP…"
-              placeholderTextColor={MUTED}
+              placeholderTextColor={c.content2}
               value={f.query}
               onChangeText={f.setQuery}
               autoCapitalize="words"
               className="flex-1 px-1 py-2.5 text-base text-content"
             />
             {f.searching ? (
-              <ActivityIndicator size="small" color={MUTED} style={{ marginRight: 4 }} />
+              <ActivityIndicator size="small" color={c.content2} style={{ marginRight: 4 }} />
             ) : f.query.length > 0 ? (
               <Pressable onPress={() => f.setQuery('')} className="px-1">
-                <Ionicons name="close-circle" size={18} color={MUTED} />
+                <Ionicons name="close-circle" size={18} color={c.content2} />
               </Pressable>
             ) : null}
             <View className="mx-0.5 h-5 w-px bg-line" />
             <Pressable onPress={() => setShowFilters((v) => !v)} className="items-center justify-center" style={{ width: 40, height: 40 }}>
-              <Ionicons name="options" size={20} color={filterActive ? ACCENT : '#6B7280'} />
+              <Ionicons name="options" size={20} color={filterActive ? ACCENT : c.content2} />
             </Pressable>
           </View>
 
@@ -130,7 +131,7 @@ function DesktopMapWeb() {
                   key={`${p.lat}-${p.lon}-${i}`}
                   onPress={() => f.pickPlace(p)}
                   className="flex-row items-center gap-2 border-b border-line px-3 py-2.5 active:bg-surface-2">
-                  <Ionicons name="location-outline" size={16} color={MUTED} />
+                  <Ionicons name="location-outline" size={16} color={c.content2} />
                   <Text numberOfLines={2} className="flex-1 text-sm text-content-2">{p.display_name}</Text>
                 </Pressable>
               ))}
@@ -207,7 +208,7 @@ function DesktopMapWeb() {
         onPress={() => setDrawerOpen((v) => !v)}
         className="absolute items-center justify-center rounded-r-xl border border-l-0 border-line bg-surface active:bg-surface-2"
         style={[{ top: '50%', marginTop: -34, left: drawerOpen ? DRAWER_W : 0, width: 26, height: 68, zIndex: 12 }, styles.shadow]}>
-        <Ionicons name={drawerOpen ? 'chevron-back' : 'chevron-forward'} size={20} color="#6B7280" />
+        <Ionicons name={drawerOpen ? 'chevron-back' : 'chevron-forward'} size={20} color={c.content2} />
       </Pressable>
 
       <WebNavDrawer open={navOpen} onClose={closeNav} />

@@ -7,7 +7,8 @@ import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-nativ
 import { Avatar } from '@/components/ui';
 import { useComments } from '@/hooks/useComments';
 import { timeAgo } from '@/lib/format';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 
 // Comments list + composer for the post detail. Works on native and web (plain
 // TextInput; this screen is a ScrollView route, not a bottom sheet).
@@ -23,6 +24,7 @@ export function CommentsSection({ logId, session }: { logId: string; session: Se
     await add(me, t);
   };
 
+  const clr = useColors();
   return (
     <View className="mt-2 px-4">
       <Text className="mb-3 text-xs font-semibold uppercase tracking-wide text-content-2">
@@ -35,7 +37,7 @@ export function CommentsSection({ logId, session }: { logId: string; session: Se
             value={text}
             onChangeText={setText}
             placeholder="Add a comment…"
-            placeholderTextColor={MUTED}
+            placeholderTextColor={clr.content2}
             className="flex-1 rounded-full border border-line px-4 py-2.5 text-[15px] text-content"
             onSubmitEditing={submit}
             returnKeyType="send"
@@ -44,7 +46,7 @@ export function CommentsSection({ logId, session }: { logId: string; session: Se
             onPress={submit}
             disabled={!text.trim() || adding}
             className="rounded-full px-4 py-2.5 active:opacity-80"
-            style={{ backgroundColor: text.trim() ? ACCENT : MUTED }}>
+            style={{ backgroundColor: text.trim() ? ACCENT : clr.content2 }}>
             <Text className="font-semibold text-white">Post</Text>
           </Pressable>
         </View>
@@ -78,7 +80,7 @@ export function CommentsSection({ logId, session }: { logId: string; session: Se
               </View>
               {me === c.user_id ? (
                 <Pressable onPress={() => remove(c.id)} hitSlop={8}>
-                  <Ionicons name="trash-outline" size={16} color={MUTED} />
+                  <Ionicons name="trash-outline" size={16} color={clr.content2} />
                 </Pressable>
               ) : null}
             </View>
