@@ -3,7 +3,9 @@
 
 1. Icon-font 404 fix: Vercel drops node_modules/ dirs, and Expo hides the
    @expo/vector-icons fonts under assets/node_modules — rename + rewrite refs.
-2. Standalone /info marketing page: replace the app-SPA route's info.html with a
+2. Pre-paint dark-mode class so the statically-exported (light) HTML doesn't
+   flash light for dark-mode users before hydration.
+3. Standalone /info marketing page: replace the app-SPA route's info.html with a
    complete, self-contained HTML doc (from marketing/info.template.html) so it
    scrolls like a normal web page instead of being trapped in the RN-web shell.
 """
@@ -28,7 +30,25 @@ if os.path.isdir(nm):
                 open(path, 'w', encoding='utf-8').write(data.replace('assets/node_modules', 'assets/_deps'))
     print('postbuild: icon fonts moved assets/node_modules -> assets/_deps')
 
-# 2) Standalone /info page.
+# 2) Pre-paint dark mode. The export is pre-rendered light; the app flips the
+# `dark` class only after hydration. Setting it before first paint lets every
+# CSS-variable-styled element render dark immediately (inline style props still
+# wait for the ThemePrefProvider hydration flip).
+SNIPPET = ("<script>try{if(matchMedia('(prefers-color-scheme: dark)').matches)"
+           "document.documentElement.classList.add('dark')}catch(e){}</script>")
+patched = 0
+for root, _dirs, files in os.walk(DIST):
+    for name in files:
+        if not name.endswith('.html'):
+            continue
+        path = os.path.join(root, name)
+        data = open(path, encoding='utf-8').read()
+        if '<head>' in data and SNIPPET not in data:
+            open(path, 'w', encoding='utf-8').write(data.replace('<head>', '<head>' + SNIPPET, 1))
+            patched += 1
+print(f'postbuild: dark-mode pre-paint script injected into {patched} pages')
+
+# 3) Standalone /info page.
 tpl = open('marketing/info.template.html', encoding='utf-8').read()
 tpl = tpl.replace('__PHONE1__', '/cm-android.jpg').replace('__PHONE2__', '/cm-ios.jpg').replace('__WEB__', '/cm-web.jpg')
 head, body = tpl.split('</style>', 1)
