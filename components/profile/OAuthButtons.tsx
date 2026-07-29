@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { Pressable, Text } from 'react-native';
 
 import { GoogleG } from '@/components/ui';
@@ -23,7 +23,7 @@ export function OAuthButtons({
     <>
       {appleAvailable ? (
         <Pressable onPress={onApple} disabled={busy} className={`mb-2 ${btn} ${busy ? 'opacity-50' : ''}`}>
-          <Ionicons name="logo-apple" size={18} color={c.content} />
+          <Icon name="logo-apple" size={18} color={c.content} />
           <Text className={txt}>Continue with Apple</Text>
         </Pressable>
       ) : null}

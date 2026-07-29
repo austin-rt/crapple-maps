@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import type { Session } from '@supabase/supabase-js';
 import { Image } from 'expo-image';
 import { useState } from 'react';
@@ -79,7 +79,7 @@ export function CommentsSection({ logId, session }: { logId: string; session: Se
               </View>
               {me === c.user_id ? (
                 <Pressable onPress={() => remove(c.id)} hitSlop={8}>
-                  <Ionicons name="trash-outline" size={16} color={clr.content2} />
+                  <Icon name="trash-outline" size={16} color={clr.content2} />
                 </Pressable>
               ) : null}
             </View>

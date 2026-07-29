@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
@@ -105,11 +105,11 @@ export function ManageProfile() {
         )}
         <View className="mt-3 flex-row gap-2">
           <Pressable onPress={uploadPhoto} className="flex-row items-center gap-1 rounded-full border border-line px-3 py-1.5 active:opacity-70">
-            <Ionicons name="camera-outline" size={14} color={c.content2} />
+            <Icon name="camera-outline" size={14} color={c.content2} />
             <Text className="text-xs font-medium text-content-2">Upload photo</Text>
           </Pressable>
           <Pressable onPress={shuffle} className="flex-row items-center gap-1 rounded-full border border-line px-3 py-1.5 active:opacity-70">
-            <Ionicons name="shuffle" size={14} color={c.content2} />
+            <Icon name="shuffle" size={14} color={c.content2} />
             <Text className="text-xs font-medium text-content-2">Shuffle</Text>
           </Pressable>
         </View>
@@ -131,9 +131,9 @@ export function ManageProfile() {
       <Pressable
         onPress={() => router.push('/saved')}
         className="mt-4 flex-row items-center gap-3 rounded-2xl border border-line p-4 active:opacity-70">
-        <Ionicons name="bookmark-outline" size={20} color={ACCENT} />
+        <Icon name="bookmark-outline" size={20} color={ACCENT} />
         <Text className="flex-1 text-base font-medium text-content">Saved restrooms</Text>
-        <Ionicons name="chevron-forward" size={18} color={c.content2} />
+        <Icon name="chevron-forward" size={18} color={c.content2} />
       </Pressable>
 
       <Card title="Profile & account">
@@ -162,7 +162,7 @@ export function ManageProfile() {
       <Pressable
         onPress={() => signOut()}
         className="mt-4 flex-row items-center justify-center gap-2 rounded-xl border border-red-300 py-3 active:opacity-70 dark:border-red-900">
-        <Ionicons name="log-out-outline" size={18} color={DANGER} />
+        <Icon name="log-out-outline" size={18} color={DANGER} />
         <Text className="font-semibold text-red-500">Sign out</Text>
       </Pressable>
     </ScrollView>

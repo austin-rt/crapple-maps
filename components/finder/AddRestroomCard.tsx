@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { Pressable, Text, View } from 'react-native';
 
 import { ACCENT } from '@/lib/tokens';
@@ -12,7 +12,7 @@ export function AddRestroomCard({ onPress }: { onPress: () => void }) {
       onPress={onPress}
       className="flex-row items-center gap-3 border-b border-line px-4 py-3 active:bg-surface-2">
       <View className="h-10 w-10 items-center justify-center rounded-full" style={{ backgroundColor: ACCENT + '18' }}>
-        <Ionicons name="add" size={22} color={ACCENT} />
+        <Icon name="add" size={22} color={ACCENT} />
       </View>
       <Text className="flex-1 text-base font-semibold" style={{ color: ACCENT }}>
         Add a toilet

@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon, type IconName } from './Icon';
 import { router } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
@@ -9,13 +9,13 @@ export function SignInRequired({
   icon = 'lock-closed-outline',
   message,
 }: {
-  icon?: keyof typeof Ionicons.glyphMap;
+  icon?: IconName;
   message: string;
 }) {
   const c = useColors();
   return (
     <View className="flex-1 items-center justify-center bg-surface px-8">
-      <Ionicons name={icon} size={40} color={c.content2} />
+      <Icon name={icon} size={40} color={c.content2} />
       <Text className="mt-3 text-center text-lg text-content-2">{message}</Text>
       <Pressable
         onPress={() => router.navigate('/(tabs)/profile')}

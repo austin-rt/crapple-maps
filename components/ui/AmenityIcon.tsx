@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon, type IconName } from './Icon';
 
 import { AMENITY } from '@/lib/tokens';
 
@@ -16,5 +16,5 @@ export type AmenityType = keyof typeof AMENITY_META;
 
 export function AmenityIcon({ type, size = 13 }: { type: AmenityType; size?: number }) {
   const m = AMENITY_META[type];
-  return <Ionicons name={m.icon as keyof typeof Ionicons.glyphMap} size={size} color={m.color} />;
+  return <Icon name={m.icon as IconName} size={size} color={m.color} />;
 }

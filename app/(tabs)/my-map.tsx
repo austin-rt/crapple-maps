@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
@@ -130,7 +130,7 @@ export default function MyMapScreen() {
                       onPress={() => setTab(t)}
                       className={`flex-row items-center gap-1.5 rounded-full px-4 py-1.5 ${on ? '' : 'border border-line'}`}
                       style={on ? { backgroundColor: ACCENT } : undefined}>
-                      <Ionicons name={t === 'list' ? 'list' : 'grid'} size={14} color={on ? ON_ACCENT : c.content2} />
+                      <Icon name={t === 'list' ? 'list' : 'grid'} size={14} color={on ? ON_ACCENT : c.content2} />
                       <Text className={on ? 'text-sm font-semibold text-white' : 'text-sm text-content-2'}>
                         {t === 'list' ? 'List' : 'Gallery'}
                       </Text>
@@ -169,7 +169,7 @@ export default function MyMapScreen() {
                           {l.photos.length ? <Text className="text-xs text-content-2">· 📷 {l.photos.length}</Text> : null}
                         </View>
                       </View>
-                      <Ionicons name="chevron-forward" size={16} color={c.content2} />
+                      <Icon name="chevron-forward" size={16} color={c.content2} />
                     </Pressable>
                   );
                 }}
@@ -191,7 +191,7 @@ export default function MyMapScreen() {
               />
             ) : (
               <View className="mt-10 items-center px-8">
-                <Ionicons name="images-outline" size={32} color={c.content2} />
+                <Icon name="images-outline" size={32} color={c.content2} />
                 <Text className="mt-2 text-center text-sm text-content-2">No photos yet. Add some when you log.</Text>
               </View>
             )}

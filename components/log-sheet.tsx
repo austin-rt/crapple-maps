@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Image } from 'expo-image';
 import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native';
@@ -45,7 +45,7 @@ export function LogSheet({ log, onBack, onDeleted }: { log: LogItem; onBack: () 
   return (
     <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 48 }} keyboardShouldPersistTaps="handled">
       <Pressable onPress={onBack} hitSlop={8} className="mb-3 ml-5 flex-row items-center gap-1 self-start">
-        <Ionicons name="chevron-back" size={18} color={ACCENT} />
+        <Icon name="chevron-back" size={18} color={ACCENT} />
         <Text className="text-sm font-semibold" style={{ color: ACCENT }}>All logs</Text>
       </Pressable>
 
@@ -91,12 +91,12 @@ export function LogSheet({ log, onBack, onDeleted }: { log: LogItem; onBack: () 
         <Pressable
           onPress={() => openDirections(log.lat, log.lng, place?.title || 'Log location')}
           className="mt-5 flex-row items-center justify-center gap-2 rounded-xl border border-line py-3 active:opacity-70">
-          <Ionicons name="navigate" size={16} color={ACCENT} />
+          <Icon name="navigate" size={16} color={ACCENT} />
           <Text className="font-semibold text-content">Directions</Text>
         </Pressable>
 
         <Pressable onPress={del} className="mt-3 flex-row items-center justify-center gap-2 rounded-xl py-3 active:opacity-70">
-          <Ionicons name="trash-outline" size={16} color={DANGER} />
+          <Icon name="trash-outline" size={16} color={DANGER} />
           <Text className="font-semibold text-red-600">Delete log</Text>
         </Pressable>
       </View>

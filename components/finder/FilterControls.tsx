@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { Pressable, Text, View } from 'react-native';
 
 import { FILTERS, SORTS, type FilterKey, type SortKey } from '@/lib/restrooms/filters';
@@ -32,7 +32,7 @@ export function FilterControls({
               onPress={() => setSort(s.key)}
               className={`flex-1 items-center gap-1 rounded-2xl border py-3 ${on ? 'border-transparent' : 'border-line'}`}
               style={on ? { backgroundColor: ACCENT } : undefined}>
-              <Ionicons name={s.icon as any} size={18} color={on ? ON_ACCENT : c.content2} />
+              <Icon name={s.icon as any} size={18} color={on ? ON_ACCENT : c.content2} />
               <Text className={on ? 'text-xs font-semibold text-white' : 'text-xs text-content-2'}>{s.label}</Text>
             </Pressable>
           );
@@ -49,7 +49,7 @@ export function FilterControls({
               onPress={() => toggleFilter(f.key)}
               className={`flex-row items-center gap-1.5 rounded-full border px-4 py-2.5 ${on ? 'border-transparent' : 'border-line'}`}
               style={on ? { backgroundColor: ACCENT } : undefined}>
-              <Ionicons name={f.icon as any} size={15} color={on ? ON_ACCENT : c.content2} />
+              <Icon name={f.icon as any} size={15} color={on ? ON_ACCENT : c.content2} />
               <Text className={on ? 'text-sm font-semibold text-white' : 'text-sm text-content-2'}>{f.label}</Text>
             </Pressable>
           );

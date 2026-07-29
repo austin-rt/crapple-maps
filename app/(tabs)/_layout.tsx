@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { router, Tabs } from 'expo-router';
 import { Platform, Pressable } from 'react-native';
 
@@ -29,17 +29,17 @@ export default function TabLayout() {
         options={{
           title: 'Map',
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <Ionicons name="map-outline" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <Icon name="map-outline" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="feed"
         options={{
           title: 'Feed',
-          tabBarIcon: ({ color, size }) => <Ionicons name="newspaper-outline" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <Icon name="newspaper-outline" size={size} color={color} />,
           headerRight: () => (
             <Pressable onPress={() => router.push('/people')} hitSlop={10} style={{ marginRight: 16 }}>
-              <Ionicons name="person-add-outline" size={22} color={ACCENT} />
+              <Icon name="person-add-outline" size={22} color={ACCENT} />
             </Pressable>
           ),
         }}
@@ -48,21 +48,21 @@ export default function TabLayout() {
         name="compose"
         options={{
           title: 'Log',
-          tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" size={size + 2} color={color} />,
+          tabBarIcon: ({ color, size }) => <Icon name="add-circle" size={size + 2} color={color} />,
         }}
       />
       <Tabs.Screen
         name="my-map"
         options={{
           title: 'My Map',
-          tabBarIcon: ({ color, size }) => <Ionicons name="trail-sign-outline" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <Icon name="trail-sign-outline" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <Icon name="person-outline" size={size} color={color} />,
         }}
       />
     </Tabs>
