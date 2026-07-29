@@ -146,6 +146,27 @@ export function useFinder() {
     setQuery('');
   };
 
+  // Recenter + zoom to the user. If we don't have their location yet (denied /
+  // not asked), re-request permission and use it.
+  const recenterOnMe = async () => {
+    const zoomTo = (m: Coords) => {
+      setCenter(null);
+      setRegion(null);
+      setPlaceLabel(null);
+      mapRef.current?.animateToRegion({ latitude: m.lat, longitude: m.lng, latitudeDelta: 0.012, longitudeDelta: 0.012 }, 500);
+    };
+    if (me) return zoomTo(me);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') return;
+      const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+      const m = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      setMe(m);
+      setLocReady(true);
+      zoomTo(m);
+    } catch {}
+  };
+
   return {
     session, mapRef, markerTapRef,
     me, center, active, placeLabel, locReady, locNote,
@@ -155,7 +176,7 @@ export function useFinder() {
     savedIds, loggedIds,
     list, activeId, currentSort, nearest,
     hasNextPage, isFetchingNextPage, isLoading, fetchNextPage,
-    resolveTitle, titleFor, select, addRestroomAt, addHere, pickPlace, backToMe,
+    resolveTitle, titleFor, select, addRestroomAt, addHere, pickPlace, backToMe, recenterOnMe,
     onRegionChangeComplete,
   };
 }
