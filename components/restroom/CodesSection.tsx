@@ -1,5 +1,4 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -7,6 +6,8 @@ import { INPUT_CLS, SectionHeader } from '@/components/ui';
 import { daysAgo } from '@/lib/format';
 import { ACCENT, MUTED } from '@/lib/tokens';
 import type { Code } from '@/lib/types';
+
+import { SheetTextInput } from './sheet-inputs';
 
 // View-mode access codes: confirmed list + a quick single-code add.
 export function CodesSection({
@@ -50,7 +51,7 @@ export function CodesSection({
       )}
       {adding ? (
         <View className="mt-2 flex-row gap-2">
-          <BottomSheetTextInput
+          <SheetTextInput
             autoFocus
             placeholder="Add a code…"
             placeholderTextColor={MUTED}

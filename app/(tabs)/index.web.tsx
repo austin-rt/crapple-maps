@@ -42,6 +42,14 @@ export default function MapWeb() {
     setDrawerOpen(true);
   };
 
+  // Tapping a map marker selects it and reopens the drawer (if collapsed) so its
+  // detail shows; also drop out of the filter panel.
+  const selectFromMarker = (item: Restroom) => {
+    setShowFilters(false);
+    setDrawerOpen(true);
+    f.select(item);
+  };
+
   return (
     <View className="flex-1 bg-surface">
       <AppMapView
@@ -65,7 +73,7 @@ export default function MapWeb() {
             key={item.id}
             coordinate={{ latitude: item.lat, longitude: item.lng }}
             pinColor={item.id === f.activeId ? '#DC2626' : f.loggedIds?.has(item.id) ? VISITED : ACCENT}
-            onPress={() => f.select(item)}
+            onPress={() => selectFromMarker(item)}
           />
         ))}
       </AppMapView>

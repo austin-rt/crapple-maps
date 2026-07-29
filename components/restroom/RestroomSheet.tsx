@@ -1,4 +1,3 @@
-import { BottomSheetScrollView, BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -21,6 +20,7 @@ import type { Restroom, RestroomDraft } from '@/lib/types';
 
 import { ActionRow } from './ActionRow';
 import { AmenityChips } from './AmenityChips';
+import { SheetScrollView, SheetTextInput } from './sheet-inputs';
 import { CodesSection } from './CodesSection';
 import { DirectionsSection } from './DirectionsSection';
 import { EditForm } from './EditForm';
@@ -151,7 +151,7 @@ export function RestroomSheet({
   };
 
   return (
-    <BottomSheetScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 48 }} keyboardShouldPersistTaps="handled">
+    <SheetScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 48 }} keyboardShouldPersistTaps="handled">
       <Pressable onPress={onBack} hitSlop={8} className="mb-3 flex-row items-center gap-1 self-start">
         <Ionicons name="chevron-back" size={18} color={ACCENT} />
         <Text className="text-sm font-semibold" style={{ color: ACCENT }}>All restrooms</Text>
@@ -191,7 +191,7 @@ export function RestroomSheet({
           draft={draft}
           onChange={(patch) => setDraft((d) => (d ? { ...d, ...patch } : d))}
           variant="edit"
-          InputComponent={BottomSheetTextInput}
+          InputComponent={SheetTextInput}
         />
       ) : (
         <>
@@ -220,6 +220,6 @@ export function RestroomSheet({
           </Pressable>
         </View>
       ) : null}
-    </BottomSheetScrollView>
+    </SheetScrollView>
   );
 }
