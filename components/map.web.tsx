@@ -51,6 +51,14 @@ export const AppMapView = forwardRef<AppMapHandle, any>(function AppMapView(prop
           disableDefaultUI
           clickableIcons={false}
           onClick={props.onPress}
+          onIdle={(e: any) => {
+            // Fires after a pan/zoom settles → report the new center so the
+            // finder refetches restrooms for the visible area.
+            const c = e?.map?.getCenter?.();
+            if (c && props.onRegionChangeComplete) {
+              props.onRegionChangeComplete({ latitude: c.lat(), longitude: c.lng() });
+            }
+          }}
           onContextmenu={(e: any) => {
             // Long-press (touch) / right-click (desktop) → add-a-restroom. Normalize
             // {lat,lng} to the native onLongPress event shape so the finder reads

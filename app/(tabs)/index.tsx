@@ -39,6 +39,7 @@ export default function MapScreen() {
         showsUserLocation
         showsMyLocationButton={false}
         customMapStyle={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
+        onRegionChangeComplete={f.onRegionChangeComplete}
         onLongPress={(e: any) => {
           const c = e?.nativeEvent?.coordinate;
           if (c) f.addRestroomAt({ lat: c.latitude, lng: c.longitude });
