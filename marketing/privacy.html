@@ -18,7 +18,7 @@
   <li><strong>Account info</strong> — email address, username, display name, and avatar when you create an account (via email, Apple, or Google sign-in).</li>
   <li><strong>Location</strong> — used on-device to show restrooms near you and to center the map. Your live location is not stored on our servers. If you log a visit or add a restroom, the location you choose for that entry is saved as part of it.</li>
   <li><strong>Content you create</strong> — logs, comments, likes, reviews, photos, restroom submissions, and saved places.</li>
-  <li><strong>Usage &amp; diagnostics</strong> — anonymous analytics (PostHog) and crash reports (Sentry) so we can fix bugs and improve the app.</li>
+  <li><strong>Analytics and tracking</strong> — none. We don't use third-party analytics or advertising SDKs, and we don't track you across other apps or websites.</li>
 </ul>
 
 <h2>How it's used</h2>
@@ -29,7 +29,7 @@
 </ul>
 
 <h2>Where it lives</h2>
-<p>Data is stored with Supabase (database, authentication, and file storage). Map tiles and geocoding are provided by Google Maps; searching an address sends that query to Google. Analytics events go to PostHog and crash reports to Sentry.</p>
+<p>Data is stored with Supabase (database, authentication, and file storage). Map tiles and geocoding are provided by Google Maps; searching an address or looking up a restroom's street address sends that query to Google.</p>
 
 <h2>Sharing and visibility</h2>
 <p>Logs can be public or private — private logs are visible only to you and followers you approve. Restrooms you add appear on the public map. Comments and likes are visible to anyone who can see the post they're on.</p>

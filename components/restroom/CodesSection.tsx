@@ -25,6 +25,7 @@ export function CodesSection({
 }) {
   const [adding, setAdding] = useState(false);
   const [newCode, setNewCode] = useState('');
+  const c = useColors();
   if (requiresCode === false) return null;
 
   const post = async () => {
@@ -34,7 +35,6 @@ export function CodesSection({
     setAdding(false);
   };
 
-  const c = useColors();
   return (
     <>
       <SectionHeader>Access codes</SectionHeader>

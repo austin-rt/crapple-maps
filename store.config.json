@@ -1,0 +1,64 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "info": {
+      "en-US": {
+        "title": "Crapple Maps",
+        "subtitle": "Find a bathroom, fast",
+        "description": "You know the feeling. Crapple Maps finds the nearest public restroom before it becomes a problem.\n\nA community-built map of nearly 100,000 restrooms — with the details that actually matter when you're in a hurry.\n\nFIND ONE NOW\n• Nearest restrooms sorted by distance, with walking directions one tap away\n• See at a glance whether it's public, customers-only, needs a door code, or requires a purchase\n• Colored symbols for wheelchair access, gender-neutral, and changing tables\n• Filter for exactly what you need, then search any address or city to plan ahead\n\nTHE DETAILS THAT SAVE YOU\n• Door codes shared by people who've been there\n• \"How to find it\" directions for the restroom hidden behind the unmarked door\n• Ratings and reviews from the community\n\nADD TO THE MAP\nFound one that isn't listed? Add it in seconds and help the next person. Fix wrong info, share a door code, or drop a note about the tricky entrance.\n\nKEEP A LOG (IF YOU WANT)\nTrack your visits privately, or share them with friends you follow. Rate the experience, add a photo, log the Bristol scale if that's your thing. Every log is private by default — you choose what to share.\n\nCrapple Maps is free, works in light and dark mode, and never sells your data.",
+        "keywords": [
+          "restroom",
+          "bathroom",
+          "toilet",
+          "public restroom",
+          "restroom finder",
+          "bathroom finder",
+          "toilet finder",
+          "near me",
+          "wheelchair accessible",
+          "gender neutral",
+          "changing table",
+          "travel",
+          "poop",
+          "IBS"
+        ],
+        "releaseNotes": "First release. Find nearby restrooms, see access and amenities at a glance, get door codes from the community, and add the ones we're missing.",
+        "promoText": "The nearest restroom, with the door code, before you need it.",
+        "marketingUrl": "https://crapplemaps.com/info",
+        "privacyPolicyUrl": "https://crapplemaps.com/privacy",
+        "supportUrl": "https://crapplemaps.com/info"
+      }
+    },
+    "categories": ["TRAVEL", "NAVIGATION"],
+    "release": {
+      "automaticRelease": false,
+      "phasedRelease": false
+    },
+    "advisory": {
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "INFREQUENT_OR_MILD",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "unrestrictedWebAccess": false,
+      "gambling": false
+    },
+    "review": {
+      "firstName": "Austin",
+      "lastName": "Taylor",
+      "email": "austinrtaylor@proton.me",
+      "phone": "+1",
+      "demoAccountName": "demo@cm.seed",
+      "demoAccountPassword": "demopass1",
+      "demoAccountRequired": true,
+      "notes": "Location permission drives the core feature — please allow it so nearby restrooms populate. The demo account has feed posts, comments, and likes so the social features and the report/block moderation menu (overflow ••• on any post or comment) can be reviewed. Account deletion is at Profile > Delete account."
+    }
+  }
+}

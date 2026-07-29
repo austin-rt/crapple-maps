@@ -31,6 +31,7 @@ function Field({ children }: { children: React.ReactNode }) {
 export default function ComposeScreen() {
   const { session } = useAuth();
   const queryClient = useQueryClient();
+  const c = useColors();
 
   const [coords, setCoords] = useState<Coords | null>(null);
   const [locLabel, setLocLabel] = useState<string | null>(null);
@@ -146,7 +147,6 @@ export default function ComposeScreen() {
     }
   };
 
-  const c = useColors();
   return (
     <ScrollView
       className="flex-1 bg-surface"
