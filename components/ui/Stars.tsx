@@ -5,9 +5,8 @@ import { PanResponder, View } from 'react-native';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
-// Unified star rating. Interactive when `onChange` is given (tap/drag across the
-// row); otherwise a static read-only display — PanResponder is only created in
-// the interactive case so it never captures pointer/scroll gestures on web.
+// PanResponder is only created when `onChange` is given, so a read-only display
+// never captures pointer/scroll gestures on web.
 export function Stars({
   value,
   onChange,

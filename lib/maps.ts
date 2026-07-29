@@ -15,9 +15,6 @@ export const MAP_PROVIDER: 'google' | undefined = __DEV__ && Platform.OS === 'io
 
 // Google "night" map style, applied when the app is in dark mode so the map
 // tiles match the theme. Pass to <MapView customMapStyle={...}> (Google only).
-// Google's canonical "night" style — the recognizable Google Maps dark look:
-// blue-gray land, dark-blue water, dark-green parks, and the characteristic warm
-// tan major roads (the color differentiation our old flat style was missing).
 export const DARK_MAP_STYLE = [
   { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
   { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },

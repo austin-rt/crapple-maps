@@ -3,7 +3,6 @@ import { Text, View } from 'react-native';
 
 import { useColors } from '@/lib/theme';
 
-// Small icon + label pill (amenity/facts).
 export function Chip({ icon, label }: { icon: keyof typeof Ionicons.glyphMap; label: string }) {
   const c = useColors();
   return (

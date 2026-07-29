@@ -5,7 +5,6 @@ import { useLikes } from '@/hooks/useReactions';
 import { LIKE } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
-// Interactive heart + count. Optimistic via useLikes; disabled when signed out.
 export function LikeButton({ logId, userId, size = 22 }: { logId: string; userId: string | undefined; size?: number }) {
   const { count, liked, canLike, toggle } = useLikes(logId, userId);
   const c = useColors();

@@ -5,7 +5,6 @@ import { Pressable, Text, View } from 'react-native';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
-// Empty state for auth-gated screens — sends people straight to sign in / up.
 export function SignInRequired({
   icon = 'lock-closed-outline',
   message,

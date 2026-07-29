@@ -11,7 +11,6 @@ import type { FeedLog } from '@/lib/types';
 
 import { FeedPhotos } from './FeedPhotos';
 
-// Twitter-style post row: avatar left, everything else stacked on the right.
 export function FeedCard({ log }: { log: FeedLog }) {
   const a = log.author;
   const name = a?.display_name || a?.username || 'Someone';

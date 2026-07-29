@@ -10,8 +10,7 @@ import { timeAgo } from '@/lib/format';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
-// Comments list + composer for the post detail. Works on native and web (plain
-// TextInput; this screen is a ScrollView route, not a bottom sheet).
+// Plain TextInput because this screen is a ScrollView route, not a bottom sheet.
 export function CommentsSection({ logId, session }: { logId: string; session: Session | null }) {
   const { comments, isLoading, add, remove, adding } = useComments(logId);
   const [text, setText] = useState('');

@@ -2,7 +2,6 @@ import { Pressable, Text, View } from 'react-native';
 
 import { ACCENT } from '@/lib/tokens';
 
-// Equal-width segmented selector. `options` are [label, value] pairs.
 export function Segmented<T>({
   options,
   value,

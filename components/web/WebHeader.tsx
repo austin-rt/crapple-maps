@@ -11,8 +11,6 @@ import { useColors } from '@/lib/theme';
 
 import { WebNavDrawer } from './WebNavDrawer';
 
-// Persistent top header for every web page except the map: hamburger (opens the
-// app nav) or a back arrow on pushed routes, the page title, and the user menu.
 // Rendered by the navigator's `header` slot so it stays put while content
 // scrolls — it is NOT a repositioned drawer shell.
 export function WebHeader({ title, canGoBack, onBack }: { title?: string; canGoBack?: boolean; onBack?: () => void }) {

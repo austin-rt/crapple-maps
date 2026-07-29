@@ -17,8 +17,6 @@ const PIN_ICON =
       `<circle cx="14" cy="14" r="5" fill="#ffffff"/></svg>`,
   );
 
-// Web pin picker — a draggable brand-purple marker (drag it, or tap the map, to
-// set the exact spot). Mirrors the native Uber-style picker.
 export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (c: Coords) => void }) {
   return (
     <View className="mt-3 overflow-hidden rounded-xl border border-line" style={{ height: 200 }}>

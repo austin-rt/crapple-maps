@@ -14,10 +14,8 @@ import { useColors, useThemePref } from '@/lib/theme';
 import { ACCENT, DANGER } from '@/lib/tokens';
 import type { Restroom } from '@/lib/types';
 
-// The mobile map experience — shared by native (iOS/Android) AND mobile web so
-// they're identical: full-bleed map, floating search, a @gorhom bottom sheet
-// whose collapsed peek shows the summary header (count + nearest + sort), tap to
-// expand, and a recenter button. Sort/filter live in the sheet (FilterSheet).
+// Shared by native (iOS/Android) AND mobile web so they stay identical. Sort and
+// filter live in the sheet (FilterSheet), not the search bar.
 const PEEK = 84; // sheet height when collapsed — just the handle + summary header
 
 export function MobileMap() {
@@ -63,7 +61,6 @@ export function MobileMap() {
         ))}
       </AppMapView>
 
-      {/* floating search (sort/filter live in the sheet, not here) */}
       <View style={{ position: 'absolute', top: insets.top + 10, left: 14, right: 14, zIndex: 20 }}>
         <View className="flex-row items-center rounded-2xl bg-surface px-3" style={styles.shadow}>
           <Ionicons name="search" size={16} color={c.content2} />

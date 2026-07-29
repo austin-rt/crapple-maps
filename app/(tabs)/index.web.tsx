@@ -88,7 +88,6 @@ function DesktopMapWeb() {
         ))}
       </AppMapView>
 
-      {/* top-right: account only, pinned right */}
       <View style={{ position: 'absolute', top: 14, right: 16, zIndex: 20 }}>
         <Pressable onPress={() => router.push('/profile')} className="items-center justify-center overflow-hidden rounded-full bg-surface" style={[{ width: 44, height: 44 }, styles.shadow]}>
           {f.session ? <Avatar seed={me?.avatar_seed || me?.username || f.session.user.id} size={40} /> : <Ionicons name="person-circle-outline" size={30} color={c.content2} />}

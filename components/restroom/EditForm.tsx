@@ -36,9 +36,9 @@ function Toggle({ label, on, onPress }: { label: string; on: boolean; onPress: (
   );
 }
 
-// Shared create/edit form. `variant='edit'` shows the listing-detail fields the
-// restroom sheet edits; `variant='create'` adds name, access type and amenities.
-// `InputComponent` is BottomSheetTextInput inside a sheet, TextInput on a screen.
+// `variant='create'` adds the name, access and amenity fields on top of the
+// shared edit fields. `InputComponent` is BottomSheetTextInput inside a sheet,
+// TextInput on a screen.
 export function EditForm({
   draft,
   onChange,

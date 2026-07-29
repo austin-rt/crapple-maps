@@ -10,7 +10,6 @@ import type { Code } from '@/lib/types';
 
 import { SheetTextInput } from './sheet-inputs';
 
-// View-mode access codes: confirmed list + a quick single-code add.
 export function CodesSection({
   codes,
   requiresCode,
