@@ -1,0 +1,26 @@
+# Builds a new native binary and submits it to TestFlight — only when a version
+# tag is pushed (native builds are slow, quota-limited, and should be
+# deliberate: version bumps, new native deps, config changes).
+#
+# Release flow: git tag v1.x.x && git push origin v1.x.x
+name: Release native build
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build_ios:
+    name: eas build ios → production
+    type: build
+    params:
+      platform: ios
+      profile: production
+
+  submit_ios:
+    name: submit → TestFlight
+    needs: [build_ios]
+    type: submit
+    params:
+      build_id: ${{ needs.build_ios.outputs.build_id }}
+      profile: production
