@@ -1,7 +1,11 @@
 # Builds a native binary and submits it to TestFlight. Triggered by changes that
 # JS-over-the-air can't deliver — new/updated dependencies, app config, or
-# native plugins — so `git push` is the only action needed. Tags still work as a
-# manual escape hatch when you want a build without a native change.
+# native plugins — so `git push` is the only action needed.
+#
+# No tag trigger: `paths` filters tag pushes too, so a tag would only fire when
+# the tagged commit happened to touch these files. To force a build without a
+# native change, run it directly:
+#   npx eas-cli workflow:run .eas/workflows/release-native.yml
 #
 # Everything else (app/, components/, lib/, …) ships over the air via
 # publish-ota.yml and never builds a binary.
@@ -17,7 +21,6 @@ on:
       - app.config.js
       - plugins/**
       - .easignore
-    tags: ['v*']
 
 defaults:
   tools:
