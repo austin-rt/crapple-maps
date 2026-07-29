@@ -31,7 +31,7 @@ export async function fetchNearby({ lat, lng, limit, offset, sort, filters }: Ne
 export async function fetchRestroomPage(offset: number, limit: number): Promise<Restroom[]> {
   const { data, error } = await supabase
     .from('restrooms')
-    .select('id,name,lat,lng,address,access_type,accessible,unisex,changing_table,requires_code,purchase_required')
+    .select('id,name,lat,lng,address,hours,access_type,accessible,unisex,changing_table,requires_code,purchase_required')
     .range(offset, offset + limit - 1);
   if (error) throw error;
   return (data ?? []).map((r: any) => ({ ...r, dist: null }));

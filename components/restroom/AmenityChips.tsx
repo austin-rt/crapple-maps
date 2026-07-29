@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { Chip } from '@/components/ui';
+import { AMENITY_META, AmenityIcon, type AmenityType } from '@/components/ui';
 import { ACCESS } from '@/lib/restrooms/filters';
 import type { RestroomInfo } from '@/lib/types';
 
@@ -10,6 +10,17 @@ type Amenities = {
   unisex: boolean | null;
   changing_table: boolean | null;
 };
+
+// Tinted pill per amenity, in that amenity's fixed color (see ui/AmenityIcon).
+function AmenityPill({ type }: { type: AmenityType }) {
+  const m = AMENITY_META[type];
+  return (
+    <View className="flex-row items-center gap-1 rounded-full px-3 py-1" style={{ backgroundColor: m.color + '22' }}>
+      <AmenityIcon type={type} />
+      <Text className="text-xs font-semibold" style={{ color: m.color }}>{m.label}</Text>
+    </View>
+  );
+}
 
 export function AmenityChips({ restroom, info }: { restroom: Amenities; info: RestroomInfo | null | undefined }) {
   const access = restroom.access_type ? ACCESS[restroom.access_type] : null;
@@ -23,11 +34,11 @@ export function AmenityChips({ restroom, info }: { restroom: Amenities; info: Re
           <Text className="text-xs font-semibold" style={{ color: access.color }}>{access.label}</Text>
         </View>
       ) : null}
-      {restroom.accessible ? <Chip icon="accessibility" label="Accessible" /> : null}
-      {restroom.unisex ? <Chip icon="male-female" label="Unisex" /> : null}
-      {restroom.changing_table ? <Chip icon="body" label="Changing table" /> : null}
-      {info?.requires_code ? <Chip icon="keypad-outline" label="Code required" /> : null}
-      {info?.purchase_required ? <Chip icon="card-outline" label="Purchase required" /> : null}
+      {restroom.accessible ? <AmenityPill type="accessible" /> : null}
+      {restroom.unisex ? <AmenityPill type="unisex" /> : null}
+      {restroom.changing_table ? <AmenityPill type="changing" /> : null}
+      {info?.requires_code ? <AmenityPill type="code" /> : null}
+      {info?.purchase_required ? <AmenityPill type="purchase" /> : null}
     </View>
   );
 }

@@ -15,6 +15,7 @@ export type Restroom = {
   lat: number;
   lng: number;
   address?: string | null;
+  hours?: string | null;
   access_type: AccessType | null;
   accessible: boolean | null;
   unisex: boolean | null;

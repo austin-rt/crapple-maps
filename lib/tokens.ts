@@ -6,7 +6,19 @@
 // the JS side (icons/SVGs/inline styles, via this constant) and the Tailwind
 // `accent` color (bg-accent/text-accent classes).
 export { ACCENT } from '@/theme/brand';
-export const DANGER = '#DC2626'; // destructive actions / selected marker
+export const DANGER = '#DC2626'; // destructive actions / selected marker / closed now
+export const OPEN = '#16A34A'; // open-now label (matches ACCESS.public green)
+
+// Amenity symbol colors — powder tones complementary to the teal accent. Each
+// symbol ALWAYS renders in its color (via components/ui/AmenityIcon) so they
+// read at a glance without labels.
+export const AMENITY = {
+  accessible: '#38BDF8', // powder sky — wheelchair accessible
+  unisex: '#A78BFA', // powder purple — gender neutral
+  changing: '#F472B6', // powder pink — changing table
+  code: '#FBBF24', // powder amber — door code required
+  purchase: '#34D399', // powder mint — purchase required
+} as const;
 export const VISITED = '#7C3AED'; // visited/logged marker (purple)
 export const LIKE = '#EF4444'; // like heart (red)
 export const ON_ACCENT = '#FFFFFF'; // text/icons on the accent or other solid color buttons

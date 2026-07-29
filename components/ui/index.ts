@@ -6,6 +6,7 @@ export { Chip } from './Chip';
 export { CodePills } from './CodePills';
 export { GoogleG } from './GoogleG';
 export { InfoRow } from './InfoRow';
+export { AmenityIcon, AMENITY_META, type AmenityType } from './AmenityIcon';
 export { MarkerBadge } from './MarkerBadge';
 export { SectionHeader } from './SectionHeader';
 export { Segmented } from './Segmented';
