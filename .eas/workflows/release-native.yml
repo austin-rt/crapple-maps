@@ -1,18 +1,33 @@
-# Builds a new native binary and submits it to TestFlight — only when a version
-# tag is pushed (native builds are slow, quota-limited, and should be
-# deliberate: version bumps, new native deps, config changes).
+# Builds a native binary and submits it to TestFlight. Triggered by changes that
+# JS-over-the-air can't deliver — new/updated dependencies, app config, or
+# native plugins — so `git push` is the only action needed. Tags still work as a
+# manual escape hatch when you want a build without a native change.
 #
-# Release flow: git tag v1.x.x && git push origin v1.x.x
+# Everything else (app/, components/, lib/, …) ships over the air via
+# publish-ota.yml and never builds a binary.
 name: Release native build
 
 on:
   push:
+    branches: ['main']
+    paths:
+      - package.json
+      - package-lock.json
+      - app.json
+      - app.config.js
+      - plugins/**
+      - .easignore
     tags: ['v*']
+
+defaults:
+  tools:
+    node: 22.14.0
 
 jobs:
   build_ios:
     name: eas build ios → production
     type: build
+    environment: production
     params:
       platform: ios
       profile: production
