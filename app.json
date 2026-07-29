@@ -19,7 +19,10 @@
         "tinted": "./assets/images/icon-tinted.png"
       },
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "Crapple Maps uses your location to show the public restrooms nearest to you and to center the map on where you are.",
+        "NSCameraUsageDescription": "Take a photo to attach to a restroom or a log entry.",
+        "NSPhotoLibraryUsageDescription": "Choose a photo from your library to attach to a restroom, a log entry, or your profile picture."
       }
     },
     "android": {

@@ -23,6 +23,7 @@ export default function LogDetail() {
   const { session } = useAuth();
   const { data, isLoading } = useLog(id);
   const place = useResolvedPlace(data?.lat ?? 0, data?.lng ?? 0, !!data);
+  const c = useColors();
 
   if (isLoading || !data) {
     return (
@@ -37,7 +38,6 @@ export default function LogDetail() {
   const name = a?.display_name || a?.username || 'Someone';
   const b = bristol(data.bristol_type);
 
-  const c = useColors();
   return (
     <ScrollView
       className="flex-1 bg-surface"
