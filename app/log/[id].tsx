@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { Image } from 'expo-image';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from 'react-native';
@@ -62,7 +62,7 @@ export default function LogDetail() {
           <Text className="text-base font-bold text-content">{name}</Text>
           <Text className="text-sm text-content-2">@{a?.username ?? 'user'}</Text>
         </View>
-        {data.visibility === 'private' ? <Ionicons name="lock-closed" size={16} color={c.content2} /> : null}
+        {data.visibility === 'private' ? <Icon name="lock-closed" size={16} color={c.content2} /> : null}
       </View>
 
       {data.caption ? <Text className="px-4 pt-3 text-[19px] leading-7 text-content">{data.caption}</Text> : null}
@@ -89,7 +89,7 @@ export default function LogDetail() {
       <View className="mt-4 flex-row items-center gap-7 px-4">
         <LikeButton logId={data.id} userId={session?.user.id} />
         <View className="flex-row items-center gap-1.5">
-          <Ionicons name="chatbubble-outline" size={20} color={c.content2} />
+          <Icon name="chatbubble-outline" size={20} color={c.content2} />
           {data.comments_count > 0 ? <Text className="text-sm text-content-2">{data.comments_count}</Text> : null}
         </View>
       </View>
@@ -100,14 +100,14 @@ export default function LogDetail() {
         onPress={() => router.navigate({ pathname: '/(tabs)', params: { flat: String(data.lat), flng: String(data.lng) } })}
         className="mx-4 mt-4 flex-row items-center justify-center gap-2 rounded-xl py-3 active:opacity-80"
         style={{ backgroundColor: ACCENT }}>
-        <Ionicons name="map" size={16} color={ON_ACCENT} />
+        <Icon name="map" size={16} color={ON_ACCENT} />
         <Text className="font-semibold text-white">See on map</Text>
       </Pressable>
 
       <Pressable
         onPress={() => openDirections(data.lat, data.lng, place?.title || 'Location')}
         className="mx-4 mt-3 flex-row items-center justify-center gap-2 rounded-xl border border-line py-3 active:opacity-70">
-        <Ionicons name="navigate" size={16} color={ACCENT} />
+        <Icon name="navigate" size={16} color={ACCENT} />
         <Text className="font-semibold text-content">Directions</Text>
       </Pressable>
 

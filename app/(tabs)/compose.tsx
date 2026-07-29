@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { useFocusEffect } from 'expo-router';
@@ -174,7 +174,7 @@ export default function ComposeScreen() {
             <View
               className="h-6 w-6 items-center justify-center rounded-md border"
               style={{ borderColor: alsoPublish ? ACCENT : c.content2, backgroundColor: alsoPublish ? ACCENT : 'transparent' }}>
-              {alsoPublish ? <Ionicons name="checkmark" size={16} color={ON_ACCENT} /> : null}
+              {alsoPublish ? <Icon name="checkmark" size={16} color={ON_ACCENT} /> : null}
             </View>
             <View className="flex-1">
               <Text className="text-[15px] font-medium text-content">This spot isn’t on the map yet</Text>
@@ -231,7 +231,7 @@ export default function ComposeScreen() {
                 hitSlop={6}
                 style={{ position: 'absolute', top: -6, right: -6 }}
                 className="h-5 w-5 items-center justify-center rounded-full bg-black/70">
-                <Ionicons name="close" size={12} color={ON_ACCENT} />
+                <Icon name="close" size={12} color={ON_ACCENT} />
               </Pressable>
             </View>
           ))}
@@ -239,7 +239,7 @@ export default function ComposeScreen() {
             <Pressable
               onPress={addPhotos}
               className="h-[72px] w-[72px] items-center justify-center rounded-xl border border-dashed border-line">
-              <Ionicons name="camera-outline" size={22} color={c.content2} />
+              <Icon name="camera-outline" size={22} color={c.content2} />
             </Pressable>
           ) : null}
         </View>
@@ -256,7 +256,7 @@ export default function ComposeScreen() {
                 onPress={() => setVisibility(v)}
                 className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-xl border py-2.5 ${active ? 'border-transparent' : 'border-line'}`}
                 style={active ? { backgroundColor: ACCENT } : undefined}>
-                <Ionicons name={v === 'friends' ? 'people-outline' : 'lock-closed-outline'} size={16} color={active ? ON_ACCENT : c.content2} />
+                <Icon name={v === 'friends' ? 'people-outline' : 'lock-closed-outline'} size={16} color={active ? ON_ACCENT : c.content2} />
                 <Text className={active ? 'font-semibold text-white' : 'text-content-2'}>
                   {v === 'friends' ? 'Friends' : 'Private'}
                 </Text>

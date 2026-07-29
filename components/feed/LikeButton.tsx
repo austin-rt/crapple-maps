@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { Pressable, Text } from 'react-native';
 
 import { useLikes } from '@/hooks/useReactions';
@@ -10,7 +10,7 @@ export function LikeButton({ logId, userId, size = 22 }: { logId: string; userId
   const c = useColors();
   return (
     <Pressable onPress={() => canLike && toggle()} disabled={!canLike} hitSlop={8} className="flex-row items-center gap-1.5 active:opacity-60">
-      <Ionicons name={liked ? 'heart' : 'heart-outline'} size={size} color={liked ? LIKE : c.content2} />
+      <Icon name={liked ? 'heart' : 'heart-outline'} size={size} color={liked ? LIKE : c.content2} />
       {count > 0 ? <Text className="text-sm font-medium" style={{ color: liked ? LIKE : c.content2 }}>{count}</Text> : null}
     </Pressable>
   );

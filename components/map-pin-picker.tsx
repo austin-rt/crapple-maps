@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import Constants from 'expo-constants';
 import { Platform, Text, View } from 'react-native';
 
@@ -27,7 +27,7 @@ export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (
   if (!mapsAvailable) {
     return (
       <View className="mt-3 items-center rounded-xl border border-dashed border-line p-4">
-        <Ionicons name="map-outline" size={22} color={c.content2} />
+        <Icon name="map-outline" size={22} color={c.content2} />
         <Text className="mt-1 text-center text-xs text-content-2">
           Drag-a-pin map appears in the dev build. Using the selected location.
         </Text>
@@ -42,7 +42,7 @@ export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (
         onRegionChangeComplete={(reg: any) => onChange({ latitude: reg.latitude, longitude: reg.longitude })}
       />
       <View pointerEvents="none" className="absolute inset-0 items-center justify-center">
-        <Ionicons name="location" size={42} color={ACCENT} style={{ marginBottom: 42 }} />
+        <Icon name="location" size={42} color={ACCENT} style={{ marginBottom: 42 }} />
       </View>
     </View>
   );

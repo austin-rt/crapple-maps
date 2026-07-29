@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { router, usePathname } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
@@ -32,13 +32,13 @@ export function WebNavDrawer({ open, onClose }: { open: boolean; onClose: () => 
     <LeftDrawer open={open} width={WIDTH} scrim onScrimPress={onClose} zIndex={50} panelStyle={{ paddingTop: 14 }}>
       <View className="flex-row items-center justify-between border-b border-line px-5 pb-4">
         <View className="flex-row items-center gap-2.5">
-          <Ionicons name="location" size={24} color={ACCENT} />
+          <Icon name="location" size={24} color={ACCENT} />
           <Text className="text-xl font-extrabold text-content">
             Crapple <Text style={{ color: ACCENT }}>Maps</Text>
           </Text>
         </View>
         <Pressable onPress={onClose} hitSlop={10} className="items-center justify-center">
-          <Ionicons name="close" size={24} color={c.content2} />
+          <Icon name="close" size={24} color={c.content2} />
         </Pressable>
       </View>
       <View className="px-3 pt-3">
@@ -50,7 +50,7 @@ export function WebNavDrawer({ open, onClose }: { open: boolean; onClose: () => 
               onPress={() => go(it.href)}
               className="mb-1 flex-row items-center gap-3 rounded-xl px-4 py-3"
               style={on ? { backgroundColor: ACCENT + '18' } : undefined}>
-              <Ionicons name={it.icon as any} size={22} color={on ? ACCENT : c.content2} />
+              <Icon name={it.icon as any} size={22} color={on ? ACCENT : c.content2} />
               <Text className="text-base font-semibold" style={on ? { color: ACCENT } : undefined}>
                 <Text className={on ? '' : 'text-content'}>{it.label}</Text>
               </Text>

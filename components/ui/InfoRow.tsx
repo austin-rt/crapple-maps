@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon, type IconName } from './Icon';
 import { Pressable, View } from 'react-native';
 
 import { useColors } from '@/lib/theme';
@@ -8,14 +8,14 @@ export function InfoRow({
   children,
   onPress,
 }: {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: IconName;
   children: React.ReactNode;
   onPress?: () => void;
 }) {
   const c = useColors();
   const body = (
     <View className="flex-row items-start gap-3 py-2.5">
-      <Ionicons name={icon} size={18} color={c.content2} style={{ marginTop: 1 }} />
+      <Icon name={icon} size={18} color={c.content2} style={{ marginTop: 1 }} />
       <View className="flex-1">{children}</View>
     </View>
   );

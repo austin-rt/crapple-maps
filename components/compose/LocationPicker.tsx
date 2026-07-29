@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import * as Location from 'expo-location';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native';
@@ -58,13 +58,13 @@ export function LocationPicker({
     <View>
       {coords ? (
         <View className="mb-3 flex-row items-start gap-2 rounded-xl bg-surface-2 p-3">
-          <Ionicons name="location" size={18} color={ACCENT} style={{ marginTop: 1 }} />
+          <Icon name="location" size={18} color={ACCENT} style={{ marginTop: 1 }} />
           <Text className="flex-1 text-sm text-content">{label}</Text>
         </View>
       ) : null}
 
       <View className="flex-row items-center rounded-xl border border-line px-3">
-        <Ionicons name="search" size={16} color={c.content2} />
+        <Icon name="search" size={16} color={c.content2} />
         <TextInput
           placeholder="Search an address or place…"
           placeholderTextColor={c.content2}
@@ -95,7 +95,7 @@ export function LocationPicker({
         onPress={useCurrent}
         disabled={locating}
         className="mt-3 flex-row items-center justify-center gap-2 rounded-xl border border-line py-3 active:opacity-70">
-        <Ionicons name="navigate" size={16} color={ACCENT} />
+        <Icon name="navigate" size={16} color={ACCENT} />
         <Text className="font-semibold text-content">
           {locating ? 'Locating…' : 'Use my current location'}
         </Text>

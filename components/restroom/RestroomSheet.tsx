@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { useState } from 'react';
 import { Pressable, Share, Text, View } from 'react-native';
 
@@ -153,7 +153,7 @@ export function RestroomSheet({
   return (
     <SheetScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 48 }} keyboardShouldPersistTaps="handled">
       <Pressable onPress={onBack} hitSlop={8} className="mb-3 flex-row items-center gap-1 self-start">
-        <Ionicons name="chevron-back" size={18} color={ACCENT} />
+        <Icon name="chevron-back" size={18} color={ACCENT} />
         <Text className="text-sm font-semibold" style={{ color: ACCENT }}>All restrooms</Text>
       </Pressable>
 
@@ -177,7 +177,7 @@ export function RestroomSheet({
 
       {editing ? (
         <View className="mt-3 flex-row items-center gap-2 rounded-xl px-3 py-2" style={{ backgroundColor: ACCENT + '14' }}>
-          <Ionicons name="create-outline" size={15} color={ACCENT} />
+          <Icon name="create-outline" size={15} color={ACCENT} />
           <Text className="flex-1 text-xs" style={{ color: ACCENT }}>Editing this listing.</Text>
         </View>
       ) : null}

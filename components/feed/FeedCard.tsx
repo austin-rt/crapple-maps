@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
@@ -29,7 +29,7 @@ export function FeedCard({ log }: { log: FeedLog }) {
           <Text className="ml-1 flex-shrink text-[15px] text-content-2" numberOfLines={1}>
             @{a?.username ?? 'user'} · {timeAgo(log.created_at)}
           </Text>
-          {log.visibility === 'private' ? <Ionicons name="lock-closed" size={12} color={c.content2} style={{ marginLeft: 4 }} /> : null}
+          {log.visibility === 'private' ? <Icon name="lock-closed" size={12} color={c.content2} style={{ marginLeft: 4 }} /> : null}
         </View>
 
         {log.caption ? <Text className="mt-0.5 text-[15px] leading-5 text-content">{log.caption}</Text> : null}
@@ -54,11 +54,11 @@ export function FeedCard({ log }: { log: FeedLog }) {
 
         <View className="mt-2 flex-row items-center gap-6">
           <View className="flex-row items-center gap-1.5">
-            <Ionicons name="heart-outline" size={17} color={c.content2} />
+            <Icon name="heart-outline" size={17} color={c.content2} />
             {log.likes_count > 0 ? <Text className="text-xs text-content-2">{log.likes_count}</Text> : null}
           </View>
           <View className="flex-row items-center gap-1.5">
-            <Ionicons name="chatbubble-outline" size={16} color={c.content2} />
+            <Icon name="chatbubble-outline" size={16} color={c.content2} />
             {log.comments_count > 0 ? <Text className="text-xs text-content-2">{log.comments_count}</Text> : null}
           </View>
         </View>

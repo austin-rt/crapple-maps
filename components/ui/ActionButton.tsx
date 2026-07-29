@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon, type IconName } from './Icon';
 import { Pressable, Text, View } from 'react-native';
 
 import { ACCENT, ON_ACCENT } from '@/lib/tokens';
@@ -10,7 +10,7 @@ export function ActionButton({
   filled,
   tint = ACCENT,
 }: {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: IconName;
   label: string;
   onPress: () => void;
   filled?: boolean;
@@ -21,7 +21,7 @@ export function ActionButton({
       <View
         className={`h-12 w-12 items-center justify-center rounded-full ${filled ? '' : 'border border-line'}`}
         style={filled ? { backgroundColor: tint } : undefined}>
-        <Ionicons name={icon} size={20} color={filled ? ON_ACCENT : tint} />
+        <Icon name={icon} size={20} color={filled ? ON_ACCENT : tint} />
       </View>
       <Text className="text-xs text-content-2" style={tint === ACCENT ? undefined : { color: tint }}>
         {label}

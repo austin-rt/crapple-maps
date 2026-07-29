@@ -7,6 +7,7 @@ export { CodePills } from './CodePills';
 export { GoogleG } from './GoogleG';
 export { InfoRow } from './InfoRow';
 export { AmenityIcon, AMENITY_META, type AmenityType } from './AmenityIcon';
+export { Icon, type IconName } from './Icon';
 export { MarkerBadge } from './MarkerBadge';
 export { SectionHeader } from './SectionHeader';
 export { Segmented } from './Segmented';

@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { useQuery } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
@@ -33,7 +33,7 @@ export default function People() {
 
       <View className="px-4 pt-3">
         <View className="flex-row items-center rounded-2xl border border-line px-3">
-          <Ionicons name="search" size={16} color={c.content2} />
+          <Icon name="search" size={16} color={c.content2} />
           <TextInput
             placeholder="Search by username…"
             placeholderTextColor={c.content2}

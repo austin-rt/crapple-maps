@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -51,7 +51,7 @@ export function PlaceCard({
       <View className="flex-1">
         <View className="flex-row items-center gap-1">
           <Text numberOfLines={1} className="flex-shrink text-base font-semibold text-content">{title}</Text>
-          {saved ? <Ionicons name="bookmark" size={13} color={ACCENT} /> : null}
+          {saved ? <Icon name="bookmark" size={13} color={ACCENT} /> : null}
         </View>
         {address ? (
           <Text numberOfLines={1} className="mt-0.5 text-sm text-content-2">{address}</Text>
@@ -75,7 +75,7 @@ export function PlaceCard({
         onPress={() => openDirections(item.lat, item.lng, title)}
         className="items-center justify-center rounded-full px-3 py-2"
         style={{ backgroundColor: ACCENT + '18' }}>
-        <Ionicons name="navigate" size={18} color={ACCENT} />
+        <Icon name="navigate" size={18} color={ACCENT} />
       </Pressable>
     </Pressable>
   );

@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -68,7 +68,7 @@ export function CodesSection({
         <Pressable
           onPress={() => (canAdd ? setAdding(true) : onRequireAuth())}
           className="mt-2 flex-row items-center gap-1.5 self-start active:opacity-70">
-          <Ionicons name="add-circle-outline" size={18} color={ACCENT} />
+          <Icon name="add-circle-outline" size={18} color={ACCENT} />
           <Text className="text-sm font-semibold" style={{ color: ACCENT }}>Add a code</Text>
         </Pressable>
       )}

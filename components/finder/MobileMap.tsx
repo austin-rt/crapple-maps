@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { useRef } from 'react';
 import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -63,7 +63,7 @@ export function MobileMap() {
 
       <View style={{ position: 'absolute', top: insets.top + 10, left: 14, right: 14, zIndex: 20 }}>
         <View className="flex-row items-center rounded-2xl bg-surface px-3" style={styles.shadow}>
-          <Ionicons name="search" size={16} color={c.content2} />
+          <Icon name="search" size={16} color={c.content2} />
           <TextInput
             placeholder="Search address, city, or ZIP…"
             placeholderTextColor={c.content2}
@@ -77,7 +77,7 @@ export function MobileMap() {
             <ActivityIndicator size="small" color={c.content2} />
           ) : f.query.length > 0 ? (
             <Pressable hitSlop={8} onPress={() => f.setQuery('')}>
-              <Ionicons name="close-circle" size={18} color={c.content2} />
+              <Icon name="close-circle" size={18} color={c.content2} />
             </Pressable>
           ) : null}
         </View>
@@ -89,7 +89,7 @@ export function MobileMap() {
                 key={`${p.lat}-${p.lon}-${i}`}
                 onPress={() => f.pickPlace(p)}
                 className="flex-row items-center gap-2 border-b border-line px-3 py-3 active:bg-surface-2">
-                <Ionicons name="location-outline" size={16} color={c.content2} />
+                <Icon name="location-outline" size={16} color={c.content2} />
                 <Text numberOfLines={2} className="flex-1 text-sm text-content">{p.display_name}</Text>
               </Pressable>
             ))}
@@ -102,7 +102,7 @@ export function MobileMap() {
         onPress={f.recenterOnMe}
         className="absolute items-center justify-center rounded-full bg-surface"
         style={[{ right: 16, bottom: PEEK + 18, width: 46, height: 46 }, styles.shadow]}>
-        <Ionicons name="locate" size={22} color={ACCENT} />
+        <Icon name="locate" size={22} color={ACCENT} />
       </Pressable>
 
       <BottomSheet
@@ -145,7 +145,7 @@ export function MobileMap() {
                 onPress={() => f.setFilterOpen(true)}
                 className="flex-row items-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 active:opacity-70"
                 style={f.activeFilterCount ? { borderColor: ACCENT } : undefined}>
-                <Ionicons name="options-outline" size={15} color={f.activeFilterCount ? ACCENT : c.content2} />
+                <Icon name="options-outline" size={15} color={f.activeFilterCount ? ACCENT : c.content2} />
                 <Text className="text-sm font-medium" style={{ color: f.activeFilterCount ? ACCENT : c.content2 }}>Sort & filter</Text>
               </Pressable>
             </Pressable>

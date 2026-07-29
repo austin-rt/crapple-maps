@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui';
 import { useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 
@@ -53,7 +53,7 @@ export function ReviewsSection({
 
       {editing ? (
         <View className="mt-2 flex-row items-center gap-1.5 self-start opacity-40">
-          <Ionicons name="add-circle-outline" size={18} color={c.content2} />
+          <Icon name="add-circle-outline" size={18} color={c.content2} />
           <Text className="text-sm font-semibold text-content-2">Finish editing to add a review</Text>
         </View>
       ) : writing ? (
@@ -87,7 +87,7 @@ export function ReviewsSection({
         <Pressable
           onPress={() => (canAdd ? setWriting(true) : onRequireAuth())}
           className="mt-2 flex-row items-center gap-1.5 self-start active:opacity-70">
-          <Ionicons name="add-circle-outline" size={18} color={ACCENT} />
+          <Icon name="add-circle-outline" size={18} color={ACCENT} />
           <Text className="text-sm font-semibold" style={{ color: ACCENT }}>Add a review</Text>
         </Pressable>
       )}
