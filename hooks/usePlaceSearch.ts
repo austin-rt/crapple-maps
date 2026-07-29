@@ -4,7 +4,6 @@ import { useDebouncedValue } from './useDebouncedValue';
 
 export type Place = { lat: string; lon: string; display_name: string };
 
-// Debounced Nominatim address/place search (finder + compose).
 export function usePlaceSearch(query: string) {
   const q = useDebouncedValue(query.trim(), 450);
   const enabled = q.length >= 3;

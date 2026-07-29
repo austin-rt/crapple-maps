@@ -1,6 +1,5 @@
 import Svg, { Circle, Ellipse, Path, Rect } from 'react-native-svg';
 
-// Original, layered people-avatar factory (rich flat-vector, seeded).
 function hashStr(s: string) {
   let h = 2166136261;
   for (let i = 0; i < s.length; i++) {
@@ -113,7 +112,7 @@ export function Avatar({
       <Ellipse cx={41} cy={49} rx={3.2} ry={2.2} fill="#F59AA0" opacity={0.4} />
       <Ellipse cx={59} cy={49} rx={3.2} ry={2.2} fill="#F59AA0" opacity={0.4} />
 
-      {/* eyes — small, simple, calm */}
+      {/* eyes */}
       <Ellipse cx={43} cy={43.6} rx={1.7} ry={2.3} fill="#2b2320" />
       <Ellipse cx={57} cy={43.6} rx={1.7} ry={2.3} fill="#2b2320" />
       <Circle cx={43.6} cy={42.9} r={0.5} fill="#ffffff" opacity={0.85} />

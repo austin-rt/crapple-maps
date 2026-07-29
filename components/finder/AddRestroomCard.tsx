@@ -3,8 +3,8 @@ import { Pressable, Text, View } from 'react-native';
 
 import { ACCENT } from '@/lib/tokens';
 
-// Shared "Add a restroom" CTA, rendered atop the results list on both the native
-// bottom-sheet and the web left-drawer so the two layouts never drift.
+// Rendered atop the results list on both the native bottom-sheet and the web
+// left-drawer so the two layouts never drift.
 export function AddRestroomCard({ onPress }: { onPress: () => void }) {
   return (
     <Pressable

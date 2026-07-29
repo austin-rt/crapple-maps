@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 import { SectionHeader } from '@/components/ui';
 import { ACCENT } from '@/lib/tokens';
 
-// View-mode display of saved directions (edit mode uses EditForm instead).
 export function DirectionsSection({ directions }: { directions: string | null | undefined }) {
   if (!directions) return null;
   return (

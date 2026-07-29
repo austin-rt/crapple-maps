@@ -3,8 +3,8 @@ import { Modal, Pressable } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
-// A bottom-sheet-style Modal you can flick down to dismiss. RN Modal renders in its
-// own native hierarchy, so gestures need their own GestureHandlerRootView here.
+// RN Modal renders in its own native hierarchy, so gestures need their own
+// GestureHandlerRootView here.
 export function SwipeDownModal({
   visible,
   onClose,

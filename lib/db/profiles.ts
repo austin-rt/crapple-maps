@@ -50,8 +50,7 @@ export async function fetchLogCount(userId: string): Promise<number> {
   return count ?? 0;
 }
 
-// Upload an avatar image. `fetch(uri)` handles native file URIs AND web
-// blob/data URLs, so this works on all platforms.
+// `fetch(uri)` handles native file URIs AND web blob/data URLs, so this works on all platforms.
 export async function uploadAvatar(userId: string, uri: string): Promise<string> {
   const arraybuffer = await fetch(uri).then((r) => r.arrayBuffer());
   const path = `${userId}/avatar_${Date.now()}.jpg`;

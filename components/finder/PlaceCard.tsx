@@ -9,8 +9,8 @@ import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 import type { Restroom } from '@/lib/types';
 
-// A finder list card. Resolves a real title for generic/unnamed restrooms via
-// the parent's `onResolve` (throttled + cached upstream).
+// Resolves a real title for generic/unnamed restrooms via the parent's
+// `onResolve` (throttled + cached upstream).
 export function PlaceCard({
   item,
   title,

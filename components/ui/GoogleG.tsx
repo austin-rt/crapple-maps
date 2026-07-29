@@ -1,6 +1,5 @@
 import Svg, { Path } from 'react-native-svg';
 
-// Official four-color Google "G" mark.
 export function GoogleG({ size = 18 }: { size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 48 48">

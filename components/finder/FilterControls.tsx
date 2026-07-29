@@ -5,9 +5,9 @@ import { FILTERS, SORTS, type FilterKey, type SortKey } from '@/lib/restrooms/fi
 import { ACCENT, ON_ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
-// The sort grid + filter chips, with no chrome of its own. Rendered inside the
-// native bottom sheet (FilterSheet) and inline in the web results drawer, so the
-// two never drift. Uses theme tokens so it lands right in light and dark.
+// The sort grid + filter chips, with no chrome of its own — rendered inside the
+// native bottom sheet (FilterSheet) and inline in the web results drawer so the
+// two never drift.
 export function FilterControls({
   sort,
   setSort,

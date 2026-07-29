@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import { ActionButton } from '@/components/ui';
 import { DANGER } from '@/lib/tokens';
 
-// Google-Maps-style action row: Directions · Save · Share · Edit/Cancel.
 export function ActionRow({
   onDirections,
   saved,

@@ -3,7 +3,6 @@ import { Pressable, View } from 'react-native';
 
 import { useColors } from '@/lib/theme';
 
-// Leading-icon info row (Google-Maps place-info style).
 export function InfoRow({
   icon,
   children,

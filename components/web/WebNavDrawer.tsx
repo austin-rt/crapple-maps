@@ -18,8 +18,7 @@ const ITEMS = [
   { href: '/profile', label: 'Profile', icon: 'person-outline' },
 ] as const;
 
-// Web app nav — slides in from the left over a scrim. Presentation lives in the
-// shared LeftDrawer so it can't drift from the results drawer.
+// Presentation lives in the shared LeftDrawer so it can't drift from the results drawer.
 export function WebNavDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const path = usePathname();
   const c = useColors();

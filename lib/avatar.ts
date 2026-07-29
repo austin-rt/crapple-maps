@@ -1,5 +1,4 @@
 // Default profile pictures via DiceBear — free, no account, deterministic per seed.
-// Swap the style if you want a different look: notionists, avataaars, fun-emoji, thumbs, bottts…
 const STYLE = 'notionists';
 
 export function avatarUrl(seed: string): string {
