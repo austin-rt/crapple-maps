@@ -74,6 +74,10 @@
   .phone img { display: block; width: 100%; border-radius: 30px; }
   .phone.p1 { transform: rotate(-6deg) translateX(38px) translateY(20px); z-index: 1; }
   .phone.p2 { transform: rotate(5deg) translateX(-38px); z-index: 2; box-shadow: 0 50px 90px -28px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.07) inset, 0 0 60px -20px rgba(167,139,250,0.5); }
+  /* Android/Pixel variant: hole-punch camera + squarer corners (shares the base). */
+  .phone.android { border-radius: 32px; }
+  .phone.android img { border-radius: 25px; }
+  .phone.android::before { top: 13px; width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 1.5px rgba(255,255,255,0.05); }
 
   .platforms { padding: 96px 0 40px; }
   .band-head { text-align: center; max-width: 680px; margin: 0 auto 46px; }
@@ -155,7 +159,7 @@
       </div>
 
       <div class="cluster">
-        <div class="phone p1"><img src="__PHONE1__" alt="The Crapple Maps feed on Android" /></div>
+        <div class="phone android p1"><img src="__PHONE1__" alt="The Crapple Maps feed on Android" /></div>
         <div class="phone p2"><img src="__PHONE2__" alt="The Crapple Maps map on iPhone" /></div>
       </div>
     </section>
