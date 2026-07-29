@@ -14,7 +14,8 @@ import { WebHeader } from '@/components/web/WebHeader';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { AuthProvider } from '@/lib/auth';
 import { ContributionProvider } from '@/lib/contribution';
-import { ThemePrefProvider, useThemePref } from '@/lib/theme';
+import { ThemePrefProvider, useColors, useThemePref } from '@/lib/theme';
+import { ACCENT } from '@/lib/tokens';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -24,10 +25,18 @@ const queryClient = new QueryClient();
 
 function NavStack() {
   const { scheme } = useThemePref();
+  const c = useColors();
   const isMobileWeb = useIsMobileWeb();
   const webDesktop = Platform.OS === 'web' && !isMobileWeb;
+  // Drive the navigation chrome (headers, screen backgrounds) from our palette
+  // so it matches the token classes instead of react-navigation's own greys.
+  const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
+  const navTheme = {
+    ...base,
+    colors: { ...base.colors, primary: ACCENT, background: c.surface, card: c.surface, text: c.content, border: c.line },
+  };
   return (
-    <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={navTheme}>
       <Stack
         screenOptions={{
           headerBackButtonDisplayMode: 'minimal',
