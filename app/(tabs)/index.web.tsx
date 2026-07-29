@@ -8,8 +8,10 @@ import { AppMapView, AppMarker } from '@/components/map';
 import { RestroomSheet } from '@/components/restroom';
 import { Avatar } from '@/components/ui';
 import { LeftDrawer } from '@/components/web/LeftDrawer';
+import { MobileFinder } from '@/components/web/MobileFinder';
 import { WebNavDrawer } from '@/components/web/WebNavDrawer';
 import { DEFAULT_REGION, VISITED, useFinder } from '@/hooks/useFinder';
+import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { useProfile } from '@/hooks/useProfile';
 import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
 import { distLabel } from '@/lib/restrooms/filters';
@@ -19,10 +21,16 @@ import type { Restroom } from '@/lib/types';
 
 const DRAWER_W = 408;
 
-// Web map page — Google-Maps-style layout: full-bleed map, a collapsible left
-// results drawer (search + filters + list), hamburger app-nav, and a top-right
-// avatar. All finder logic is shared with native via useFinder().
+// Web map page. On a phone-sized viewport it serves the native-style mobile
+// layout (floating search + bottom sheet + OS tab bar); on desktop it's the
+// Google-Maps-style layout below (left results drawer + hamburger nav).
 export default function MapWeb() {
+  const isMobileWeb = useIsMobileWeb();
+  if (isMobileWeb) return <MobileFinder />;
+  return <DesktopMapWeb />;
+}
+
+function DesktopMapWeb() {
   const { scheme } = useThemePref();
   const f = useFinder();
   const { data: me } = useProfile(f.session?.user.id ?? '');
