@@ -14,7 +14,8 @@ import { createLog } from '@/lib/db/logs';
 import { createRestroom, fetchNearestId } from '@/lib/db/restrooms';
 import { pickLogPhotos, uploadLogPhotos } from '@/lib/photos';
 import { toast } from '@/lib/toast';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT, ON_ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 import type { Visibility } from '@/lib/types';
 
 type Coords = { latitude: number; longitude: number };
@@ -145,6 +146,7 @@ export default function ComposeScreen() {
     }
   };
 
+  const c = useColors();
   return (
     <ScrollView
       className="flex-1 bg-white dark:bg-neutral-950"
@@ -171,8 +173,8 @@ export default function ComposeScreen() {
           <Pressable onPress={() => setAlsoPublish((v) => !v)} className="flex-row items-center gap-3 active:opacity-70">
             <View
               className="h-6 w-6 items-center justify-center rounded-md border"
-              style={{ borderColor: alsoPublish ? ACCENT : MUTED, backgroundColor: alsoPublish ? ACCENT : 'transparent' }}>
-              {alsoPublish ? <Ionicons name="checkmark" size={16} color="#fff" /> : null}
+              style={{ borderColor: alsoPublish ? ACCENT : c.content2, backgroundColor: alsoPublish ? ACCENT : 'transparent' }}>
+              {alsoPublish ? <Ionicons name="checkmark" size={16} color={ON_ACCENT} /> : null}
             </View>
             <View className="flex-1">
               <Text className="text-[15px] font-medium text-neutral-900 dark:text-neutral-50">This spot isn’t on the map yet</Text>
@@ -210,7 +212,7 @@ export default function ComposeScreen() {
         <Label>How’d it go?</Label>
         <TextInput
           placeholder="the tale of the porcelain throne…"
-          placeholderTextColor={MUTED}
+          placeholderTextColor={c.content2}
           value={caption}
           onChangeText={setCaption}
           multiline
@@ -229,7 +231,7 @@ export default function ComposeScreen() {
                 hitSlop={6}
                 style={{ position: 'absolute', top: -6, right: -6 }}
                 className="h-5 w-5 items-center justify-center rounded-full bg-black/70">
-                <Ionicons name="close" size={12} color="#fff" />
+                <Ionicons name="close" size={12} color={ON_ACCENT} />
               </Pressable>
             </View>
           ))}
@@ -237,7 +239,7 @@ export default function ComposeScreen() {
             <Pressable
               onPress={addPhotos}
               className="h-[72px] w-[72px] items-center justify-center rounded-xl border border-dashed border-neutral-300 dark:border-neutral-700">
-              <Ionicons name="camera-outline" size={22} color={MUTED} />
+              <Ionicons name="camera-outline" size={22} color={c.content2} />
             </Pressable>
           ) : null}
         </View>
@@ -254,7 +256,7 @@ export default function ComposeScreen() {
                 onPress={() => setVisibility(v)}
                 className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-xl border py-2.5 ${active ? 'border-transparent' : 'border-neutral-300 dark:border-neutral-700'}`}
                 style={active ? { backgroundColor: ACCENT } : undefined}>
-                <Ionicons name={v === 'friends' ? 'people-outline' : 'lock-closed-outline'} size={16} color={active ? '#fff' : MUTED} />
+                <Ionicons name={v === 'friends' ? 'people-outline' : 'lock-closed-outline'} size={16} color={active ? ON_ACCENT : c.content2} />
                 <Text className={active ? 'font-semibold text-white' : 'text-neutral-700 dark:text-neutral-300'}>
                   {v === 'friends' ? 'Friends' : 'Private'}
                 </Text>
@@ -268,7 +270,7 @@ export default function ComposeScreen() {
         onPress={submit}
         disabled={busy}
         className={`mt-6 items-center rounded-xl py-4 ${busy ? 'opacity-50' : ''}`}
-        style={{ backgroundColor: coords ? ACCENT : MUTED }}>
+        style={{ backgroundColor: coords ? ACCENT : c.content2 }}>
         <Text className="text-base font-semibold text-white">{busy ? 'Logging…' : 'Log it'}</Text>
       </Pressable>
     </ScrollView>

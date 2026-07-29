@@ -7,7 +7,7 @@ import { Image, View } from 'react-native';
 
 import { DARK_MAP_STYLE } from '@/lib/maps';
 import { useThemePref } from '@/lib/theme';
-import { ACCENT } from '@/lib/tokens';
+import { ACCENT, DANGER, VISITED } from '@/lib/tokens';
 
 export type Region = { latitude: number; longitude: number; latitudeDelta: number; longitudeDelta: number };
 export type AppMapHandle = { animateToRegion: (r: Region, duration?: number) => void };
@@ -83,13 +83,13 @@ export const AppMapView = forwardRef<AppMapHandle, any>(function AppMapView(prop
 // from the 81x129 source so the browser downscales -> crisp on retina.
 const PIN_LIGHT: Record<string, number> = {
   [ACCENT]: require('@/assets/markers/pin-teal-web.png'), // default
-  '#DC2626': require('@/assets/markers/pin-red-web.png'), // selected
-  '#7C3AED': require('@/assets/markers/pin-purple-web.png'), // visited
+  [DANGER]: require('@/assets/markers/pin-red-web.png'), // selected
+  [VISITED]: require('@/assets/markers/pin-purple-web.png'), // visited
 };
 const PIN_DARK: Record<string, number> = {
   [ACCENT]: require('@/assets/markers/pin-teal-web-dark.png'),
-  '#DC2626': require('@/assets/markers/pin-red-web-dark.png'),
-  '#7C3AED': require('@/assets/markers/pin-purple-web-dark.png'),
+  [DANGER]: require('@/assets/markers/pin-red-web-dark.png'),
+  [VISITED]: require('@/assets/markers/pin-purple-web-dark.png'),
 };
 
 // Resolve lazily + guarded: Image.resolveAssetSource doesn't exist in the web

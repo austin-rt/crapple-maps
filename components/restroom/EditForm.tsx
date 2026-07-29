@@ -1,7 +1,8 @@
 import { Pressable, Text, TextInput, View } from 'react-native';
 
 import { CodePills, INPUT_CLS, SectionHeader, Segmented } from '@/components/ui';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 import type { AccessType, RestroomDraft } from '@/lib/types';
 
 const TRISTATE: [string, boolean | null][] = [
@@ -24,6 +25,7 @@ const AMENITIES: [string, 'accessible' | 'unisex' | 'changing_table'][] = [
 ];
 
 function Toggle({ label, on, onPress }: { label: string; on: boolean; onPress: () => void }) {
+  const c = useColors();
   return (
     <Pressable
       onPress={onPress}
@@ -49,6 +51,7 @@ export function EditForm({
   InputComponent?: React.ComponentType<React.ComponentProps<typeof TextInput>>;
 }) {
   const isCreate = variant === 'create';
+  const c = useColors();
   return (
     <View>
       {isCreate ? (
@@ -58,7 +61,7 @@ export function EditForm({
             value={draft.name}
             onChangeText={(t) => onChange({ name: t })}
             placeholder="e.g. Blue Bottle Coffee"
-            placeholderTextColor={MUTED}
+            placeholderTextColor={c.content2}
             className={INPUT_CLS}
           />
         </>
@@ -69,7 +72,7 @@ export function EditForm({
         value={draft.directions}
         onChangeText={(t) => onChange({ directions: t })}
         placeholder="e.g. Around back, separate entrance to the left of the bar…"
-        placeholderTextColor={MUTED}
+        placeholderTextColor={c.content2}
         multiline
         className={`${INPUT_CLS} min-h-16`}
       />

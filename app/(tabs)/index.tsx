@@ -10,8 +10,8 @@ import { RestroomSheet } from '@/components/restroom';
 import { DEFAULT_REGION, VISITED, useFinder } from '@/hooks/useFinder';
 import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
 import { distLabel, FILTERS } from '@/lib/restrooms/filters';
-import { useThemePref } from '@/lib/theme';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { useColors, useThemePref } from '@/lib/theme';
+import { ACCENT, DANGER, ON_ACCENT } from '@/lib/tokens';
 import type { Restroom } from '@/lib/types';
 
 // Native map screen — full-bleed map + a @gorhom bottom sheet for results. All
@@ -20,7 +20,8 @@ import type { Restroom } from '@/lib/types';
 export default function MapScreen() {
   const insets = useSafeAreaInsets();
   const { scheme } = useThemePref();
-  const sheetBg = scheme === 'dark' ? '#0a0a0c' : '#ffffff';
+  const c = useColors();
+  const sheetBg = c.surface;
   const sheetRef = useRef<BottomSheet>(null);
   const f = useFinder();
 
@@ -54,7 +55,7 @@ export default function MapScreen() {
           <AppMarker
             key={item.id}
             coordinate={{ latitude: item.lat, longitude: item.lng }}
-            pinColor={item.id === f.activeId ? '#DC2626' : f.loggedIds?.has(item.id) ? VISITED : ACCENT}
+            pinColor={item.id === f.activeId ? DANGER : f.loggedIds?.has(item.id) ? VISITED : ACCENT}
             onPress={() => openRestroom(item)}
           />
         ))}
@@ -63,25 +64,25 @@ export default function MapScreen() {
       {/* floating search — geocodes an address / city / ZIP and recenters */}
       <View style={{ position: 'absolute', top: insets.top + 8, left: 16, right: 16 }}>
         <View className="flex-row items-center rounded-2xl bg-white px-3 dark:bg-neutral-900" style={styles.shadow}>
-          <Ionicons name="search" size={16} color={MUTED} />
+          <Ionicons name="search" size={16} color={c.content2} />
           <TextInput
             placeholder="Search address, city, or ZIP…"
-            placeholderTextColor={MUTED}
+            placeholderTextColor={c.content2}
             value={f.query}
             onChangeText={f.setQuery}
             autoCapitalize="words"
             returnKeyType="search"
             className="flex-1 px-2 py-3 text-base text-neutral-900 dark:text-neutral-50"
           />
-          {f.searching ? <ActivityIndicator size="small" color={MUTED} /> : null}
+          {f.searching ? <ActivityIndicator size="small" color={c.content2} /> : null}
           {f.query.length > 0 && !f.searching ? (
             <Pressable hitSlop={8} onPress={() => f.setQuery('')}>
-              <Ionicons name="close-circle" size={18} color={MUTED} />
+              <Ionicons name="close-circle" size={18} color={c.content2} />
             </Pressable>
           ) : null}
           <View className="mx-1.5 h-5 w-px bg-neutral-200 dark:bg-neutral-700" />
           <Pressable hitSlop={8} onPress={() => f.setFilterOpen(true)} className="pr-0.5">
-            <Ionicons name="options" size={22} color={f.activeFilterCount ? ACCENT : '#4B5563'} />
+            <Ionicons name="options" size={22} color={f.activeFilterCount ? ACCENT : c.content2} />
           </Pressable>
         </View>
 
@@ -98,9 +99,9 @@ export default function MapScreen() {
                 onPress={() => f.toggleFilter(flt.key)}
                 className="flex-row items-center gap-1.5 rounded-full py-1.5 pl-3 pr-2"
                 style={[{ backgroundColor: ACCENT }, styles.shadow]}>
-                <Ionicons name={flt.icon as any} size={13} color="#fff" />
+                <Ionicons name={flt.icon as any} size={13} color={ON_ACCENT} />
                 <Text className="text-xs font-semibold text-white">{flt.label}</Text>
-                <Ionicons name="close" size={14} color="#fff" />
+                <Ionicons name="close" size={14} color={ON_ACCENT} />
               </Pressable>
             ))}
           </ScrollView>
@@ -113,7 +114,7 @@ export default function MapScreen() {
                 key={`${p.lat}-${p.lon}-${i}`}
                 onPress={() => f.pickPlace(p)}
                 className="flex-row items-center gap-2 border-b border-neutral-100 px-3 py-3 active:bg-neutral-100 dark:border-neutral-800 dark:active:bg-neutral-800">
-                <Ionicons name="location-outline" size={16} color={MUTED} />
+                <Ionicons name="location-outline" size={16} color={c.content2} />
                 <Text numberOfLines={2} className="flex-1 text-sm text-neutral-800 dark:text-neutral-200">{p.display_name}</Text>
               </Pressable>
             ))}
@@ -140,7 +141,7 @@ export default function MapScreen() {
         index={1}
         snapPoints={['13%', '58%', '92%']}
         backgroundStyle={{ backgroundColor: sheetBg }}
-        handleIndicatorStyle={{ backgroundColor: '#9CA3AF' }}>
+        handleIndicatorStyle={{ backgroundColor: c.content2 }}>
         {f.selected ? (
           <RestroomSheet
             restroom={f.selected}
@@ -174,8 +175,8 @@ export default function MapScreen() {
                 onPress={() => f.setFilterOpen(true)}
                 className="flex-row items-center gap-1.5 rounded-full border border-neutral-300 px-3.5 py-1.5 active:opacity-70 dark:border-neutral-700"
                 style={f.activeFilterCount ? { borderColor: ACCENT } : undefined}>
-                <Ionicons name="options-outline" size={15} color={f.activeFilterCount ? ACCENT : '#6B7280'} />
-                <Text className="text-sm font-medium" style={{ color: f.activeFilterCount ? ACCENT : '#6B7280' }}>Sort & filter</Text>
+                <Ionicons name="options-outline" size={15} color={f.activeFilterCount ? ACCENT : c.content2} />
+                <Text className="text-sm font-medium" style={{ color: f.activeFilterCount ? ACCENT : c.content2 }}>Sort & filter</Text>
               </Pressable>
             </View>
             <BottomSheetFlatList

@@ -6,5 +6,7 @@
 // the JS side (icons/SVGs/inline styles, via this constant) and the Tailwind
 // `accent` color (bg-accent/text-accent classes).
 export { ACCENT } from '@/theme/brand';
-export const MUTED = '#9CA3AF'; // neutral-400 — placeholders, muted icons/text
-export const DANGER = '#DC2626'; // destructive actions
+export const DANGER = '#DC2626'; // destructive actions / selected marker
+export const VISITED = '#7C3AED'; // visited/logged marker (purple)
+export const LIKE = '#EF4444'; // like heart (red)
+export const ON_ACCENT = '#FFFFFF'; // text/icons on the accent or other solid color buttons

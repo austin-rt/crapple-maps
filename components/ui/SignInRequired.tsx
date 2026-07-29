@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
 import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 
 // Empty state for auth-gated screens — sends people straight to sign in / up.
 export function SignInRequired({
@@ -12,9 +13,10 @@ export function SignInRequired({
   icon?: keyof typeof Ionicons.glyphMap;
   message: string;
 }) {
+  const c = useColors();
   return (
     <View className="flex-1 items-center justify-center bg-surface px-8">
-      <Ionicons name={icon} size={40} color="#9CA3AF" />
+      <Ionicons name={icon} size={40} color={c.content2} />
       <Text className="mt-3 text-center text-lg text-content-2">{message}</Text>
       <Pressable
         onPress={() => router.navigate('/(tabs)/profile')}

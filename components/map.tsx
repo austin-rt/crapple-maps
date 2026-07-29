@@ -4,7 +4,7 @@
 import RNMapView, { Marker, type MapMarkerProps, type Region } from 'react-native-maps';
 
 import { useThemePref } from '@/lib/theme';
-import { ACCENT } from '@/lib/tokens';
+import { ACCENT, DANGER, VISITED } from '@/lib/tokens';
 
 export type { Region };
 export type AppMapHandle = RNMapView;
@@ -19,13 +19,13 @@ export const AppMapView = RNMapView;
 // the pin reads as cut out of whichever basemap is showing (theme-aware).
 const PIN_LIGHT: Record<string, ReturnType<typeof require>> = {
   [ACCENT]: require('@/assets/markers/pin-teal.png'), // default
-  '#DC2626': require('@/assets/markers/pin-red.png'), // selected
-  '#7C3AED': require('@/assets/markers/pin-purple.png'), // visited
+  [DANGER]: require('@/assets/markers/pin-red.png'), // selected
+  [VISITED]: require('@/assets/markers/pin-purple.png'), // visited
 };
 const PIN_DARK: Record<string, ReturnType<typeof require>> = {
   [ACCENT]: require('@/assets/markers/pin-teal-dark.png'),
-  '#DC2626': require('@/assets/markers/pin-red-dark.png'),
-  '#7C3AED': require('@/assets/markers/pin-purple-dark.png'),
+  [DANGER]: require('@/assets/markers/pin-red-dark.png'),
+  [VISITED]: require('@/assets/markers/pin-purple-dark.png'),
 };
 
 export function AppMarker({ pinColor, ...rest }: MapMarkerProps & { pinColor?: string }) {

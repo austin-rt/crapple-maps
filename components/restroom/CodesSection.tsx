@@ -4,7 +4,8 @@ import { Pressable, Text, View } from 'react-native';
 
 import { INPUT_CLS, SectionHeader } from '@/components/ui';
 import { daysAgo } from '@/lib/format';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 import type { Code } from '@/lib/types';
 
 import { SheetTextInput } from './sheet-inputs';
@@ -34,6 +35,7 @@ export function CodesSection({
     setAdding(false);
   };
 
+  const c = useColors();
   return (
     <>
       <SectionHeader>Access codes</SectionHeader>
@@ -54,7 +56,7 @@ export function CodesSection({
           <SheetTextInput
             autoFocus
             placeholder="Add a code…"
-            placeholderTextColor={MUTED}
+            placeholderTextColor={c.content2}
             value={newCode}
             onChangeText={setNewCode}
             className={`${INPUT_CLS} flex-1`}

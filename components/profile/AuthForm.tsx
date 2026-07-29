@@ -3,7 +3,8 @@ import { Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-na
 
 import { MarkerBadge } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 
 import { OAuthButtons } from './OAuthButtons';
 
@@ -55,6 +56,7 @@ export function AuthForm() {
     if (error) setMsg(error);
   };
 
+  const c = useColors();
   return (
     <ScrollView
       className="flex-1 bg-white dark:bg-neutral-950"
@@ -100,7 +102,7 @@ export function AuthForm() {
 
       <TextInput
         placeholder="Email"
-        placeholderTextColor={MUTED}
+        placeholderTextColor={c.content2}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -113,7 +115,7 @@ export function AuthForm() {
       />
       <TextInput
         placeholder="Password"
-        placeholderTextColor={MUTED}
+        placeholderTextColor={c.content2}
         value={password}
         onChangeText={setPassword}
         secureTextEntry

@@ -4,7 +4,8 @@ import { Alert, Pressable, Text, View } from 'react-native';
 
 import { INPUT_CLS, SectionHeader, Stars } from '@/components/ui';
 import { daysAgo } from '@/lib/format';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 import type { Review } from '@/lib/types';
 
 import { SheetTextInput } from './sheet-inputs';
@@ -34,6 +35,7 @@ export function ReviewsSection({
     setWriting(false);
   };
 
+  const c = useColors();
   return (
     <>
       <SectionHeader>Reviews</SectionHeader>
@@ -51,7 +53,7 @@ export function ReviewsSection({
 
       {editing ? (
         <View className="mt-2 flex-row items-center gap-1.5 self-start opacity-40">
-          <Ionicons name="add-circle-outline" size={18} color={MUTED} />
+          <Ionicons name="add-circle-outline" size={18} color={c.content2} />
           <Text className="text-sm font-semibold text-neutral-400">Finish editing to add a review</Text>
         </View>
       ) : writing ? (
@@ -60,7 +62,7 @@ export function ReviewsSection({
           <Stars value={rating} onChange={setRating} />
           <SheetTextInput
             placeholder="How was it?"
-            placeholderTextColor={MUTED}
+            placeholderTextColor={c.content2}
             value={text}
             onChangeText={setText}
             multiline

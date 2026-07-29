@@ -6,7 +6,7 @@ import { Pressable, Text, View } from 'react-native';
 import { Avatar, Stars } from '@/components/ui';
 import { bristol } from '@/lib/bristol';
 import { timeAgo } from '@/lib/format';
-import { MUTED } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 import type { FeedLog } from '@/lib/types';
 
 import { FeedPhotos } from './FeedPhotos';
@@ -16,6 +16,7 @@ export function FeedCard({ log }: { log: FeedLog }) {
   const a = log.author;
   const name = a?.display_name || a?.username || 'Someone';
   const b = bristol(log.bristol_type);
+  const c = useColors();
   return (
     <Pressable onPress={() => router.push(`/log/${log.id}`)} className="flex-row gap-3 border-b border-line px-4 py-3 active:bg-surface-2">
       {a?.avatar_url ? (
@@ -29,7 +30,7 @@ export function FeedCard({ log }: { log: FeedLog }) {
           <Text className="ml-1 flex-shrink text-[15px] text-content-2" numberOfLines={1}>
             @{a?.username ?? 'user'} · {timeAgo(log.created_at)}
           </Text>
-          {log.visibility === 'private' ? <Ionicons name="lock-closed" size={12} color={MUTED} style={{ marginLeft: 4 }} /> : null}
+          {log.visibility === 'private' ? <Ionicons name="lock-closed" size={12} color={c.content2} style={{ marginLeft: 4 }} /> : null}
         </View>
 
         {log.caption ? <Text className="mt-0.5 text-[15px] leading-5 text-content">{log.caption}</Text> : null}
@@ -54,11 +55,11 @@ export function FeedCard({ log }: { log: FeedLog }) {
 
         <View className="mt-2 flex-row items-center gap-6">
           <View className="flex-row items-center gap-1.5">
-            <Ionicons name="heart-outline" size={17} color={MUTED} />
+            <Ionicons name="heart-outline" size={17} color={c.content2} />
             {log.likes_count > 0 ? <Text className="text-xs text-content-2">{log.likes_count}</Text> : null}
           </View>
           <View className="flex-row items-center gap-1.5">
-            <Ionicons name="chatbubble-outline" size={16} color={MUTED} />
+            <Ionicons name="chatbubble-outline" size={16} color={c.content2} />
             {log.comments_count > 0 ? <Text className="text-xs text-content-2">{log.comments_count}</Text> : null}
           </View>
         </View>

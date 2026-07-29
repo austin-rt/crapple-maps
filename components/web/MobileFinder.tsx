@@ -9,8 +9,8 @@ import { RestroomSheet } from '@/components/restroom';
 import { DEFAULT_REGION, VISITED, useFinder } from '@/hooks/useFinder';
 import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
 import { distLabel } from '@/lib/restrooms/filters';
-import { useThemePref } from '@/lib/theme';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { useColors, useThemePref } from '@/lib/theme';
+import { ACCENT, DANGER } from '@/lib/tokens';
 import type { Restroom } from '@/lib/types';
 
 // Native-style map layout for phone-sized web: full-bleed map, a floating search
@@ -18,7 +18,8 @@ import type { Restroom } from '@/lib/types';
 // expand. App nav is the OS bottom tab bar. Mirrors native index.tsx.
 export function MobileFinder() {
   const { scheme } = useThemePref();
-  const sheetBg = scheme === 'dark' ? '#0a0a0c' : '#ffffff';
+  const c = useColors();
+  const sheetBg = c.surface;
   const sheetRef = useRef<BottomSheet>(null);
   const f = useFinder();
   const [showFilters, setShowFilters] = useState(false);
@@ -52,7 +53,7 @@ export function MobileFinder() {
           <AppMarker
             key={item.id}
             coordinate={{ latitude: item.lat, longitude: item.lng }}
-            pinColor={item.id === f.activeId ? '#DC2626' : f.loggedIds?.has(item.id) ? VISITED : ACCENT}
+            pinColor={item.id === f.activeId ? DANGER : f.loggedIds?.has(item.id) ? VISITED : ACCENT}
             onPress={() => openRestroom(item)}
           />
         ))}
@@ -61,20 +62,20 @@ export function MobileFinder() {
       {/* floating search */}
       <View style={{ position: 'absolute', top: 12, left: 12, right: 12, zIndex: 20 }}>
         <View className="flex-row items-center rounded-full bg-surface px-3" style={styles.shadow}>
-          <Ionicons name="search" size={16} color={MUTED} />
+          <Ionicons name="search" size={16} color={c.content2} />
           <TextInput
             placeholder="Search address, city, or ZIP…"
-            placeholderTextColor={MUTED}
+            placeholderTextColor={c.content2}
             value={f.query}
             onChangeText={f.setQuery}
             autoCapitalize="words"
             className="flex-1 px-2 py-3 text-base text-content"
           />
           {f.searching ? (
-            <ActivityIndicator size="small" color={MUTED} />
+            <ActivityIndicator size="small" color={c.content2} />
           ) : f.query.length > 0 ? (
             <Pressable hitSlop={8} onPress={() => f.setQuery('')}>
-              <Ionicons name="close-circle" size={18} color={MUTED} />
+              <Ionicons name="close-circle" size={18} color={c.content2} />
             </Pressable>
           ) : null}
           <View className="mx-1.5 h-5 w-px bg-line" />
@@ -85,7 +86,7 @@ export function MobileFinder() {
               sheetRef.current?.snapToIndex(1);
             }}
             className="pr-0.5">
-            <Ionicons name="options" size={22} color={showFilters || f.activeFilterCount ? ACCENT : '#6B7280'} />
+            <Ionicons name="options" size={22} color={showFilters || f.activeFilterCount ? ACCENT : c.content2} />
           </Pressable>
         </View>
 
@@ -96,7 +97,7 @@ export function MobileFinder() {
                 key={`${p.lat}-${p.lon}-${i}`}
                 onPress={() => f.pickPlace(p)}
                 className="flex-row items-center gap-2 border-b border-line px-3 py-3 active:bg-surface-2">
-                <Ionicons name="location-outline" size={16} color={MUTED} />
+                <Ionicons name="location-outline" size={16} color={c.content2} />
                 <Text numberOfLines={2} className="flex-1 text-sm text-content-2">{p.display_name}</Text>
               </Pressable>
             ))}
@@ -109,7 +110,7 @@ export function MobileFinder() {
         index={1}
         snapPoints={['13%', '60%', '92%']}
         backgroundStyle={{ backgroundColor: sheetBg }}
-        handleIndicatorStyle={{ backgroundColor: '#9CA3AF' }}>
+        handleIndicatorStyle={{ backgroundColor: c.content2 }}>
         {showFilters ? (
           <BottomSheetScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}>
             <View className="mb-3 flex-row items-center justify-between">

@@ -15,8 +15,8 @@ import { useAuth } from '@/lib/auth';
 import { bristol } from '@/lib/bristol';
 import { shortWhen } from '@/lib/format';
 import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
-import { ACCENT } from '@/lib/tokens';
-import { useThemePref } from '@/lib/theme';
+import { ACCENT, DANGER, ON_ACCENT } from '@/lib/tokens';
+import { useColors, useThemePref } from '@/lib/theme';
 
 const DEFAULT_REGION: Region = { latitude: 37.7749, longitude: -122.4194, latitudeDelta: 0.08, longitudeDelta: 0.08 };
 
@@ -38,7 +38,8 @@ export default function MyMapScreen() {
   const qc = useQueryClient();
   const insets = useSafeAreaInsets();
   const { scheme } = useThemePref();
-  const sheetBg = scheme === 'dark' ? '#0a0a0c' : '#ffffff';
+  const c = useColors();
+  const sheetBg = c.surface;
   const mapRef = useRef<AppMapHandle>(null);
   const sheetRef = useRef<BottomSheet>(null);
 
@@ -82,7 +83,7 @@ export default function MyMapScreen() {
           <AppMarker
             key={l.id}
             coordinate={{ latitude: l.lat, longitude: l.lng }}
-            pinColor={l.id === selected?.id ? '#DC2626' : ACCENT}
+            pinColor={l.id === selected?.id ? DANGER : ACCENT}
             onPress={() => select(l)}
           />
         ))}
@@ -93,7 +94,7 @@ export default function MyMapScreen() {
         index={1}
         snapPoints={['30%', '58%', '92%']}
         backgroundStyle={{ backgroundColor: sheetBg }}
-        handleIndicatorStyle={{ backgroundColor: '#9CA3AF' }}>
+        handleIndicatorStyle={{ backgroundColor: c.content2 }}>
         {selected ? (
           <LogSheet
             log={selected}
@@ -129,7 +130,7 @@ export default function MyMapScreen() {
                       onPress={() => setTab(t)}
                       className={`flex-row items-center gap-1.5 rounded-full px-4 py-1.5 ${on ? '' : 'border border-line'}`}
                       style={on ? { backgroundColor: ACCENT } : undefined}>
-                      <Ionicons name={t === 'list' ? 'list' : 'grid'} size={14} color={on ? '#fff' : '#9CA3AF'} />
+                      <Ionicons name={t === 'list' ? 'list' : 'grid'} size={14} color={on ? ON_ACCENT : c.content2} />
                       <Text className={on ? 'text-sm font-semibold text-white' : 'text-sm text-content-2'}>
                         {t === 'list' ? 'List' : 'Gallery'}
                       </Text>
@@ -168,7 +169,7 @@ export default function MyMapScreen() {
                           {l.photos.length ? <Text className="text-xs text-content-2">· 📷 {l.photos.length}</Text> : null}
                         </View>
                       </View>
-                      <Ionicons name="chevron-forward" size={16} color="#9CA3AF" />
+                      <Ionicons name="chevron-forward" size={16} color={c.content2} />
                     </Pressable>
                   );
                 }}
@@ -190,7 +191,7 @@ export default function MyMapScreen() {
               />
             ) : (
               <View className="mt-10 items-center px-8">
-                <Ionicons name="images-outline" size={32} color="#9CA3AF" />
+                <Ionicons name="images-outline" size={32} color={c.content2} />
                 <Text className="mt-2 text-center text-sm text-content-2">No photos yet. Add some when you log.</Text>
               </View>
             )}

@@ -2,7 +2,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 
 // Tag-style input for access codes: comma/space/enter/tab/blur commit a pill;
 // backspace on an empty field pops the last pill back into the text for editing.
@@ -63,6 +64,7 @@ export function CodePills({
 
   const remove = (i: number) => onChange(value.filter((_, idx) => idx !== i));
 
+  const c = useColors();
   return (
     <View className="flex-row flex-wrap items-center gap-2 rounded-xl border border-neutral-300 p-2 dark:border-neutral-700">
       {value.map((code, i) => (
@@ -84,7 +86,7 @@ export function CodePills({
         autoCapitalize="characters"
         autoCorrect={false}
         placeholder={value.length ? '' : placeholder}
-        placeholderTextColor={MUTED}
+        placeholderTextColor={c.content2}
         className="min-w-[96px] flex-1 px-1 py-1.5 text-base text-neutral-900 dark:text-neutral-50"
       />
     </View>

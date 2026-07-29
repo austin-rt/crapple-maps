@@ -5,7 +5,8 @@ import { Pressable, Text, View } from 'react-native';
 import { MarkerBadge } from '@/components/ui';
 import { openDirections } from '@/lib/maps';
 import { ACCESS, distLabel } from '@/lib/restrooms/filters';
-import { ACCENT, MUTED } from '@/lib/tokens';
+import { ACCENT } from '@/lib/tokens';
+import { useColors } from '@/lib/theme';
 import type { Restroom } from '@/lib/types';
 
 // A finder list card. Resolves a real title for generic/unnamed restrooms via
@@ -30,6 +31,7 @@ export function PlaceCard({
   }, [item.id]);
 
   const a = item.access_type ? ACCESS[item.access_type] : null;
+  const c = useColors();
   return (
     <Pressable
       onPress={onSelect}
@@ -46,9 +48,9 @@ export function PlaceCard({
             <Text className="text-xs font-semibold" style={{ color: ACCENT }}>★ {Number(item.avg_rating).toFixed(1)}</Text>
           ) : null}
           {a ? <Text className="text-xs font-medium" style={{ color: a.color }}>{a.label}</Text> : null}
-          {item.accessible ? <Ionicons name="accessibility" size={13} color={MUTED} /> : null}
-          {item.unisex ? <Ionicons name="male-female" size={13} color={MUTED} /> : null}
-          {item.changing_table ? <Ionicons name="body" size={13} color={MUTED} /> : null}
+          {item.accessible ? <Ionicons name="accessibility" size={13} color={c.content2} /> : null}
+          {item.unisex ? <Ionicons name="male-female" size={13} color={c.content2} /> : null}
+          {item.changing_table ? <Ionicons name="body" size={13} color={c.content2} /> : null}
           {item.log_count ? <Text className="text-xs text-neutral-400">· 📍 {item.log_count}</Text> : null}
           {distLabel(item.dist) ? <Text className="text-xs text-neutral-400">· {distLabel(item.dist)}</Text> : null}
         </View>
