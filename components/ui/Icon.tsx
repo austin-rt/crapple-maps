@@ -50,7 +50,7 @@ import { X } from 'phosphor-react-native/src/icons/X';
 import { XCircle } from 'phosphor-react-native/src/icons/XCircle';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 
-// The app's icon set: Phosphor (light weight), one component per semantic name.
+// The app's icon set: Phosphor, one component per semantic name.
 // Keys keep the old Ionicons names so call sites read the same; "-outline"
 // names render light, their solid twins render filled. Individual imports keep
 // the other ~1,250 phosphor icons out of the bundle.
