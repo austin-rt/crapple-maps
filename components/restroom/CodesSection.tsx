@@ -41,7 +41,7 @@ export function CodesSection({
       <SectionHeader>Access codes</SectionHeader>
       {codes.length > 0 ? (
         codes.map((c) => (
-          <View key={c.id} className="mb-2 flex-row items-center justify-between rounded-xl bg-neutral-100 px-4 py-3 dark:bg-neutral-900">
+          <View key={c.id} className="mb-2 flex-row items-center justify-between rounded-xl bg-surface-2 px-4 py-3">
             <Text className="text-lg font-bold tracking-widest text-content">{c.code}</Text>
             <Text className="text-xs text-content-2">confirmed {daysAgo(c.posted_at)}</Text>
           </View>

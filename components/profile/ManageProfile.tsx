@@ -104,11 +104,11 @@ export function ManageProfile() {
           <Avatar seed={profile?.avatar_seed || profile?.username || uid} size={84} />
         )}
         <View className="mt-3 flex-row gap-2">
-          <Pressable onPress={uploadPhoto} className="flex-row items-center gap-1 rounded-full border border-neutral-300 px-3 py-1.5 active:opacity-70 dark:border-neutral-700">
+          <Pressable onPress={uploadPhoto} className="flex-row items-center gap-1 rounded-full border border-line px-3 py-1.5 active:opacity-70">
             <Ionicons name="camera-outline" size={14} color={c.content2} />
             <Text className="text-xs font-medium text-content-2">Upload photo</Text>
           </Pressable>
-          <Pressable onPress={shuffle} className="flex-row items-center gap-1 rounded-full border border-neutral-300 px-3 py-1.5 active:opacity-70 dark:border-neutral-700">
+          <Pressable onPress={shuffle} className="flex-row items-center gap-1 rounded-full border border-line px-3 py-1.5 active:opacity-70">
             <Ionicons name="shuffle" size={14} color={c.content2} />
             <Text className="text-xs font-medium text-content-2">Shuffle</Text>
           </Pressable>
@@ -118,7 +118,7 @@ export function ManageProfile() {
         <Text className="mt-0.5 text-xs text-content-2">{session!.user.email}</Text>
       </View>
 
-      <View className="mt-6 flex-row rounded-2xl border border-neutral-200 py-4 dark:border-neutral-800">
+      <View className="mt-6 flex-row rounded-2xl border border-line py-4">
         <Stat label="Logs" value={logCount} />
         <View className="w-px bg-surface-3" />
         <Stat label="Followers" value={profile?.followers_count ?? 0} />
@@ -130,7 +130,7 @@ export function ManageProfile() {
 
       <Pressable
         onPress={() => router.push('/saved')}
-        className="mt-4 flex-row items-center gap-3 rounded-2xl border border-neutral-200 p-4 active:opacity-70 dark:border-neutral-800">
+        className="mt-4 flex-row items-center gap-3 rounded-2xl border border-line p-4 active:opacity-70">
         <Ionicons name="bookmark-outline" size={20} color={ACCENT} />
         <Text className="flex-1 text-base font-medium text-content">Saved restrooms</Text>
         <Ionicons name="chevron-forward" size={18} color={c.content2} />
@@ -154,7 +154,7 @@ export function ManageProfile() {
         <Pressable
           onPress={changePw}
           disabled={savingPw || !newPw}
-          className={`mt-3 items-center rounded-xl border border-neutral-300 py-3 dark:border-neutral-700 ${savingPw || !newPw ? 'opacity-50' : ''}`}>
+          className={`mt-3 items-center rounded-xl border border-line py-3 ${savingPw || !newPw ? 'opacity-50' : ''}`}>
           <Text className="font-semibold text-content">{savingPw ? 'Updating…' : 'Change password'}</Text>
         </Pressable>
       </Card>

@@ -76,7 +76,7 @@ export function LogSheet({ log, onBack, onDeleted }: { log: LogItem; onBack: () 
           <View className="mt-4 flex-row items-center gap-3">
             {log.rating ? <Stars value={log.rating} size={18} gap={2} /> : null}
             {b ? (
-              <View className="flex-row items-center gap-1 rounded-full bg-neutral-100 px-3 py-1 dark:bg-neutral-800">
+              <View className="flex-row items-center gap-1 rounded-full bg-surface-2 px-3 py-1">
                 <Text className="text-base">{b.emoji}</Text>
                 <Text className="text-xs font-medium text-content-2">{b.label}</Text>
               </View>
@@ -90,7 +90,7 @@ export function LogSheet({ log, onBack, onDeleted }: { log: LogItem; onBack: () 
 
         <Pressable
           onPress={() => openDirections(log.lat, log.lng, place?.title || 'Log location')}
-          className="mt-5 flex-row items-center justify-center gap-2 rounded-xl border border-neutral-300 py-3 active:opacity-70 dark:border-neutral-700">
+          className="mt-5 flex-row items-center justify-center gap-2 rounded-xl border border-line py-3 active:opacity-70">
           <Ionicons name="navigate" size={16} color={ACCENT} />
           <Text className="font-semibold text-content">Directions</Text>
         </Pressable>

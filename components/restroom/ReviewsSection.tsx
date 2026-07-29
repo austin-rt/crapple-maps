@@ -41,7 +41,7 @@ export function ReviewsSection({
       <SectionHeader>Reviews</SectionHeader>
       {reviews.length > 0 ? (
         reviews.map((rv) => (
-          <View key={rv.id} className="mb-2 rounded-xl bg-neutral-100 p-3 dark:bg-neutral-900">
+          <View key={rv.id} className="mb-2 rounded-xl bg-surface-2 p-3">
             {rv.overall_rating ? <Text style={{ color: ACCENT }}>{'★'.repeat(rv.overall_rating)}</Text> : null}
             {rv.description ? <Text className="mt-1 text-content">{rv.description}</Text> : null}
             <Text className="mt-1 text-xs text-content-2">{daysAgo(rv.created_at)}</Text>
@@ -57,7 +57,7 @@ export function ReviewsSection({
           <Text className="text-sm font-semibold text-content-2">Finish editing to add a review</Text>
         </View>
       ) : writing ? (
-        <View className="mt-2 rounded-2xl border border-neutral-200 p-4 dark:border-neutral-800">
+        <View className="mt-2 rounded-2xl border border-line p-4">
           <Text className="mb-2 text-sm text-content-2">Leave a review</Text>
           <Stars value={rating} onChange={setRating} />
           <SheetTextInput
@@ -78,7 +78,7 @@ export function ReviewsSection({
                 setRating(0);
                 setText('');
               }}
-              className="items-center justify-center rounded-xl border border-neutral-300 px-5 dark:border-neutral-700">
+              className="items-center justify-center rounded-xl border border-line px-5">
               <Text className="font-semibold text-content-2">Cancel</Text>
             </Pressable>
           </View>

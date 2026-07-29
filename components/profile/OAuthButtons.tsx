@@ -4,7 +4,7 @@ import { Pressable, Text } from 'react-native';
 import { GoogleG } from '@/components/ui';
 import { useColors } from '@/lib/theme';
 
-const btn = 'flex-row items-center justify-center gap-2 rounded-xl border border-neutral-300 py-3.5 active:opacity-70 dark:border-neutral-700';
+const btn = 'flex-row items-center justify-center gap-2 rounded-xl border border-line py-3.5 active:opacity-70';
 const txt = 'font-semibold text-content';
 
 export function OAuthButtons({
