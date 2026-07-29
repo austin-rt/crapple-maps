@@ -57,13 +57,13 @@ export function LocationPicker({
   return (
     <View>
       {coords ? (
-        <View className="mb-3 flex-row items-start gap-2 rounded-xl bg-neutral-100 p-3 dark:bg-neutral-900">
+        <View className="mb-3 flex-row items-start gap-2 rounded-xl bg-surface-2 p-3">
           <Ionicons name="location" size={18} color={ACCENT} style={{ marginTop: 1 }} />
           <Text className="flex-1 text-sm text-content">{label}</Text>
         </View>
       ) : null}
 
-      <View className="flex-row items-center rounded-xl border border-neutral-300 px-3 dark:border-neutral-700">
+      <View className="flex-row items-center rounded-xl border border-line px-3">
         <Ionicons name="search" size={16} color={c.content2} />
         <TextInput
           placeholder="Search an address or place…"
@@ -82,7 +82,7 @@ export function LocationPicker({
             <Pressable
               key={`${p.lat}-${p.lon}-${i}`}
               onPress={() => pick(p)}
-              className="border-b border-neutral-100 px-3 py-3 active:bg-neutral-100 dark:border-neutral-900 dark:active:bg-neutral-900">
+              className="border-b border-line px-3 py-3 active:bg-surface-2">
               <Text numberOfLines={2} className="text-sm text-content">
                 {p.display_name}
               </Text>
@@ -94,7 +94,7 @@ export function LocationPicker({
       <Pressable
         onPress={useCurrent}
         disabled={locating}
-        className="mt-3 flex-row items-center justify-center gap-2 rounded-xl border border-neutral-300 py-3 active:opacity-70 dark:border-neutral-700">
+        className="mt-3 flex-row items-center justify-center gap-2 rounded-xl border border-line py-3 active:opacity-70">
         <Ionicons name="navigate" size={16} color={ACCENT} />
         <Text className="font-semibold text-content">
           {locating ? 'Locating…' : 'Use my current location'}

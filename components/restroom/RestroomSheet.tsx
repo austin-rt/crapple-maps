@@ -203,7 +203,7 @@ export function RestroomSheet({
       <ReviewsSection reviews={reviews} editing={editing} canAdd={!!session} onSubmit={submitReview} onRequireAuth={requireAuth} />
 
       {editing ? (
-        <View className="mt-8 flex-row gap-2 border-t border-neutral-100 pt-4 dark:border-neutral-800">
+        <View className="mt-8 flex-row gap-2 border-t border-line pt-4">
           <Pressable
             onPress={saveEdits}
             disabled={saving}

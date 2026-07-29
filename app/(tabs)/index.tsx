@@ -63,7 +63,7 @@ export default function MapScreen() {
 
       {/* floating search — geocodes an address / city / ZIP and recenters */}
       <View style={{ position: 'absolute', top: insets.top + 8, left: 16, right: 16 }}>
-        <View className="flex-row items-center rounded-2xl bg-white px-3 dark:bg-neutral-900" style={styles.shadow}>
+        <View className="flex-row items-center rounded-2xl bg-surface px-3" style={styles.shadow}>
           <Ionicons name="search" size={16} color={c.content2} />
           <TextInput
             placeholder="Search address, city, or ZIP…"
@@ -113,14 +113,14 @@ export default function MapScreen() {
               <Pressable
                 key={`${p.lat}-${p.lon}-${i}`}
                 onPress={() => f.pickPlace(p)}
-                className="flex-row items-center gap-2 border-b border-neutral-100 px-3 py-3 active:bg-neutral-100 dark:border-neutral-800 active:bg-surface-2">
+                className="flex-row items-center gap-2 border-b border-line px-3 py-3 active:bg-surface-2 active:bg-surface-2">
                 <Ionicons name="location-outline" size={16} color={c.content2} />
                 <Text numberOfLines={2} className="flex-1 text-sm text-content">{p.display_name}</Text>
               </Pressable>
             ))}
           </View>
         ) : f.placeLabel || f.locNote ? (
-          <View className="mt-2 flex-row items-center gap-1 self-start rounded-full bg-white/95 px-3 py-1 dark:bg-neutral-900/95" style={styles.shadow}>
+          <View className="mt-2 flex-row items-center gap-1 self-start rounded-full bg-surface/95 px-3 py-1" style={styles.shadow}>
             <Ionicons name={f.placeLabel ? 'location' : 'navigate'} size={12} color={ACCENT} />
             <Text className="text-xs text-content-2">{f.placeLabel || f.locNote}</Text>
           </View>
@@ -154,7 +154,7 @@ export default function MapScreen() {
           />
         ) : (
           <>
-            <View className="flex-row items-center justify-between border-b border-neutral-100 px-5 pb-2 dark:border-neutral-800">
+            <View className="flex-row items-center justify-between border-b border-line px-5 pb-2">
               <View className="flex-1 pr-3">
                 <Text className="text-base font-semibold text-content">
                   {f.list.length ? `${f.list.length}${f.hasNextPage ? '+' : ''} nearby` : 'Restrooms'}
@@ -173,7 +173,7 @@ export default function MapScreen() {
               </View>
               <Pressable
                 onPress={() => f.setFilterOpen(true)}
-                className="flex-row items-center gap-1.5 rounded-full border border-neutral-300 px-3.5 py-1.5 active:opacity-70 dark:border-neutral-700"
+                className="flex-row items-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 active:opacity-70"
                 style={f.activeFilterCount ? { borderColor: ACCENT } : undefined}>
                 <Ionicons name="options-outline" size={15} color={f.activeFilterCount ? ACCENT : c.content2} />
                 <Text className="text-sm font-medium" style={{ color: f.activeFilterCount ? ACCENT : c.content2 }}>Sort & filter</Text>

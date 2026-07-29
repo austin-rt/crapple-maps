@@ -14,7 +14,7 @@ export function VisitsSection({ visits }: { visits: Visit[] }) {
         <Pressable
           key={v.id}
           onPress={() => router.push(`/log/${v.id}`)}
-          className="mb-2 flex-row items-center justify-between gap-2 rounded-xl bg-neutral-100 px-4 py-3 active:opacity-70 dark:bg-neutral-900">
+          className="mb-2 flex-row items-center justify-between gap-2 rounded-xl bg-surface-2 px-4 py-3 active:opacity-70">
           <Text className="flex-1 text-sm text-content" numberOfLines={1}>
             {v.caption || 'A visit'}
           </Text>

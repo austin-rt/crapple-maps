@@ -25,7 +25,7 @@ function Label({ children }: { children: string }) {
 }
 
 function Field({ children }: { children: React.ReactNode }) {
-  return <View className="border-b border-neutral-100 py-5 dark:border-neutral-900">{children}</View>;
+  return <View className="border-b border-line py-5">{children}</View>;
 }
 
 export default function ComposeScreen() {

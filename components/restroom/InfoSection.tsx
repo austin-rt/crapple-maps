@@ -8,7 +8,7 @@ const line = 'text-[15px] leading-5 text-content-2';
 
 export function InfoSection({ place, info }: { place: Place | null; info: RestroomInfo | null | undefined }) {
   return (
-    <View className="mt-3 border-t border-neutral-100 pt-1 dark:border-neutral-800">
+    <View className="mt-3 border-t border-line pt-1">
       <InfoRow icon="location-outline">
         <Text className={line}>{place?.full || 'Locating…'}</Text>
       </InfoRow>

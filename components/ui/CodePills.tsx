@@ -66,7 +66,7 @@ export function CodePills({
 
   const c = useColors();
   return (
-    <View className="flex-row flex-wrap items-center gap-2 rounded-xl border border-neutral-300 p-2 dark:border-neutral-700">
+    <View className="flex-row flex-wrap items-center gap-2 rounded-xl border border-line p-2">
       {value.map((code, i) => (
         <View key={`${code}-${i}`} className="flex-row items-center gap-1 rounded-lg py-1.5 pl-2.5 pr-1.5" style={{ backgroundColor: ACCENT + '22' }}>
           <Text className="text-sm font-bold tracking-widest" style={{ color: ACCENT }}>{code}</Text>

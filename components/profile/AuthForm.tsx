@@ -8,7 +8,7 @@ import { useColors } from '@/lib/theme';
 
 import { OAuthButtons } from './OAuthButtons';
 
-const inputCls = 'rounded-xl border border-neutral-300 px-4 py-3 text-neutral-900 dark:border-neutral-700 dark:text-neutral-50';
+const inputCls = 'rounded-xl border border-line px-4 py-3 text-content';
 
 export function AuthForm() {
   const { signInWithEmail, signUpWithEmail, signInWithProvider, signInWithApple } = useAuth();

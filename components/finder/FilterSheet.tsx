@@ -30,7 +30,7 @@ export function FilterSheet({
   const activeCount = Object.values(filters).filter(Boolean).length;
   return (
     <SwipeDownModal visible={visible} onClose={onClose}>
-      <View className="rounded-t-3xl bg-white px-5 pt-3 dark:bg-neutral-900" style={{ paddingBottom: insets.bottom + 20 }}>
+      <View className="rounded-t-3xl bg-surface px-5 pt-3" style={{ paddingBottom: insets.bottom + 20 }}>
         <View className="mb-3 h-1 w-10 self-center rounded-full bg-surface-3" />
         <View className="mb-3 flex-row items-center justify-between">
           <Text className="text-lg font-bold text-content">Sort & filter</Text>
