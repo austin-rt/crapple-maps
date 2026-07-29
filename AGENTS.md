@@ -14,6 +14,14 @@ Bump `version` only for a real user-facing release, and keep
 `store.config.json` `apple.version` identical — App Store Connect will not let
 you attach a build whose version string differs from the version record.
 
-A native rebuild (new tag) is required only when native code changes: a new
-native module, changed permissions/entitlements, or app config. Everything else
-ships over the air to the current runtime.
+# Shipping
+
+`git push` to main is the only step. The pipeline decides what a change needs:
+
+- app/, components/, hooks/, lib/, theme/, assets/ → web deploy + OTA update
+- marketing/, public/, scripts/ → web deploy only
+- package.json, app.json, plugins/ → native build + TestFlight submit as well
+
+Native binaries build only for changes OTA can't deliver (new dependencies,
+app config, native plugins), so nothing needs to be tagged or triggered by
+hand. `v*` tags still force a build if you want one without a native change.
