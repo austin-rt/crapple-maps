@@ -69,11 +69,18 @@
   .nav-cta { padding: 9px 16px; font-size: 14px; }
 
   .cluster { display: flex; align-items: flex-end; justify-content: center; margin: 56px auto 0; perspective: 1600px; }
-  .phone { position: relative; width: 236px; flex: none; border-radius: 38px; background: linear-gradient(#1b2228, #0f161b); padding: 9px; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.06) inset; }
-  .phone::before { content: ""; position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 78px; height: 17px; background: #0b1015; border-radius: 11px; z-index: 3; }
-  .phone img { display: block; width: 100%; border-radius: 30px; }
-  .phone.p1 { transform: rotate(-6deg) translateX(38px) translateY(20px); z-index: 1; }
-  .phone.p2 { transform: rotate(5deg) translateX(-38px); z-index: 2; box-shadow: 0 50px 90px -28px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.07) inset, 0 0 60px -20px rgba(167,139,250,0.5); }
+  .device { position: relative; width: 240px; flex: none; background: linear-gradient(#20272d, #0f151a); box-shadow: 0 40px 80px -30px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.07) inset; }
+  .device img { display: block; width: 100%; }
+  /* iPhone 17: pill Dynamic Island, generous corner radius */
+  .iphone { padding: 11px; border-radius: 50px; }
+  .iphone img { border-radius: 40px; }
+  .iphone::before { content: ""; position: absolute; top: 22px; left: 50%; transform: translateX(-50%); width: 82px; height: 25px; background: #05080a; border-radius: 13px; z-index: 3; }
+  /* Pixel: centered hole-punch camera, squarer corners */
+  .pixel { padding: 10px; border-radius: 36px; }
+  .pixel img { border-radius: 27px; }
+  .pixel::before { content: ""; position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 15px; height: 15px; background: #05080a; border-radius: 50%; z-index: 3; box-shadow: 0 0 0 2px rgba(0,0,0,0.35); }
+  .device.p1 { transform: rotate(-6deg) translateX(38px) translateY(20px); z-index: 1; }
+  .device.p2 { transform: rotate(5deg) translateX(-38px); z-index: 2; box-shadow: 0 50px 90px -28px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.08) inset, 0 0 60px -20px rgba(167,139,250,0.5); }
 
   .platforms { padding: 96px 0 40px; }
   .band-head { text-align: center; max-width: 680px; margin: 0 auto 46px; }
@@ -113,9 +120,9 @@
 
   @media (max-width: 760px) {
     .grid-f { grid-template-columns: 1fr; }
-    .phone { width: 168px; }
-    .phone.p1 { transform: rotate(-5deg) translateX(24px) translateY(14px); }
-    .phone.p2 { transform: rotate(4deg) translateX(-24px); }
+    .device { width: 170px; }
+    .device.p1 { transform: rotate(-5deg) translateX(24px) translateY(14px); }
+    .device.p2 { transform: rotate(4deg) translateX(-24px); }
   }
 </style>
 
@@ -155,8 +162,8 @@
       </div>
 
       <div class="cluster">
-        <div class="phone p1"><img src="__PHONE1__" alt="A live map of nearby restrooms in Crapple Maps" /></div>
-        <div class="phone p2"><img src="__PHONE2__" alt="Restroom details, amenities, and directions in Crapple Maps" /></div>
+        <div class="device pixel p1"><img src="__PHONE1__" alt="The Crapple Maps feed on a Google Pixel" /></div>
+        <div class="device iphone p2"><img src="__PHONE2__" alt="The Crapple Maps map on an iPhone" /></div>
       </div>
     </section>
   </div>
@@ -187,12 +194,12 @@
         <h2>Everything you need, right when you need it.</h2>
       </div>
       <div class="grid-f">
-        <div class="card"><div class="ico">&#128205;</div><h3>The nearest one, now</h3><p>Every bathroom around you on a live map, closest first. Filter for accessible, gender-neutral, no code, and no purchase.</p></div>
-        <div class="card"><div class="ico">&#9989;</div><h3>Know before you go</h3><p>Public or customers-only? Is there a code? Gotta buy something first? The details that matter, from folks who've been there.</p></div>
-        <div class="card"><div class="ico">&#10133;</div><h3>Found a good one? Add it</h3><p>Long-press the map, drop a pin, and it's there for the next person who's cutting it close.</p></div>
-        <div class="card"><div class="ico">&#128506;&#65039;</div><h3>Your regulars, saved</h3><p>Log the ones that came through and save your go-tos, so they're always a tap away.</p></div>
-        <div class="card"><div class="ico">&#128240;</div><h3>The scoop from friends</h3><p>Follow people you trust and see their finds. Ratings, photos, and notes on the spots worth knowing.</p></div>
-        <div class="card"><div class="ico">&#127379;</div><h3>Free. For real.</h3><p>Every feature is free for everyone. No ads, no subscriptions. It's open source too, so anyone can peek under the hood.</p></div>
+        <div class="card"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22b8cf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><h3>The nearest one, now</h3><p>Every bathroom around you on a live map, closest first. Filter for accessible, gender-neutral, no code, and no purchase.</p></div>
+        <div class="card"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22b8cf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.4 2.4 4.6-5.3"/></svg></div><h3>Know before you go</h3><p>Public or customers-only? Is there a code? Gotta buy something first? The details that matter, from folks who've been there.</p></div>
+        <div class="card"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22b8cf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><path d="M12 6.8v6.4M8.8 10h6.4"/></svg></div><h3>Found a good one? Add it</h3><p>Long-press the map, drop a pin, and it's there for the next person who's cutting it close.</p></div>
+        <div class="card"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22b8cf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4.5h11a1 1 0 0 1 1 1v14l-6.5-4-6.5 4v-14a1 1 0 0 1 1-1z"/></svg></div><h3>Your regulars, saved</h3><p>Log the ones that came through and save your go-tos, so they're always a tap away.</p></div>
+        <div class="card"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22b8cf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 6a3 3 0 0 1 0 6"/><path d="M17.5 14.3A5.5 5.5 0 0 1 20.5 20"/></svg></div><h3>The scoop from friends</h3><p>Follow people you trust and see their finds. Ratings, photos, and notes on the spots worth knowing.</p></div>
+        <div class="card"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22b8cf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M18 4l.5 1.5L20 6l-1.5.5L18 8l-.5-1.5L16 6l1.5-.5z"/></svg></div><h3>Free. For real.</h3><p>Every feature is free for everyone. No ads, no subscriptions. It's open source too, so anyone can peek under the hood.</p></div>
       </div>
     </div>
   </section>

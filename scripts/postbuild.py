@@ -30,7 +30,7 @@ if os.path.isdir(nm):
 
 # 2) Standalone /info page.
 tpl = open('marketing/info.template.html', encoding='utf-8').read()
-tpl = tpl.replace('__PHONE1__', '/cm-hero.jpg').replace('__PHONE2__', '/cm-detail.jpg').replace('__WEB__', '/cm-web.jpg')
+tpl = tpl.replace('__PHONE1__', '/cm-android.jpg').replace('__PHONE2__', '/cm-ios.jpg').replace('__WEB__', '/cm-web.jpg')
 head, body = tpl.split('</style>', 1)
 doc = (
     '<!doctype html>\n<html lang="en">\n<head>\n'
