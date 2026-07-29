@@ -12,6 +12,7 @@ import { CreditCard } from 'phosphor-react-native/src/icons/CreditCard';
 import { Crosshair } from 'phosphor-react-native/src/icons/Crosshair';
 import { DeviceMobile } from 'phosphor-react-native/src/icons/DeviceMobile';
 import { DotsNine } from 'phosphor-react-native/src/icons/DotsNine';
+import { DotsThree } from 'phosphor-react-native/src/icons/DotsThree';
 import { Export } from 'phosphor-react-native/src/icons/Export';
 import { Flame } from 'phosphor-react-native/src/icons/Flame';
 import { GenderIntersex } from 'phosphor-react-native/src/icons/GenderIntersex';
@@ -117,6 +118,7 @@ const ICONS = {
   'moon-outline': { C: Moon },
   'time-outline': { C: Clock },
   'information-circle-outline': { C: Info },
+  'ellipsis-horizontal': { C: DotsThree },
 } satisfies Record<string, Def>;
 
 export type IconName = keyof typeof ICONS;

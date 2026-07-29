@@ -6,15 +6,20 @@ import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-nativ
 
 import { Avatar } from '@/components/ui';
 import { useComments } from '@/hooks/useComments';
+import { useBlock, useBlockedIds } from '@/hooks/useModeration';
 import { timeAgo } from '@/lib/format';
+import { moderationMenu } from '@/lib/moderate';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
 // Plain TextInput because this screen is a ScrollView route, not a bottom sheet.
 export function CommentsSection({ logId, session }: { logId: string; session: Session | null }) {
-  const { comments, isLoading, add, remove, adding } = useComments(logId);
+  const { comments: allComments, isLoading, add, remove, adding } = useComments(logId);
   const [text, setText] = useState('');
   const me = session?.user.id;
+  const { data: blocked } = useBlockedIds(me);
+  const { block } = useBlock(me);
+  const comments = blocked?.size ? allComments.filter((c) => !blocked.has(c.user_id)) : allComments;
 
   const submit = async () => {
     const t = text.trim();
@@ -80,6 +85,12 @@ export function CommentsSection({ logId, session }: { logId: string; session: Se
               {me === c.user_id ? (
                 <Pressable onPress={() => remove(c.id)} hitSlop={8}>
                   <Icon name="trash-outline" size={16} color={clr.content2} />
+                </Pressable>
+              ) : me ? (
+                <Pressable
+                  hitSlop={8}
+                  onPress={() => moderationMenu({ targetType: 'comment', targetId: c.id, authorName: name, onBlock: () => block(c.user_id) })}>
+                  <Icon name="ellipsis-horizontal" size={16} color={clr.content2} />
                 </Pressable>
               ) : null}
             </View>

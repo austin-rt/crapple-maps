@@ -4,11 +4,13 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Linking, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { Avatar, INPUT_CLS } from '@/components/ui';
 import { useLogCount, useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
+import { confirmAction } from '@/lib/confirm';
+import { deleteAccount } from '@/lib/db/moderation';
 import { toast } from '@/lib/toast';
 import { updateAvatarSeed, updateProfile, uploadAvatar } from '@/lib/db/profiles';
 import { ACCENT, DANGER } from '@/lib/tokens';
@@ -165,6 +167,36 @@ export function ManageProfile() {
         <Icon name="log-out-outline" size={18} color={DANGER} />
         <Text className="font-semibold text-red-500">Sign out</Text>
       </Pressable>
+
+      <Pressable
+        onPress={() =>
+          confirmAction(
+            'Delete your account?',
+            'This permanently deletes your profile, logs, comments, likes, photos, and saved places. Restrooms you added stay on the map without your name. This cannot be undone.',
+            async () => {
+              try {
+                await deleteAccount();
+                await signOut();
+                toast.success('Account deleted');
+              } catch (e: any) {
+                toast.error("Couldn't delete account", e?.message);
+              }
+            },
+            { confirmLabel: 'Delete forever', destructive: true },
+          )
+        }
+        className="mt-3 items-center justify-center py-3 active:opacity-70">
+        <Text className="text-sm font-semibold" style={{ color: DANGER }}>Delete account</Text>
+      </Pressable>
+
+      <View className="mb-2 mt-4 flex-row items-center justify-center gap-4">
+        <Text className="text-xs text-content-2 underline" onPress={() => Linking.openURL('https://crapplemaps.com/privacy')}>
+          Privacy policy
+        </Text>
+        <Text className="text-xs text-content-2 underline" onPress={() => Linking.openURL('https://crapplemaps.com/terms')}>
+          Terms of use
+        </Text>
+      </View>
     </ScrollView>
   );
 }

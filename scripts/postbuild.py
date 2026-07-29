@@ -5,11 +5,13 @@
    @expo/vector-icons fonts under assets/node_modules — rename + rewrite refs.
 2. Pre-paint dark-mode class so the statically-exported (light) HTML doesn't
    flash light for dark-mode users before hydration.
-3. Standalone /info marketing page: replace the app-SPA route's info.html with a
+3. Legal pages (privacy + terms) copied in for the App Store listing.
+4. Standalone /info marketing page: replace the app-SPA route's info.html with a
    complete, self-contained HTML doc (from marketing/info.template.html) so it
    scrolls like a normal web page instead of being trapped in the RN-web shell.
 """
 import os
+import shutil
 
 DIST = 'dist'
 
@@ -60,3 +62,10 @@ doc = (
 )
 open(os.path.join(DIST, 'info.html'), 'w', encoding='utf-8').write(doc)
 print('postbuild: wrote standalone dist/info.html')
+
+# 4) Legal pages (privacy + terms). Self-contained static docs, required for the
+# App Store listing and linked from the profile screen.
+shutil.copy('marketing/legal.css', os.path.join(DIST, 'legal.css'))
+for page in ('privacy', 'terms'):
+    shutil.copy(f'marketing/{page}.html', os.path.join(DIST, f'{page}.html'))
+print('postbuild: wrote dist/privacy.html, dist/terms.html, dist/legal.css')
