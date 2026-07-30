@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — Crapple Maps</title>
+<link rel="stylesheet" href="/legal.css">
+<style>
+  form { display: flex; flex-direction: column; gap: 14px; margin-top: 26px; }
+  label { font-size: 14px; font-weight: 600; }
+  input, textarea {
+    font: inherit; width: 100%; padding: 11px 13px; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--bg); color: var(--fg);
+  }
+  input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  textarea { min-height: 150px; resize: vertical; }
+  button {
+    font: inherit; font-weight: 600; align-self: flex-start; cursor: pointer;
+    padding: 11px 22px; border-radius: 10px; border: 0;
+    background: var(--accent); color: #fff;
+  }
+  button[disabled] { opacity: .55; cursor: default; }
+  .hint { font-size: 13px; color: var(--muted); margin: -6px 0 0; }
+  .note { margin-top: 22px; padding: 14px 16px; border-radius: 10px; font-size: 15px; display: none; }
+  .note.ok { display: block; background: color-mix(in srgb, #16A34A 14%, transparent); }
+  .note.bad { display: block; background: color-mix(in srgb, #DC2626 14%, transparent); }
+</style>
+</head>
+<body>
+<main>
+<h1>Contact</h1>
+<p class="updated">Questions, bugs, bad data on the map, or anything else.</p>
+
+<p>Send a note below and it goes straight to us. You can also email
+<a href="mailto:help@crapplemaps.com">help@crapplemaps.com</a> directly.</p>
+
+<form id="f">
+  <div>
+    <label for="email">Your email <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+    <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+    <p class="hint">Leave it if you'd like a reply.</p>
+  </div>
+  <div>
+    <label for="message">Message</label>
+    <textarea id="message" name="message" required maxlength="5000" placeholder="What's going on?"></textarea>
+  </div>
+  <button id="send" type="submit">Send</button>
+</form>
+
+<div class="note" id="note"></div>
+
+<p class="footer">Crapple Maps · <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Use</a> · <a href="/info">About</a></p>
+</main>
+
+<script>
+  var URL_ = '__SUPABASE_URL__';
+  var KEY_ = '__SUPABASE_ANON_KEY__';
+  var f = document.getElementById('f');
+  var note = document.getElementById('note');
+  var send = document.getElementById('send');
+
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var msg = document.getElementById('message').value.trim();
+    if (!msg) return;
+    send.disabled = true;
+    send.textContent = 'Sending…';
+    fetch(URL_ + '/rest/v1/feedback', {
+      method: 'POST',
+      headers: { 'apikey': KEY_, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        email: document.getElementById('email').value.trim() || null,
+        message: msg,
+        page: location.pathname,
+        user_agent: navigator.userAgent.slice(0, 400)
+      })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      f.style.display = 'none';
+      note.className = 'note ok';
+      note.textContent = 'Thanks — got it. We read everything.';
+    }).catch(function () {
+      send.disabled = false;
+      send.textContent = 'Send';
+      note.className = 'note bad';
+      note.innerHTML = "That didn't go through. Email <a href=\"mailto:help@crapplemaps.com\">help@crapplemaps.com</a> instead.";
+    });
+  });
+</script>
+</body>
+</html>

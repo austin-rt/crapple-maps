@@ -68,4 +68,12 @@ print('postbuild: wrote standalone dist/info.html')
 shutil.copy('marketing/legal.css', os.path.join(DIST, 'legal.css'))
 for page in ('privacy', 'terms'):
     shutil.copy(f'marketing/{page}.html', os.path.join(DIST, f'{page}.html'))
-print('postbuild: wrote dist/privacy.html, dist/terms.html, dist/legal.css')
+
+# Contact form posts straight to Supabase (the anon key is already public in the
+# client bundle), so the page needs no server of its own.
+contact = open('marketing/contact.template.html', encoding='utf-8').read()
+contact = (contact
+           .replace('__SUPABASE_URL__', os.environ.get('EXPO_PUBLIC_SUPABASE_URL', ''))
+           .replace('__SUPABASE_ANON_KEY__', os.environ.get('EXPO_PUBLIC_SUPABASE_ANON_KEY', '')))
+open(os.path.join(DIST, 'contact.html'), 'w', encoding='utf-8').write(contact)
+print('postbuild: wrote dist/privacy.html, dist/terms.html, dist/contact.html, dist/legal.css')
