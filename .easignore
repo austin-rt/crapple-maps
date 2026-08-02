@@ -1,7 +1,21 @@
-# Excluded from the tarball uploaded to EAS Build — none of it affects the app
-# binary, and leaving it out keeps uploads small.
+# NOTE: this file REPLACES .gitignore for the EAS upload — it does not add to
+# it. Anything gitignored that must also stay out of the build has to be
+# repeated here, or it gets uploaded.
+
+# Locally generated native projects. If these reach EAS, it detects a bare
+# workflow and rejects app.json's runtimeVersion policy; CI never sees them
+# because they aren't committed.
+android/
+ios/
+node_modules/
+
+# Build/test output
+.expo/
+dist/
+.playwright-mcp/
+
+# Not part of the app binary
 store/screenshots/
 marketing/
 docs/
 supabase/
-.playwright-mcp/
