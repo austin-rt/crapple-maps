@@ -7,12 +7,16 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "ios": { "simulator": false },
+      "ios": {
+        "simulator": false
+      },
       "channel": "development"
     },
     "preview": {
       "distribution": "internal",
-      "ios": { "simulator": false },
+      "ios": {
+        "simulator": false
+      },
       "channel": "preview"
     },
     "production": {
@@ -26,7 +30,13 @@
       "ios": {
         "appleTeamId": "ZLDX72HQWU",
         "ascAppId": "6795301489",
-        "groups": ["Friends & Family", "Team (Expo)"]
+        "groups": [
+          "Friends & Family",
+          "Team (Expo)"
+        ]
+      },
+      "android": {
+        "track": "internal"
       }
     }
   }

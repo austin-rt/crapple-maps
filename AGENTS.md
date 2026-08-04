@@ -20,13 +20,15 @@ you attach a build whose version string differs from the version record.
 
 - app/, components/, hooks/, lib/, theme/, assets/ → web deploy + OTA update
 - marketing/, public/, scripts/ → web deploy only
-- package.json, app.json, plugins/ → native build + TestFlight submit as well
+- package.json, app.json, plugins/ → native builds + TestFlight and Play internal
 
 Native binaries build only for changes OTA can't deliver (new dependencies,
 app config, native plugins), so nothing needs to be tagged or triggered by
 hand. `submit.production.ios.groups` in eas.json adds each new build to the
 TestFlight groups on upload — without it, `eas submit` only uploads the binary
-and the build sits unassigned. Apple's Beta App Review is required once per
+and the build sits unassigned. The Play service-account key lives on EAS
+servers (`eas credentials -p android`), NOT in eas.json — a
+`serviceAccountKeyPath` would point at gitignored `.secrets/` and break CI. Apple's Beta App Review is required once per
 app; later builds distribute without it unless the app changes significantly. To force a build without a native change:
 
     npx eas-cli workflow:run .eas/workflows/release-native.yml
