@@ -1,6 +1,10 @@
-# Builds a native binary and submits it to TestFlight. Triggered by changes that
-# JS-over-the-air can't deliver — new/updated dependencies, app config, or
-# native plugins — so `git push` is the only action needed.
+# Builds native binaries and ships them to TestFlight and Play internal testing.
+# Triggered by changes that JS-over-the-air can't deliver — new/updated
+# dependencies, app config, or native plugins — so `git push` is the only
+# action needed.
+#
+# iOS and Android build in parallel; each submits as soon as its own build is
+# done, so a slow platform never holds up the other.
 #
 # No tag trigger: `paths` filters tag pushes too, so a tag would only fire when
 # the tagged commit happened to touch these files. To force a build without a
@@ -41,4 +45,20 @@ jobs:
     type: submit
     params:
       build_id: ${{ needs.build_ios.outputs.build_id }}
+      profile: production
+
+  build_android:
+    name: eas build android → production
+    type: build
+    environment: production
+    params:
+      platform: android
+      profile: production
+
+  submit_android:
+    name: submit → Play internal
+    needs: [build_android]
+    type: submit
+    params:
+      build_id: ${{ needs.build_android.outputs.build_id }}
       profile: production
