@@ -64,6 +64,15 @@ export function EditForm({
             placeholderTextColor={c.content2}
             className={INPUT_CLS}
           />
+
+          <SectionHeader>Address</SectionHeader>
+          <InputComponent
+            value={draft.address}
+            onChangeText={(t) => onChange({ address: t })}
+            placeholder="Fills in from search — edit if it's wrong"
+            placeholderTextColor={c.content2}
+            className={INPUT_CLS}
+          />
         </>
       ) : null}
 

@@ -62,6 +62,7 @@ export type NewRestroom = {
   name?: string | null;
   lat: number;
   lng: number;
+  address?: string | null;
   access_type?: AccessType | null;
   accessible?: boolean | null;
   unisex?: boolean | null;

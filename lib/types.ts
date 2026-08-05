@@ -42,6 +42,7 @@ export type RestroomDraft = {
   name: string;
   lat: number;
   lng: number;
+  address: string;
   accessible: boolean | null;
   unisex: boolean | null;
   changing_table: boolean | null;

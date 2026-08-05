@@ -70,6 +70,9 @@ export function RestroomSheet({
       name: restroom.name ?? '',
       lat: restroom.lat,
       lng: restroom.lng,
+      // Carried so the draft is a complete RestroomDraft; the edit variant
+      // doesn't expose address and saveEdits never sends it.
+      address: restroom.address ?? '',
       accessible: restroom.accessible,
       unisex: restroom.unisex,
       changing_table: restroom.changing_table,
