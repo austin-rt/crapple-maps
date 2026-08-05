@@ -1,6 +1,8 @@
 import { APIProvider, Map as GMap, Marker as GMarker } from '@vis.gl/react-google-maps';
 import { View } from 'react-native';
 
+import { DARK_MAP_STYLE } from '@/lib/maps';
+import { useThemePref } from '@/lib/theme';
 import { ACCENT } from '@/lib/tokens';
 
 type Coords = { latitude: number; longitude: number };
@@ -34,6 +36,7 @@ export function MapPinPicker({
   zoom?: number;
   flush?: boolean;
 }) {
+  const { scheme } = useThemePref();
   return (
     <View
       className={`overflow-hidden rounded-2xl border border-line ${flush ? '' : 'mt-3'}`}
@@ -43,6 +46,7 @@ export function MapPinPicker({
           key={centerKey}
           defaultCenter={{ lat: coords.latitude, lng: coords.longitude }}
           defaultZoom={zoom}
+          styles={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
           gestureHandling="greedy"
           disableDefaultUI
           clickableIcons={false}

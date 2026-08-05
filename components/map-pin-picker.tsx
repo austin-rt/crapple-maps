@@ -2,8 +2,9 @@ import { Icon } from '@/components/ui';
 import Constants from 'expo-constants';
 import { Platform, Text, View } from 'react-native';
 
+import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
 import { ACCENT } from '@/lib/tokens';
-import { useColors } from '@/lib/theme';
+import { useColors, useThemePref } from '@/lib/theme';
 
 // Uber/Lyft-style precise pin: a fixed pin sits at screen center and the map
 // pans under it — wherever the map settles is the chosen point.
@@ -44,6 +45,7 @@ export function MapPinPicker({
   flush?: boolean;
 }) {
   const c = useColors();
+  const { scheme } = useThemePref();
   if (!mapsAvailable) {
     return (
       <View className="mt-3 items-center rounded-xl border border-dashed border-line p-4">
@@ -59,6 +61,10 @@ export function MapPinPicker({
       <MapView
         key={centerKey}
         style={{ flex: 1 }}
+        // Same provider + night style the finder map uses, so the picker
+        // doesn't sit bright white inside a dark-mode screen.
+        provider={MAP_PROVIDER}
+        customMapStyle={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
         initialRegion={{ ...coords, latitudeDelta: 360 / 2 ** zoom, longitudeDelta: 360 / 2 ** zoom }}
         onRegionChangeComplete={(reg: any) => onChange({ latitude: reg.latitude, longitude: reg.longitude })}
       />
