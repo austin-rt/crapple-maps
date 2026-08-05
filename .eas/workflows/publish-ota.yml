@@ -25,6 +25,12 @@ on:
       - package-lock.json
       - .nvmrc # bundling env — EAS workers need Node 22+ (supabase-js WebSocket)
 
+# Only the newest push needs to publish — an older update landing after a newer
+# one would roll users backwards.
+concurrency:
+  cancel_in_progress: true
+  group: ${{ workflow.filename }}-${{ github.ref }}
+
 # Workers default to Node 20, which lacks the native WebSocket supabase-js
 # needs during the export's SSR pre-render (.nvmrc is not honored here).
 defaults:
