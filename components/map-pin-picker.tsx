@@ -22,7 +22,21 @@ if (Platform.OS !== 'web' && !isExpoGo) {
 
 type Coords = { latitude: number; longitude: number };
 
-export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (c: Coords) => void }) {
+// `centerKey` remounts the map so it re-centers on `coords`. The map is
+// uncontrolled (initialRegion) so that dragging isn't fought by re-renders —
+// which also means it ignores later coord changes. Bump this ONLY when the
+// location is chosen externally (a search pick), never on drag.
+export function MapPinPicker({
+  coords,
+  onChange,
+  height = 224,
+  centerKey,
+}: {
+  coords: Coords;
+  onChange: (c: Coords) => void;
+  height?: number;
+  centerKey?: string | number;
+}) {
   const c = useColors();
   if (!mapsAvailable) {
     return (
@@ -35,8 +49,9 @@ export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (
     );
   }
   return (
-    <View className="mt-3 h-56 overflow-hidden rounded-2xl">
+    <View className="mt-3 overflow-hidden rounded-2xl" style={{ height }}>
       <MapView
+        key={centerKey}
         style={{ flex: 1 }}
         initialRegion={{ ...coords, latitudeDelta: 0.003, longitudeDelta: 0.003 }}
         onRegionChangeComplete={(reg: any) => onChange({ latitude: reg.latitude, longitude: reg.longitude })}

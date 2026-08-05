@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text } from 'react-native';
 
 import { MapPinPicker } from '@/components/map-pin-picker';
-import { EditForm } from '@/components/restroom';
+import { EditForm, PlaceSearchField, type PickedPlace } from '@/components/restroom';
 import { SectionHeader } from '@/components/ui';
+import { reverseGeocode } from '@/lib/geocode';
 import { useAuth } from '@/lib/auth';
 import { toast } from '@/lib/toast';
 import { useContribution } from '@/lib/contribution';
@@ -26,6 +27,7 @@ export default function NewRestroom() {
     name: '',
     lat: lat0,
     lng: lng0,
+    address: '',
     accessible: null,
     unisex: null,
     changing_table: null,
@@ -36,7 +38,53 @@ export default function NewRestroom() {
     codes: [],
   });
   const [saving, setSaving] = useState(false);
+  // Bumped only when a search result is picked, so the map re-centers there.
+  // Dragging the pin must NOT bump it, or the map would fight the drag.
+  const [centerKey, setCenterKey] = useState(0);
+  // Once they type in a field it's theirs, and the pin stops overwriting it.
+  // A search pick is an explicit re-selection of the whole place, so it clears
+  // both flags and wins — otherwise picking a second place would strand the
+  // first place's name on the form.
+  const addressEdited = useRef(false);
+  const nameEdited = useRef(false);
+
   const patch = (p: Partial<RestroomDraft>) => setDraft((d) => ({ ...d, ...p }));
+
+  const editField = (p: Partial<RestroomDraft>) => {
+    if ('address' in p) addressEdited.current = true;
+    if ('name' in p) nameEdited.current = true;
+    patch(p);
+  };
+
+  const pickPlace = (p: PickedPlace) => {
+    setDraft((d) => ({
+      ...d,
+      lat: p.lat,
+      lng: p.lng,
+      address: p.address,
+      // Keep a hand-typed name; replace one we filled in from an earlier pick.
+      // A result with no place name (a bare street address) never blanks it.
+      name: nameEdited.current || !p.title ? d.name : p.title,
+    }));
+    addressEdited.current = false;
+    setCenterKey((k) => k + 1);
+  };
+
+  // Dragging the pin re-derives the address from the new coordinate, unless
+  // they've hand-edited it.
+  const movePin = (c: { latitude: number; longitude: number }) => {
+    patch({ lat: c.latitude, lng: c.longitude });
+    if (addressEdited.current) return;
+    reverseGeocode(c.latitude, c.longitude)
+      .then((place) => {
+        if (!place || addressEdited.current) return;
+        setDraft((d) =>
+          // Guard against a stale response landing after another drag.
+          d.lat === c.latitude && d.lng === c.longitude ? { ...d, address: place.full } : d,
+        );
+      })
+      .catch(() => {});
+  };
 
   // If they filled this out logged-out and just signed in, restore their draft.
   const restored = useRef(false);
@@ -62,6 +110,7 @@ export default function NewRestroom() {
         name: draft.name.trim() || null,
         lat: draft.lat,
         lng: draft.lng,
+        address: draft.address.trim() || null,
         access_type: draft.access_type,
         accessible: draft.accessible,
         unisex: draft.unisex,
@@ -91,9 +140,16 @@ export default function NewRestroom() {
       <Stack.Screen options={{ title: 'Add a restroom' }} />
 
       <SectionHeader>Location</SectionHeader>
-      <MapPinPicker coords={{ latitude: draft.lat, longitude: draft.lng }} onChange={(c) => patch({ lat: c.latitude, lng: c.longitude })} />
+      <PlaceSearchField onPick={pickPlace} />
+      <MapPinPicker
+        coords={{ latitude: draft.lat, longitude: draft.lng }}
+        onChange={movePin}
+        height={340}
+        centerKey={centerKey}
+      />
+      <Text className="mt-2 text-xs text-content-2">Drag the map to put the pin on the exact spot.</Text>
 
-      <EditForm draft={draft} onChange={patch} variant="create" />
+      <EditForm draft={draft} onChange={editField} variant="create" />
 
       <Pressable
         onPress={submit}

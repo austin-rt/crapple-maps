@@ -17,11 +17,24 @@ const PIN_ICON =
       `<circle cx="14" cy="14" r="5" fill="#ffffff"/></svg>`,
   );
 
-export function MapPinPicker({ coords, onChange }: { coords: Coords; onChange: (c: Coords) => void }) {
+// See the native picker: `centerKey` remounts the map to re-center it after an
+// external location pick. The marker itself is controlled, so drags are live.
+export function MapPinPicker({
+  coords,
+  onChange,
+  height = 200,
+  centerKey,
+}: {
+  coords: Coords;
+  onChange: (c: Coords) => void;
+  height?: number;
+  centerKey?: string | number;
+}) {
   return (
-    <View className="mt-3 overflow-hidden rounded-xl border border-line" style={{ height: 200 }}>
+    <View className="mt-3 overflow-hidden rounded-xl border border-line" style={{ height }}>
       <APIProvider apiKey={KEY}>
         <GMap
+          key={centerKey}
           defaultCenter={{ lat: coords.latitude, lng: coords.longitude }}
           defaultZoom={16}
           gestureHandling="greedy"
