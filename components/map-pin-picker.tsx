@@ -1,5 +1,6 @@
 import { Icon } from '@/components/ui';
 import Constants from 'expo-constants';
+import { useEffect, useRef } from 'react';
 import { Platform, Text, View } from 'react-native';
 
 import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
@@ -23,10 +24,11 @@ if (Platform.OS !== 'web' && !isExpoGo) {
 
 type Coords = { latitude: number; longitude: number };
 
-// `centerKey` remounts the map so it re-centers on `coords`. The map is
-// uncontrolled (initialRegion) so that dragging isn't fought by re-renders —
-// which also means it ignores later coord changes. Bump this ONLY when the
-// location is chosen externally (a search pick), never on drag.
+// The map is uncontrolled (initialRegion) so dragging isn't fought by
+// re-renders — which also means it ignores later coord changes. Bumping
+// `centerKey` animates it to `coords` instead. Bump it ONLY when the location
+// is chosen externally (a search pick), never on drag, or the animation would
+// fight the gesture.
 export function MapPinPicker({
   coords,
   onChange,
@@ -46,6 +48,24 @@ export function MapPinPicker({
 }) {
   const c = useColors();
   const { scheme } = useThemePref();
+  const mapRef = useRef<any>(null);
+  const delta = 360 / 2 ** zoom;
+
+  // Glide to the new spot rather than snapping. Keyed on centerKey alone so a
+  // drag (which changes coords) never re-triggers it.
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return; // initialRegion already put us here
+    }
+    mapRef.current?.animateToRegion(
+      { ...coords, latitudeDelta: delta, longitudeDelta: delta },
+      600,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [centerKey]);
+
   if (!mapsAvailable) {
     return (
       <View className="mt-3 items-center rounded-xl border border-dashed border-line p-4">
@@ -59,13 +79,13 @@ export function MapPinPicker({
   return (
     <View className={`overflow-hidden rounded-2xl ${flush ? '' : 'mt-3'}`} style={{ height }}>
       <MapView
-        key={centerKey}
+        ref={mapRef}
         style={{ flex: 1 }}
         // Same provider + night style the finder map uses, so the picker
         // doesn't sit bright white inside a dark-mode screen.
         provider={MAP_PROVIDER}
         customMapStyle={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
-        initialRegion={{ ...coords, latitudeDelta: 360 / 2 ** zoom, longitudeDelta: 360 / 2 ** zoom }}
+        initialRegion={{ ...coords, latitudeDelta: delta, longitudeDelta: delta }}
         onRegionChangeComplete={(reg: any) => onChange({ latitude: reg.latitude, longitude: reg.longitude })}
       />
       <View pointerEvents="none" className="absolute inset-0 items-center justify-center">
