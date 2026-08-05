@@ -25,6 +25,11 @@ on:
       - app.config.js
       - plugins/**
       - .easignore
+      # The workflow and submit config are part of what this job does. Without
+      # these, editing them silently doesn't re-run it — which is how the
+      # Android jobs sat here unexecuted after they were added.
+      - .eas/workflows/release-native.yml
+      - eas.json
 
 defaults:
   tools:
