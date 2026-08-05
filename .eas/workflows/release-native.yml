@@ -52,13 +52,21 @@ jobs:
       platform: ios
       profile: production
 
+  # `type: submit` uploads and assigns groups but never submits for Beta App
+  # Review, so builds pile up at READY_FOR_BETA_SUBMISSION and external testers
+  # keep getting an old one — builds 14, 15 and 16 all stalled that way while
+  # the public link still served 13. `type: testflight` does the review
+  # submission too. Only the EXTERNAL group is listed; Apple distributes to
+  # internal groups automatically and rejects explicit assignment.
   submit_ios:
-    name: submit → TestFlight
+    name: TestFlight → external testers
     needs: [build_ios]
-    type: submit
+    type: testflight
     params:
       build_id: ${{ needs.build_ios.outputs.build_id }}
       profile: production
+      external_groups: ['Friends & Family']
+      submit_beta_review: true
 
   build_android:
     name: eas build android → production
