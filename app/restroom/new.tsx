@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, ScrollView, Text } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { MapPinPicker } from '@/components/map-pin-picker';
 import { EditForm, PlaceSearchField, type PickedPlace } from '@/components/restroom';
@@ -41,6 +41,8 @@ export default function NewRestroom() {
   // Bumped only when a search result is picked, so the map re-centers there.
   // Dragging the pin must NOT bump it, or the map would fight the drag.
   const [centerKey, setCenterKey] = useState(0);
+  // Starts wide enough to orient, tightens once they've chosen a specific place.
+  const [zoom, setZoom] = useState(16);
   // Once they type in a field it's theirs, and the pin stops overwriting it.
   // A search pick is an explicit re-selection of the whole place, so it clears
   // both flags and wins — otherwise picking a second place would strand the
@@ -67,6 +69,7 @@ export default function NewRestroom() {
       name: nameEdited.current || !p.title ? d.name : p.title,
     }));
     addressEdited.current = false;
+    setZoom(18);
     setCenterKey((k) => k + 1);
   };
 
@@ -140,13 +143,20 @@ export default function NewRestroom() {
       <Stack.Screen options={{ title: 'Add a restroom' }} />
 
       <SectionHeader>Location</SectionHeader>
-      <PlaceSearchField onPick={pickPlace} />
-      <MapPinPicker
-        coords={{ latitude: draft.lat, longitude: draft.lng }}
-        onChange={movePin}
-        height={340}
-        centerKey={centerKey}
-      />
+      {/* Search sits on the map like the finder's, rather than above it. */}
+      <View className="mt-3">
+        <MapPinPicker
+          flush
+          coords={{ latitude: draft.lat, longitude: draft.lng }}
+          onChange={movePin}
+          height={360}
+          centerKey={centerKey}
+          zoom={zoom}
+        />
+        <View style={{ position: 'absolute', top: 10, left: 10, right: 10, zIndex: 20 }}>
+          <PlaceSearchField onPick={pickPlace} />
+        </View>
+      </View>
       <Text className="mt-2 text-xs text-content-2">Drag the map to put the pin on the exact spot.</Text>
 
       <EditForm draft={draft} onChange={editField} variant="create" />

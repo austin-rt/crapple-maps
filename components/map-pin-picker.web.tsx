@@ -24,19 +24,25 @@ export function MapPinPicker({
   onChange,
   height = 200,
   centerKey,
+  zoom = 16,
+  flush = false,
 }: {
   coords: Coords;
   onChange: (c: Coords) => void;
   height?: number;
   centerKey?: string | number;
+  zoom?: number;
+  flush?: boolean;
 }) {
   return (
-    <View className="mt-3 overflow-hidden rounded-xl border border-line" style={{ height }}>
+    <View
+      className={`overflow-hidden rounded-2xl border border-line ${flush ? '' : 'mt-3'}`}
+      style={{ height }}>
       <APIProvider apiKey={KEY}>
         <GMap
           key={centerKey}
           defaultCenter={{ lat: coords.latitude, lng: coords.longitude }}
-          defaultZoom={16}
+          defaultZoom={zoom}
           gestureHandling="greedy"
           disableDefaultUI
           clickableIcons={false}
