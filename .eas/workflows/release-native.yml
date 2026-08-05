@@ -31,6 +31,14 @@ on:
       - .eas/workflows/release-native.yml
       - eas.json
 
+# Superseded runs are cancelled, so only the newest push is left building. On
+# the free plan Android builds can sit queued for hours, and without this each
+# push stacks another one behind it — they'd all eventually build and submit,
+# oldest first, and the newest commit would land last.
+concurrency:
+  cancel_in_progress: true
+  group: ${{ workflow.filename }}-${{ github.ref }}
+
 defaults:
   tools:
     node: 22.14.0
