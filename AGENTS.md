@@ -26,7 +26,11 @@ Native binaries build only for changes OTA can't deliver (new dependencies,
 app config, native plugins), so nothing needs to be tagged or triggered by
 hand. `submit.production.ios.groups` in eas.json adds each new build to the
 TestFlight groups on upload — without it, `eas submit` only uploads the binary
-and the build sits unassigned. The Play service-account key lives on EAS
+and the build sits unassigned. List EXTERNAL groups only: Apple distributes to
+internal groups automatically and rejects explicit assignment, so naming one
+kills the submit job with "Builds cannot be assigned to this internal group"
+*after* the upload already succeeded — the build reaches TestFlight while CI
+reports failure. The Play service-account key lives on EAS
 servers (`eas credentials -p android`), NOT in eas.json — a
 `serviceAccountKeyPath` would point at gitignored `.secrets/` and break CI. Apple's Beta App Review is required once per
 app; later builds distribute without it unless the app changes significantly. To force a build without a native change:
@@ -41,3 +45,20 @@ depends on (`eas.json`). Otherwise a commit that changes what the pipeline
 *does* won't run it, and the change sits there looking shipped: adding the
 Android build+submit jobs touched only `release-native.yml` and `eas.json`, so
 the Play submit path went unexecuted until someone forced a run.
+
+# Android builds are slow, and that is the plan, not a bug
+
+The Expo account is on the **free** plan. iOS builds pick up a worker in
+minutes; Android ones can sit `IN_QUEUE` for hours with `updatedAt` frozen at
+creation and no logs. That looks identical to a wedged job — it isn't, and
+cancelling and re-queuing does not help. Check status.expo.dev before
+assuming an outage, and do NOT "fix" it with `--local` builds; the point is
+that `git push` ships.
+
+Both workflows set `concurrency.cancel_in_progress`, so a newer push cancels
+the older run instead of stacking behind it. Without that, queued builds would
+submit oldest-first and land stale binaries after fresh ones.
+
+The same queue affects `type: update` jobs, so an OTA can take a long time to
+publish. `eas update --branch production` from a machine publishes the
+identical update immediately when something needs to reach devices now.
