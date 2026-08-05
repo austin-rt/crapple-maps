@@ -31,11 +31,17 @@ export function MapPinPicker({
   onChange,
   height = 224,
   centerKey,
+  zoom = 17,
+  flush = false,
 }: {
   coords: Coords;
   onChange: (c: Coords) => void;
   height?: number;
   centerKey?: string | number;
+  /** Google-style zoom level; converted to a region delta for react-native-maps. */
+  zoom?: number;
+  /** Drop the default top margin when the caller positions the map itself. */
+  flush?: boolean;
 }) {
   const c = useColors();
   if (!mapsAvailable) {
@@ -49,11 +55,11 @@ export function MapPinPicker({
     );
   }
   return (
-    <View className="mt-3 overflow-hidden rounded-2xl" style={{ height }}>
+    <View className={`overflow-hidden rounded-2xl ${flush ? '' : 'mt-3'}`} style={{ height }}>
       <MapView
         key={centerKey}
         style={{ flex: 1 }}
-        initialRegion={{ ...coords, latitudeDelta: 0.003, longitudeDelta: 0.003 }}
+        initialRegion={{ ...coords, latitudeDelta: 360 / 2 ** zoom, longitudeDelta: 360 / 2 ** zoom }}
         onRegionChangeComplete={(reg: any) => onChange({ latitude: reg.latitude, longitude: reg.longitude })}
       />
       <View pointerEvents="none" className="absolute inset-0 items-center justify-center">
