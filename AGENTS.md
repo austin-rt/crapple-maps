@@ -35,3 +35,9 @@ app; later builds distribute without it unless the app changes significantly. To
 
 Tags are not a trigger — EAS applies `paths` to tag pushes as well, so a tag
 only fires when the tagged commit happens to touch those files.
+
+A workflow's `paths` must include the workflow file itself and any config it
+depends on (`eas.json`). Otherwise a commit that changes what the pipeline
+*does* won't run it, and the change sits there looking shipped: adding the
+Android build+submit jobs touched only `release-native.yml` and `eas.json`, so
+the Play submit path went unexecuted until someone forced a run.
