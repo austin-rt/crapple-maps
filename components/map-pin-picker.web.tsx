@@ -1,4 +1,5 @@
-import { APIProvider, Map as GMap, Marker as GMarker } from '@vis.gl/react-google-maps';
+import { APIProvider, Map as GMap, Marker as GMarker, useMap } from '@vis.gl/react-google-maps';
+import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 
 import { DARK_MAP_STYLE } from '@/lib/maps';
@@ -19,8 +20,26 @@ const PIN_ICON =
       `<circle cx="14" cy="14" r="5" fill="#ffffff"/></svg>`,
   );
 
-// See the native picker: `centerKey` remounts the map to re-center it after an
-// external location pick. The marker itself is controlled, so drags are live.
+// Pans the map to `coords` when `centerKey` changes. Lives inside <GMap> so it
+// can reach the map instance via useMap(). panTo animates; setZoom is applied
+// first so the glide ends at the right scale.
+function Recenter({ coords, zoom, centerKey }: { coords: Coords; zoom: number; centerKey?: string | number }) {
+  const map = useMap();
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return; // defaultCenter already put us here
+    }
+    if (!map) return;
+    if (map.getZoom() !== zoom) map.setZoom(zoom);
+    map.panTo({ lat: coords.latitude, lng: coords.longitude });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [centerKey, map]);
+  return null;
+}
+
+// See the native picker for why the map stays uncontrolled.
 export function MapPinPicker({
   coords,
   onChange,
@@ -43,7 +62,6 @@ export function MapPinPicker({
       style={{ height }}>
       <APIProvider apiKey={KEY}>
         <GMap
-          key={centerKey}
           defaultCenter={{ lat: coords.latitude, lng: coords.longitude }}
           defaultZoom={zoom}
           styles={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
@@ -55,6 +73,7 @@ export function MapPinPicker({
             if (ll) onChange({ latitude: ll.lat, longitude: ll.lng });
           }}
           style={{ width: '100%', height: '100%' }}>
+          <Recenter coords={coords} zoom={zoom} centerKey={centerKey} />
           <GMarker
             position={{ lat: coords.latitude, lng: coords.longitude }}
             draggable
