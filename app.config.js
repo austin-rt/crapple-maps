@@ -1,10 +1,13 @@
-const appJson = require('./app.json');
 const withGoogleMapsIOS = require('./plugins/withGoogleMapsIOS');
 
 // Extends the static app.json with the Google Maps keys (kept in .env, out of
 // source control) and the iOS Google Maps pod plugin.
-module.exports = () => {
-  const expo = { ...appJson.expo };
+//
+// Takes the `config` Expo passes in (already loaded from app.json) rather than
+// requiring app.json itself — otherwise `expo doctor` flags the static config
+// as unused and fails the build's doctor step.
+module.exports = ({ config }) => {
+  const expo = { ...config };
   const iosKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_IOS_KEY;
   const androidKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_KEY;
 
