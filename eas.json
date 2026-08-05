@@ -29,10 +29,7 @@
     "production": {
       "ios": {
         "appleTeamId": "ZLDX72HQWU",
-        "ascAppId": "6795301489",
-        "groups": [
-          "Friends & Family"
-        ]
+        "ascAppId": "6795301489"
       },
       "android": {
         "track": "internal"
