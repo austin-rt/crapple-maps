@@ -66,7 +66,7 @@ print('postbuild: wrote standalone dist/info.html')
 # 4) Legal pages (privacy + terms). Self-contained static docs, required for the
 # App Store listing and linked from the profile screen.
 shutil.copy('marketing/legal.css', os.path.join(DIST, 'legal.css'))
-for page in ('privacy', 'terms'):
+for page in ('privacy', 'terms', 'delete-account'):
     shutil.copy(f'marketing/{page}.html', os.path.join(DIST, f'{page}.html'))
 
 # Contact form posts straight to Supabase (the anon key is already public in the
@@ -76,4 +76,4 @@ contact = (contact
            .replace('__SUPABASE_URL__', os.environ.get('EXPO_PUBLIC_SUPABASE_URL', ''))
            .replace('__SUPABASE_ANON_KEY__', os.environ.get('EXPO_PUBLIC_SUPABASE_ANON_KEY', '')))
 open(os.path.join(DIST, 'contact.html'), 'w', encoding='utf-8').write(contact)
-print('postbuild: wrote dist/privacy.html, dist/terms.html, dist/contact.html, dist/legal.css')
+print('postbuild: wrote dist/privacy.html, dist/terms.html, dist/delete-account.html, dist/contact.html, dist/legal.css')
