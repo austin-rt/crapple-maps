@@ -1,0 +1,35 @@
+-- Applied 2026-08-13. Recorded here; already live.
+--
+-- Supabase security advisors 0013 (rls_disabled_in_public) and 0014
+-- (extension_in_public). postgis living in `public` put its spatial_ref_sys
+-- table in the PostgREST-exposed schema with RLS off and INSERT/UPDATE/DELETE
+-- granted to `anon` — meaning anyone with the public anon key could corrupt the
+-- SRID definitions every distance query depends on. No user data was exposed;
+-- all 21 application tables have RLS with policies.
+--
+-- It could not be fixed in place: spatial_ref_sys is owned by supabase_admin,
+-- and `postgres` is not a member of that role, so ENABLE ROW LEVEL SECURITY
+-- errors and REVOKE silently no-ops (Postgres ignores a revoke from a
+-- non-grantor rather than failing). Relocating the extension was the only
+-- remediation available to us, and it clears both lints plus the six
+-- st_estimatedextent SECURITY DEFINER warnings that came with postgis.
+--
+-- pg_trgm is relocatable so it moved with ALTER EXTENSION. postgis is not
+-- (extrelocatable = false), so it needs drop/recreate. Two things about the
+-- CASCADE are worth knowing before repeating this:
+--   * It drops the geog columns, their GiST indexes, and the SQL-language
+--     functions whose bodies read geog.
+--   * It does NOT drop the plpgsql trigger functions — plpgsql bodies are
+--     opaque to the dependency tracker — so their triggers survive and
+--     recreating them must be idempotent. A first attempt failed on exactly
+--     this and rolled back with no data lost.
+--
+-- No data was at risk: geog is derived from lat/lng, and every row in both
+-- tables had both. A verified pg_dump was taken first.
+alter extension pg_trgm set schema extensions;
+
+-- The postgis move is intentionally not replayed here. Re-running a
+-- DROP EXTENSION ... CASCADE against a database that already has postgis in
+-- `extensions` would destroy the geog columns for no reason. On a fresh
+-- database, create the extension in `extensions` from the start:
+--     create extension postgis with schema extensions;
