@@ -3,9 +3,7 @@ import { useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native';
 
 import { FeedCard } from '@/components/feed';
-import { AgeGateScreen } from '@/components/profile';
 import { Avatar, SignInRequired } from '@/components/ui';
-import { useAgeGate } from '@/hooks/useAgeGate';
 import { useFeed } from '@/hooks/useLogs';
 import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
@@ -18,13 +16,10 @@ export default function FeedScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, refetch } = useFeed(session?.user.id);
   const { data: me } = useProfile(session?.user.id ?? '');
-  const gate = useAgeGate(session?.user.id);
 
   if (!session) {
     return <SignInRequired icon="newspaper-outline" message="See what friends are up to." />;
   }
-  if (gate === 'loading') return <View className="flex-1 bg-surface" />;
-  if (gate !== 'ok') return <AgeGateScreen uid={session.user.id} />;
 
   const logs = data?.pages.flat() ?? [];
   const onRefresh = async () => {

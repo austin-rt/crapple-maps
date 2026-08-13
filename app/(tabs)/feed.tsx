@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, Text, View } from 'react-native';
 
 import { FeedCard } from '@/components/feed';
-import { AgeGateScreen } from '@/components/profile';
 import { SignInRequired } from '@/components/ui';
-import { useAgeGate } from '@/hooks/useAgeGate';
 import { useFeed } from '@/hooks/useLogs';
 import { useAuth } from '@/lib/auth';
 import { ACCENT } from '@/lib/tokens';
@@ -13,14 +11,10 @@ export default function FeedScreen() {
   const { session } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, refetch } = useFeed(session?.user.id);
-  const gate = useAgeGate(session?.user.id);
 
   if (!session) {
     return <SignInRequired icon="newspaper-outline" message="See what friends are up to." />;
   }
-  // 13+ for the social surface; restroom search is untouched by this.
-  if (gate === 'loading') return <View className="flex-1 bg-surface" />;
-  if (gate !== 'ok') return <AgeGateScreen uid={session.user.id} />;
 
   const logs = data?.pages.flat() ?? [];
 
