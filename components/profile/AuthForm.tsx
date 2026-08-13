@@ -10,6 +10,14 @@ import { OAuthButtons } from './OAuthButtons';
 
 const inputCls = 'rounded-xl border border-line px-4 py-3 text-content';
 
+// Supabase states the password policy by dumping the literal character sets
+// ("...at least one character of each: abcdefghijklmnopqrstuvwxyz, ABC...").
+// Say the same thing in words. Keep this in sync with the project's auth
+// config (password_min_length / password_required_characters).
+const PASSWORD_HINT = 'At least 10 characters, with an uppercase letter, a lowercase letter, and a number.';
+
+const prettyError = (e: string) => (e.toLowerCase().includes('password should') ? PASSWORD_HINT : e);
+
 export function AuthForm() {
   const { signInWithEmail, signUpWithEmail, signInWithProvider, signInWithApple } = useAuth();
   const [mode, setMode] = useState<'in' | 'up'>('in');
@@ -53,7 +61,7 @@ export function AuthForm() {
     const fn = mode === 'in' ? signInWithEmail : signUpWithEmail;
     const { error } = await fn(normalizedEmail, pw);
     setBusy(false);
-    if (error) setMsg(error);
+    if (error) setMsg(prettyError(error));
   };
 
   const c = useColors();
@@ -124,6 +132,10 @@ export function AuthForm() {
         importantForAutofill="yes"
         className={inputCls}
       />
+      {/* State the rules up front on sign-up, but not twice if the error already says them. */}
+      {mode === 'up' && msg !== PASSWORD_HINT ? (
+        <Text className="text-xs text-content-2">{PASSWORD_HINT}</Text>
+      ) : null}
       {msg ? <Text className="text-sm text-red-500">{msg}</Text> : null}
 
       <Pressable
