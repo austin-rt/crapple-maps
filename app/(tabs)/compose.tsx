@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { LocationPicker } from '@/components/compose/LocationPicker';
-import { AgeGate } from '@/components/profile';
+import { AgeGateScreen } from '@/components/profile';
 import { INPUT_CLS, SignInRequired, Stars } from '@/components/ui';
 import { useAgeGate } from '@/hooks/useAgeGate';
 import { useAuth } from '@/lib/auth';
@@ -91,7 +91,7 @@ export default function ComposeScreen() {
     return <SignInRequired message="Log a visit." />;
   }
   if (gate === 'loading') return <View className="flex-1 bg-surface" />;
-  if (gate === 'blocked') return <AgeGate />;
+  if (gate !== 'ok') return <AgeGateScreen uid={session.user.id} />;
 
   const doSubmit = async (publish: boolean) => {
     if (!coords) return;

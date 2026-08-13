@@ -3,34 +3,41 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native';
 
 import { Icon } from '@/components/ui';
+import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
-import { setAgeVerified } from '@/lib/db/profiles';
+import { setAgeEligibleAt } from '@/lib/db/profiles';
 import { useColors } from '@/lib/theme';
 import { ACCENT, DANGER } from '@/lib/tokens';
 
 const MIN_AGE = 13;
 
-// Whole years elapsed, not a day-count divided by 365 — that drifts across leap
-// years and can land someone on the wrong side of their own birthday.
-export function ageFrom(year: number, month: number, day: number, now = new Date()) {
-  let age = now.getFullYear() - year;
-  const beforeBirthday =
-    now.getMonth() + 1 < month || (now.getMonth() + 1 === month && now.getDate() < day);
-  if (beforeBirthday) age -= 1;
-  return age;
+// The moment they turn MIN_AGE. Built with setFullYear rather than by adding
+// milliseconds so leap years land on the real birthday.
+export function eligibleDate(year: number, month: number, day: number) {
+  const d = new Date(year, month - 1, day);
+  d.setFullYear(d.getFullYear() + MIN_AGE);
+  return d;
 }
 
 export function isValidDate(year: number, month: number, day: number) {
   if (!year || !month || !day) return false;
   if (month < 1 || month > 12 || day < 1 || day > 31) return false;
   const d = new Date(year, month - 1, day);
-  // Rejects 31 Feb and friends — JS rolls those over to the next month.
+  // Rejects 31 Feb and friends — JS rolls those over into the next month.
   return d.getFullYear() === year && d.getMonth() === month - 1 && d.getDate() === day;
 }
 
-// Shown once per account, on the social surfaces only. Finding a restroom never
-// reaches this — that stays open to everyone, signed in or not.
-export function AgeGate() {
+// What the screens actually render: reads the profile itself so call sites
+// stay a one-liner and don't each have to fetch and hand over the date.
+export function AgeGateScreen({ uid }: { uid: string }) {
+  const { data } = useProfile(uid);
+  const eligibleAt = data?.age_eligible_at ? new Date(data.age_eligible_at) : undefined;
+  const pending = eligibleAt && eligibleAt.getTime() > Date.now() ? eligibleAt : undefined;
+  return <AgeGate eligibleAt={pending} />;
+}
+
+// Social surfaces only. Finding a restroom never reaches this.
+export function AgeGate({ eligibleAt }: { eligibleAt?: Date }) {
   const { session, signOut } = useAuth();
   const qc = useQueryClient();
   const c = useColors();
@@ -40,27 +47,46 @@ export function AgeGate() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | undefined>();
 
+  // Already answered, just not old enough yet — nothing to re-enter, the block
+  // lifts by itself.
+  if (eligibleAt) {
+    return (
+      <View className="flex-1 items-center justify-center bg-surface px-8">
+        <Icon name="time-outline" size={40} color={c.content2} />
+        <Text className="mt-3 text-center text-xl font-semibold text-content">Not just yet</Text>
+        <Text className="mt-2 text-center text-sm text-content-2">
+          Logs, photos and following open up on{' '}
+          {eligibleAt.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
+          , when you turn {MIN_AGE}. You can keep finding restrooms in the meantime.
+        </Text>
+        <Pressable onPress={signOut} className="mt-6 items-center py-2 active:opacity-70">
+          <Text className="text-sm text-content-2">Sign out</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
   const submit = async () => {
     const m = parseInt(mm, 10);
     const d = parseInt(dd, 10);
     const y = parseInt(yyyy, 10);
     if (!isValidDate(y, m, d)) return setErr("That date doesn't look right.");
-    const age = ageFrom(y, m, d);
-    if (age > 120) return setErr("That date doesn't look right.");
-    if (age < MIN_AGE) {
-      return setErr(
-        `You need to be ${MIN_AGE} or older to use the social features. You can still find restrooms without an account.`,
-      );
+    const eligible = eligibleDate(y, m, d);
+    // Sanity bound: a birth date implying >120 years is a typo, not a person.
+    if (Date.now() - new Date(y, m - 1, d).getTime() > 120 * 365.25 * 864e5) {
+      return setErr("That date doesn't look right.");
     }
     if (!session) return;
     setBusy(true);
     setErr(undefined);
     try {
-      await setAgeVerified(session.user.id);
+      // Written whether or not they pass. If they're under 13 this is a future
+      // date, which blocks them without a permanent ban and without letting
+      // them retype their way past it.
+      await setAgeEligibleAt(session.user.id, eligible);
       qc.invalidateQueries({ queryKey: ['profile', session.user.id] });
     } catch (e: any) {
       setErr(e?.message ?? 'Could not save that. Try again.');
-    } finally {
       setBusy(false);
     }
   };
@@ -94,12 +120,10 @@ export function AgeGate() {
     <View className="flex-1 justify-center bg-surface px-8">
       <View className="items-center">
         <Icon name="lock-closed-outline" size={40} color={c.content2} />
-        <Text className="mt-3 text-center text-xl font-semibold text-content">
-          One quick thing
-        </Text>
+        <Text className="mt-3 text-center text-xl font-semibold text-content">One quick thing</Text>
         <Text className="mt-2 text-center text-sm text-content-2">
-          Logs, photos and following are for people {MIN_AGE} and up. Confirm your date of birth to
-          use them. We don&apos;t store it.
+          Logs, photos and following are for people {MIN_AGE} and up. We only use this to check your
+          age — we don&apos;t keep your birthday.
         </Text>
       </View>
 
