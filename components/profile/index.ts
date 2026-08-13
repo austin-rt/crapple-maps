@@ -1,5 +1,5 @@
 export { AuthForm } from './AuthForm';
-export { AgeGate, AgeGateScreen } from './AgeGate';
+export { AgeGate, useAgePassed } from './AgeGate';
 export { ManageProfile } from './ManageProfile';
 export { AppearanceCard } from './AppearanceCard';
 export { OAuthButtons } from './OAuthButtons';

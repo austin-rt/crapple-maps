@@ -6,9 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { LocationPicker } from '@/components/compose/LocationPicker';
-import { AgeGateScreen } from '@/components/profile';
 import { INPUT_CLS, SignInRequired, Stars } from '@/components/ui';
-import { useAgeGate } from '@/hooks/useAgeGate';
 import { useAuth } from '@/lib/auth';
 import { BRISTOL } from '@/lib/bristol';
 import { confirmAction } from '@/lib/confirm';
@@ -32,7 +30,6 @@ function Field({ children }: { children: React.ReactNode }) {
 
 export default function ComposeScreen() {
   const { session } = useAuth();
-  const gate = useAgeGate(session?.user.id);
   const queryClient = useQueryClient();
   const c = useColors();
 
@@ -90,8 +87,6 @@ export default function ComposeScreen() {
   if (!session) {
     return <SignInRequired message="Log a visit." />;
   }
-  if (gate === 'loading') return <View className="flex-1 bg-surface" />;
-  if (gate !== 'ok') return <AgeGateScreen uid={session.user.id} />;
 
   const doSubmit = async (publish: boolean) => {
     if (!coords) return;

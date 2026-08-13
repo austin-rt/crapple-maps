@@ -23,23 +23,12 @@ export async function searchProfiles(q: string, excludeId: string): Promise<Prof
 export async function fetchProfile(id: string) {
   const { data } = await supabase
     .from('profiles')
-    .select('username, display_name, avatar_url, avatar_seed, followers_count, following_count, logs_count, age_eligible_at')
+    .select('username, display_name, avatar_url, avatar_seed, followers_count, following_count, logs_count')
     .eq('id', id)
     .single();
   return data;
 }
 
-// Records when they turn 13, derived from the DOB they typed — the DOB itself
-// isn't stored. Writing this on rejection as well as on success is the point:
-// it stops an immediate retry with a made-up date, and it lets the block expire
-// on its own the day they actually become eligible.
-export async function setAgeEligibleAt(id: string, eligibleAt: Date) {
-  const { error } = await supabase
-    .from('profiles')
-    .update({ age_eligible_at: eligibleAt.toISOString() })
-    .eq('id', id);
-  if (error) throw error;
-}
 
 export async function updateProfile(id: string, patch: Record<string, unknown>) {
   const { error } = await supabase.from('profiles').update(patch).eq('id', id);

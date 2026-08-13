@@ -1,17 +1,19 @@
 import { View } from 'react-native';
 
-import { AgeGateScreen, AuthForm, ManageProfile } from '@/components/profile';
-import { useAgeGate } from '@/hooks/useAgeGate';
+import { AgeGate, AuthForm, ManageProfile, useAgePassed } from '@/components/profile';
 import { useAuth } from '@/lib/auth';
 
 export default function ProfileScreen() {
   const { session } = useAuth();
-  const gate = useAgeGate(session?.user.id);
+  const [agePassed, setAgePassed] = useAgePassed();
 
-  if (!session) return <AuthForm />;
-  // Every sign-up path — email, Google, Apple — lands here, so the 13+ check is
-  // unavoidable rather than only firing if they happen to open the feed.
-  if (gate === 'loading') return <View className="flex-1 bg-surface" />;
-  if (gate !== 'ok') return <AgeGateScreen uid={session.user.id} />;
-  return <ManageProfile />;
+  if (session) return <ManageProfile />;
+
+  // Neutral age screen in front of the whole auth surface — email and OAuth
+  // alike. It has to precede auth: Google and Apple create the account the
+  // instant the user authenticates, so checking afterwards would mean creating
+  // a child's account and deleting it. Nothing leaves the device here.
+  if (agePassed === null) return <View className="flex-1 bg-surface" />;
+  if (!agePassed) return <AgeGate onPass={() => setAgePassed(true)} />;
+  return <AuthForm />;
 }
