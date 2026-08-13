@@ -9,7 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMapView, AppMarker, type AppMapHandle, type Region } from '@/components/map';
 import { LogSheet, type LogItem } from '@/components/log-sheet';
-import { AgeGate } from '@/components/profile';
+import { AgeGateScreen } from '@/components/profile';
 import { SignInRequired } from '@/components/ui';
 import { useAgeGate } from '@/hooks/useAgeGate';
 import { useMyLogs } from '@/hooks/useLogs';
@@ -71,7 +71,7 @@ export default function MyMapScreen() {
     return <SignInRequired icon="trail-sign-outline" message="Everywhere you’ve gone, mapped." />;
   }
   if (gate === 'loading') return <View className="flex-1 bg-surface" />;
-  if (gate === 'blocked') return <AgeGate />;
+  if (gate !== 'ok') return <AgeGateScreen uid={session.user.id} />;
 
   const gallery = logs.flatMap((l) => l.photos.map((url) => ({ url, log: l })));
 
