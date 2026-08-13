@@ -9,7 +9,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMapView, AppMarker, type AppMapHandle, type Region } from '@/components/map';
 import { LogSheet, type LogItem } from '@/components/log-sheet';
+import { AgeGate } from '@/components/profile';
 import { SignInRequired } from '@/components/ui';
+import { useAgeGate } from '@/hooks/useAgeGate';
 import { useMyLogs } from '@/hooks/useLogs';
 import { useAuth } from '@/lib/auth';
 import { bristol } from '@/lib/bristol';
@@ -35,6 +37,7 @@ function regionFor(logs: LogItem[]): Region {
 
 export default function MyMapScreen() {
   const { session } = useAuth();
+  const gate = useAgeGate(session?.user.id);
   const qc = useQueryClient();
   const insets = useSafeAreaInsets();
   const { scheme } = useThemePref();
@@ -67,6 +70,8 @@ export default function MyMapScreen() {
   if (!session) {
     return <SignInRequired icon="trail-sign-outline" message="Everywhere you’ve gone, mapped." />;
   }
+  if (gate === 'loading') return <View className="flex-1 bg-surface" />;
+  if (gate === 'blocked') return <AgeGate />;
 
   const gallery = logs.flatMap((l) => l.photos.map((url) => ({ url, log: l })));
 

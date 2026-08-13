@@ -23,10 +23,20 @@ export async function searchProfiles(q: string, excludeId: string): Promise<Prof
 export async function fetchProfile(id: string) {
   const { data } = await supabase
     .from('profiles')
-    .select('username, display_name, avatar_url, avatar_seed, followers_count, following_count, logs_count')
+    .select('username, display_name, avatar_url, avatar_seed, followers_count, following_count, logs_count, age_verified_at')
     .eq('id', id)
     .single();
   return data;
+}
+
+// Records the 13+ self-attestation. Only the fact of it — never the birthday,
+// which we'd otherwise be storing for no reason.
+export async function setAgeVerified(id: string) {
+  const { error } = await supabase
+    .from('profiles')
+    .update({ age_verified_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
 }
 
 export async function updateProfile(id: string, patch: Record<string, unknown>) {
