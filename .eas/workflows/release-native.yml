@@ -58,15 +58,25 @@ jobs:
   # the public link still served 13. `type: testflight` does the review
   # submission too. Only the EXTERNAL group is listed; Apple distributes to
   # internal groups automatically and rejects explicit assignment.
+  # type: submit, NOT type: testflight. A testflight job that submits an EAS
+  # build (build_id) is a PAID-plan feature; on the free plan it fails instantly
+  # with "Failed to start job" and never uploads. That failure is easy to miss
+  # because build_ios still goes green — builds 17, 18 and 19 all completed and
+  # none of them ever reached App Store Connect. The free-plan alternative the
+  # error suggests, asc_build_id, is circular: it submits a build that is already
+  # in App Store Connect, which is the very step that is failing.
+  #
+  # type: submit uploads the EAS build to App Store Connect, which is what
+  # attaching a build to a version actually needs. Apple's Beta App Review is
+  # required once per app for EXTERNAL TestFlight testers and is not needed for
+  # an App Store release.
   submit_ios:
-    name: TestFlight → external testers
+    name: submit → App Store Connect
     needs: [build_ios]
-    type: testflight
+    type: submit
     params:
       build_id: ${{ needs.build_ios.outputs.build_id }}
       profile: production
-      external_groups: ['Friends & Family']
-      submit_beta_review: true
 
   build_android:
     name: eas build android → production
