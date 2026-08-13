@@ -55,6 +55,16 @@ cancelling and re-queuing does not help. Check status.expo.dev before
 assuming an outage, and do NOT "fix" it with `--local` builds; the point is
 that `git push` ships.
 
+The iOS submit job must be `type: submit`, never `type: testflight`. A
+testflight job that submits an EAS build (`build_id`) is a **paid-plan** feature;
+on the free plan it fails at once with "Failed to start job" and uploads nothing.
+It is easy to miss because `build_ios` still reports success — builds 17, 18 and
+19 all finished and none reached App Store Connect, so the version sat in review
+with a stale binary attached. The `asc_build_id` alternative the error suggests
+is circular: it submits a build that is already in App Store Connect, which is
+the step that failed. Beta App Review only matters for EXTERNAL TestFlight
+testers, not for an App Store release.
+
 Both workflows set `concurrency.cancel_in_progress`, so a newer push cancels
 the older run instead of stacking behind it. Without that, queued builds would
 submit oldest-first and land stale binaries after fresh ones.
