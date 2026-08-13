@@ -9,6 +9,12 @@ export { ACCENT } from '@/theme/brand';
 export const DANGER = '#DC2626'; // destructive actions / selected marker / closed now
 export const OPEN = '#16A34A'; // open-now label (matches ACCESS.public green)
 
+// Rating stars are the classic gold everyone already reads as a rating, NOT the
+// brand accent — in accent teal they looked like just another UI control. A
+// touch deeper than AMENITY.code's amber so the two stay distinguishable, and it
+// holds contrast on both the light and dark surfaces.
+export const STAR = '#F5B301';
+
 // Amenity symbol colors — powder tones complementary to the teal accent. Each
 // symbol ALWAYS renders in its color (via components/ui/AmenityIcon) so they
 // read at a glance without labels.

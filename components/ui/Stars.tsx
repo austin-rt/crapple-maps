@@ -2,7 +2,7 @@ import { Icon } from './Icon';
 import { useRef } from 'react';
 import { PanResponder, View } from 'react-native';
 
-import { ACCENT } from '@/lib/tokens';
+import { STAR } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
 // PanResponder is only created when `onChange` is given, so a read-only display
@@ -43,7 +43,7 @@ export function Stars({
       onLayout={onChange ? (e) => (widthRef.current = e.nativeEvent.layout.width) : undefined}
       style={{ flexDirection: 'row', gap, alignSelf: 'flex-start', paddingVertical: onChange ? 4 : 0 }}>
       {[1, 2, 3, 4, 5].map((n) => (
-        <Icon key={n} name={n <= value ? 'star' : 'star-outline'} size={size} color={n <= value ? ACCENT : c.content2} />
+        <Icon key={n} name={n <= value ? 'star' : 'star-outline'} size={size} color={n <= value ? STAR : c.content2} />
       ))}
     </View>
   );
