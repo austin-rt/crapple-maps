@@ -2,9 +2,10 @@ import { Icon } from '@/components/ui';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
+import * as Location from 'expo-location';
 import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMapView, AppMarker, type AppMapHandle, type Region } from '@/components/map';
@@ -37,6 +38,7 @@ export default function MyMapScreen() {
   const { session } = useAuth();
   const qc = useQueryClient();
   const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
   const { scheme } = useThemePref();
   const c = useColors();
   const sheetBg = c.surface;
@@ -47,8 +49,43 @@ export default function MyMapScreen() {
   const [tab, setTab] = useState<'list' | 'gallery'>('list');
 
   const { data: logs = [] } = useMyLogs(session?.user.id);
+  // Tracks whether the opening camera move has happened, so the logs-fit
+  // fallback below can't yank the map away after we've centred on the user.
+  const centredRef = useRef(false);
 
+  // Snap to the user. Shared by the open-on-mount effect and the crosshair
+  // button, so the button also re-prompts when permission was denied earlier.
+  const recenterOnMe = useCallback(async (animate = true) => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') return false;
+      const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+      centredRef.current = true;
+      mapRef.current?.animateToRegion(
+        {
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+          latitudeDelta: 0.012,
+          longitudeDelta: 0.012,
+        },
+        animate ? 500 : 0,
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  // On open, find the user and centre on them.
   useEffect(() => {
+    recenterOnMe();
+  }, [recenterOnMe]);
+
+  // Only fall back to framing every log when locating the user didn't work
+  // (permission denied, or it failed) — otherwise this would fight the effect
+  // above and the map would jump off the user a moment after opening.
+  useEffect(() => {
+    if (centredRef.current) return;
     if (logs.length && mapRef.current) mapRef.current.animateToRegion(regionFor(logs), 500);
   }, [logs.length]);
 
@@ -76,6 +113,8 @@ export default function MyMapScreen() {
         ref={mapRef}
         provider={MAP_PROVIDER}
         style={StyleSheet.absoluteFill}
+        showsUserLocation
+        showsMyLocationButton={false}
         customMapStyle={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
         onPress={() => setSelected(null)}
         initialRegion={DEFAULT_REGION}>
@@ -88,6 +127,16 @@ export default function MyMapScreen() {
           />
         ))}
       </AppMapView>
+
+      {/* Snap back to the user. Sits above the sheet's 30% peek, matching the
+          finder's crosshair so both maps behave the same way. */}
+      <Pressable
+        onPress={() => recenterOnMe()}
+        hitSlop={8}
+        className="absolute items-center justify-center rounded-full bg-surface"
+        style={[{ right: 16, bottom: height * 0.3 + 18, width: 46, height: 46 }, styles.shadow]}>
+        <Icon name="locate" size={22} color={ACCENT} />
+      </Pressable>
 
       <BottomSheet
         ref={sheetRef}
@@ -201,3 +250,8 @@ export default function MyMapScreen() {
     </View>
   );
 }
+
+// Matches the finder's crosshair so the two maps read as the same control.
+const styles = StyleSheet.create({
+  shadow: { shadowColor: '#000', shadowOpacity: 0.14, shadowRadius: 10, shadowOffset: { width: 0, height: 2 }, elevation: 4 },
+});
