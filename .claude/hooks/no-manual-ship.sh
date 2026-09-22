@@ -54,7 +54,10 @@ pipeline breakage — the iOS submit job failed silently on the free plan for
 three builds while build_ios still went green. See AGENTS.md.'
 
 # eas submit / eas-cli submit — the store submission the pipeline owns.
-if printf '%s' "$norm" | grep -Eq '\beas(-cli)?[[:space:]]+submit\b'; then
+# Require whitespace-or-end after "submit" so the READ-ONLY subcommands
+# (submit:list, submit:view) still pass: \b would match before a colon and
+# block a harmless status read.
+if printf '%s' "$norm" | grep -Eq '\beas(-cli)?[[:space:]]+submit([[:space:]]|$)'; then
   deny "BLOCKED: manual \`eas submit\`.
 
 $CICD_MSG"
