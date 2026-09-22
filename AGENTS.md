@@ -20,7 +20,7 @@ you attach a build whose version string differs from the version record.
 
 - app/, components/, hooks/, lib/, theme/, assets/ → web deploy + OTA update
 - marketing/, public/, scripts/ → web deploy only
-- package.json, app.json, plugins/ → native builds + TestFlight and Play internal
+- package.json, app.json, plugins/ → native builds + App Store Connect and Play closed testing
 
 Native binaries build only for changes OTA can't deliver (new dependencies,
 app config, native plugins), so nothing needs to be tagged or triggered by
@@ -64,6 +64,18 @@ with a stale binary attached. The `asc_build_id` alternative the error suggests
 is circular: it submits a build that is already in App Store Connect, which is
 the step that failed. Beta App Review only matters for EXTERNAL TestFlight
 testers, not for an App Store release.
+
+Verify a submit actually LANDED; do not trust a green job. The Android side
+failed the same silent way as iOS: builds with version codes 8, 9, 10 and 11 all
+finished and Play had only ever received version code 4. The proof is the bundle
+list, not the job status — `python3 scripts/play.py` shows track state, and the
+`edits/{id}/bundles` endpoint shows every version code Play actually holds. Same
+for iOS: `python3 scripts/release.py status` shows which build is attached.
+
+Android submits to the **alpha** (closed testing) track, not internal. Google
+requires a CLOSED test with 12 testers opted in for 14 CONTINUOUS days before a
+new personal account can apply for production access; internal testing does not
+count toward it, so shipping to internal can never lead to a production release.
 
 Both workflows set `concurrency.cancel_in_progress`, so a newer push cancels
 the older run instead of stacking behind it. Without that, queued builds would

@@ -1,4 +1,4 @@
-# Builds native binaries and ships them to TestFlight and Play internal testing.
+# Builds native binaries and ships them to App Store Connect and Play closed testing.
 # Triggered by changes that JS-over-the-air can't deliver — new/updated
 # dependencies, app config, or native plugins — so `git push` is the only
 # action needed.
@@ -87,7 +87,7 @@ jobs:
       profile: production
 
   submit_android:
-    name: submit → Play internal
+    name: submit → Play closed testing
     needs: [build_android]
     type: submit
     params:
