@@ -1,0 +1,47 @@
+# JS-only OTA for the preview lane. Every app-code push to `develop` publishes
+# to the `preview` update branch, which only builds made with the `preview`
+# profile (see release-preview.yml) subscribe to. Production users are on the
+# `production` branch and never receive these.
+#
+# Note the runtime: updates only reach a build with the SAME runtimeVersion
+# (policy is appVersion, so `expo.version` in app.json). If develop bumps the
+# version, a fresh preview build is needed before OTAs land on the phone.
+name: Publish preview OTA update
+
+on:
+  push:
+    branches: ['develop']
+    paths:
+      - app/**
+      - components/**
+      - hooks/**
+      - lib/**
+      - theme/**
+      - constants/**
+      - assets/**
+      - plugins/**
+      - global.css
+      - tailwind.config.js
+      - babel.config.js
+      - metro.config.js
+      - app.json
+      - app.config.js
+      - package.json
+      - package-lock.json
+      - .nvmrc
+
+concurrency:
+  cancel_in_progress: true
+  group: ${{ workflow.filename }}-${{ github.ref }}
+
+defaults:
+  tools:
+    node: 22.14.0
+
+jobs:
+  publish_ota:
+    name: eas update → preview
+    type: update
+    environment: production
+    params:
+      branch: preview

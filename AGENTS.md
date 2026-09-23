@@ -46,6 +46,26 @@ depends on (`eas.json`). Otherwise a commit that changes what the pipeline
 Android build+submit jobs touched only `release-native.yml` and `eas.json`, so
 the Play submit path went unexecuted until someone forced a run.
 
+# Two lanes: develop → preview, main → production
+
+| branch    | update channel | iOS                    | Android               |
+|-----------|----------------|------------------------|-----------------------|
+| `develop` | `preview`      | TestFlight (internal)  | Play internal testing |
+| `main`    | `production`   | App Store              | Play production/alpha |
+
+Anything you want to see on a real phone before users do goes to `develop`.
+`release-preview.yml` builds it with the `preview` profile, which bakes channel
+`preview` into the binary, so that TestFlight build only ever receives OTAs from
+`publish-ota-preview.yml`. Production builds are on channel `production` and are
+untouched. Merge `develop` into `main` to ship.
+
+The account holder is an INTERNAL TestFlight tester, so a preview build is
+installable minutes after Apple finishes processing — no Beta App Review. Both
+lanes share one build-number counter (`appVersionSource: remote`) so they
+never collide in App Store Connect. A preview build carries the same
+`expo.version` as main unless develop bumps it; if it does, a fresh preview
+build is required before preview OTAs reach the phone.
+
 # Android builds are slow, and that is the plan, not a bug
 
 The Expo account is on the **free** plan. iOS builds pick up a worker in

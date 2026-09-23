@@ -23,11 +23,11 @@ export function WebHeader({ title, canGoBack, onBack }: { title?: string; canGoB
     <>
       <View className="flex-row items-center border-b border-line bg-surface px-3" style={{ height: 56 }}>
         {canGoBack ? (
-          <Pressable onPress={onBack} hitSlop={8} className="h-10 w-10 items-center justify-center rounded-full active:bg-surface-2">
+          <Pressable accessibilityRole="button" accessibilityLabel="Back" onPress={onBack} hitSlop={8} className="h-10 w-10 items-center justify-center rounded-full active:bg-surface-2">
             <Icon name="arrow-back" size={22} color={c.content2} />
           </Pressable>
         ) : (
-          <Pressable onPress={() => setNavOpen(true)} hitSlop={8} className="h-10 w-10 items-center justify-center rounded-full active:bg-surface-2">
+          <Pressable accessibilityRole="button" accessibilityLabel="Open menu" onPress={() => setNavOpen(true)} hitSlop={8} className="h-10 w-10 items-center justify-center rounded-full active:bg-surface-2">
             <Icon name="menu" size={22} color={c.content2} />
           </Pressable>
         )}
@@ -42,7 +42,7 @@ export function WebHeader({ title, canGoBack, onBack }: { title?: string; canGoB
           )}
         </Text>
 
-        <Pressable onPress={() => router.push('/profile')} className="h-9 w-9 items-center justify-center overflow-hidden rounded-full">
+        <Pressable accessibilityRole="button" accessibilityLabel="Profile" onPress={() => router.push('/profile')} className="h-9 w-9 items-center justify-center overflow-hidden rounded-full">
           {session ? (
             <Avatar seed={me?.avatar_seed || me?.username || session.user.id} size={36} />
           ) : (

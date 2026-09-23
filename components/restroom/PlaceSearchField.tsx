@@ -56,7 +56,7 @@ export function PlaceSearchField({ onPick }: { onPick: (p: PickedPlace) => void 
         {searching ? (
           <ActivityIndicator size="small" color={c.content2} />
         ) : query.length > 0 ? (
-          <Pressable hitSlop={8} onPress={() => setQuery('')}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Clear search" hitSlop={8} onPress={() => setQuery('')}>
             <Icon name="close-circle" size={18} color={c.content2} />
           </Pressable>
         ) : null}

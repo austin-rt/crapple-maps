@@ -51,9 +51,10 @@ export function MobileMap() {
           f.setSelected(null);
         }}
         initialRegion={DEFAULT_REGION}>
-        {f.list.map((item) => (
+        {f.pins.map((item) => (
           <AppMarker
             key={item.id}
+            tracksViewChanges={false}
             coordinate={{ latitude: item.lat, longitude: item.lng }}
             pinColor={item.id === f.activeId ? DANGER : f.loggedIds?.has(item.id) ? VISITED : ACCENT}
             onPress={() => openRestroom(item)}
@@ -76,7 +77,7 @@ export function MobileMap() {
           {f.searching ? (
             <ActivityIndicator size="small" color={c.content2} />
           ) : f.query.length > 0 ? (
-            <Pressable hitSlop={8} onPress={() => f.setQuery('')}>
+            <Pressable accessibilityRole="button" accessibilityLabel="Clear search" hitSlop={8} onPress={() => f.setQuery('')}>
               <Icon name="close-circle" size={18} color={c.content2} />
             </Pressable>
           ) : null}
@@ -98,7 +99,7 @@ export function MobileMap() {
       </View>
 
       {/* recenter + zoom to the user (re-prompts location if not granted) */}
-      <Pressable
+      <Pressable accessibilityRole="button" accessibilityLabel="Center map on my location"
         onPress={f.recenterOnMe}
         className="absolute items-center justify-center rounded-full bg-surface"
         style={[{ right: 16, bottom: PEEK + 18, width: 46, height: 46 }, styles.shadow]}>

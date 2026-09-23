@@ -13,11 +13,9 @@
       "channel": "development"
     },
     "preview": {
-      "distribution": "internal",
-      "ios": {
-        "simulator": false
-      },
-      "channel": "preview"
+      "autoIncrement": true,
+      "channel": "preview",
+      "environment": "production"
     },
     "production": {
       "autoIncrement": true,
@@ -33,6 +31,16 @@
       },
       "android": {
         "track": "alpha",
+        "releaseStatus": "draft"
+      }
+    },
+    "preview": {
+      "ios": {
+        "appleTeamId": "ZLDX72HQWU",
+        "ascAppId": "6795301489"
+      },
+      "android": {
+        "track": "internal",
         "releaseStatus": "draft"
       }
     }

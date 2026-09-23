@@ -70,7 +70,7 @@ export function PlaceCard({
           {distLabel(item.dist) ? <Text className="text-xs text-content-2">· {distLabel(item.dist)}</Text> : null}
         </View>
       </View>
-      <Pressable
+      <Pressable accessibilityRole="button" accessibilityLabel="Get directions"
         hitSlop={8}
         onPress={() => openDirections(item.lat, item.lng, title)}
         className="items-center justify-center rounded-full px-3 py-2"
