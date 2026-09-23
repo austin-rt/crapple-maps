@@ -72,6 +72,13 @@ list, not the job status — `python3 scripts/play.py` shows track state, and th
 `edits/{id}/bundles` endpoint shows every version code Play actually holds. Same
 for iOS: `python3 scripts/release.py status` shows which build is attached.
 
+The Play app is still a DRAFT app — it has never been published to production.
+Until that first publish, Google rejects any release that is not `draft`:
+"Only releases with status draft may be created on draft app." So
+`submit.production.android.releaseStatus` must stay `draft`; setting it to
+`completed` fails the submit job while the iOS half still goes green. The first
+publish has to happen in the Play Console by hand; after that, `completed` works.
+
 Android submits to the **alpha** (closed testing) track, not internal. Google
 requires a CLOSED test with 12 testers opted in for 14 CONTINUOUS days before a
 new personal account can apply for production access; internal testing does not
