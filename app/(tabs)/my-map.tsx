@@ -5,7 +5,7 @@ import { Image } from 'expo-image';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMapView, AppMarker, type AppMapHandle, type Region } from '@/components/map';
@@ -20,6 +20,10 @@ import { ACCENT, DANGER, ON_ACCENT } from '@/lib/tokens';
 import { useColors, useThemePref } from '@/lib/theme';
 
 const DEFAULT_REGION: Region = { latitude: 37.7749, longitude: -122.4194, latitudeDelta: 0.08, longitudeDelta: 0.08 };
+// Collapsed-sheet height, identical to the finder's PEEK so the crosshair sits
+// in the same spot on both maps: bottom-right, just above the collapsed sheet.
+// A percentage peek put it a third of the way up the screen.
+const PEEK = 84;
 
 function regionFor(logs: LogItem[]): Region {
   if (!logs.length) return DEFAULT_REGION;
@@ -38,7 +42,6 @@ export default function MyMapScreen() {
   const { session } = useAuth();
   const qc = useQueryClient();
   const insets = useSafeAreaInsets();
-  const { height } = useWindowDimensions();
   const { scheme } = useThemePref();
   const c = useColors();
   const sheetBg = c.surface;
@@ -128,20 +131,19 @@ export default function MyMapScreen() {
         ))}
       </AppMapView>
 
-      {/* Snap back to the user. Sits above the sheet's 30% peek, matching the
-          finder's crosshair so both maps behave the same way. */}
+      {/* Snap back to the user — same position and size as the finder's crosshair. */}
       <Pressable accessibilityRole="button" accessibilityLabel="Center map on my location"
         onPress={() => recenterOnMe()}
         hitSlop={8}
         className="absolute items-center justify-center rounded-full bg-surface"
-        style={[{ right: 16, bottom: height * 0.3 + 18, width: 46, height: 46 }, styles.shadow]}>
+        style={[{ right: 16, bottom: PEEK + 18, width: 46, height: 46 }, styles.shadow]}>
         <Icon name="locate" size={22} color={ACCENT} />
       </Pressable>
 
       <BottomSheet
         ref={sheetRef}
         index={1}
-        snapPoints={['30%', '58%', '92%']}
+        snapPoints={[PEEK, '58%', '92%']}
         backgroundStyle={{ backgroundColor: sheetBg }}
         handleIndicatorStyle={{ backgroundColor: c.content2 }}>
         {selected ? (
