@@ -131,12 +131,14 @@ export default function MyMapScreen() {
         ))}
       </AppMapView>
 
-      {/* Snap back to the user — same position and size as the finder's crosshair. */}
+      {/* Snap back to the user. Pinned to the map's bottom-right corner, just
+          above the tab bar — not above a sheet peek, since this screen's sheet
+          does not currently render and the button was floating mid-map. */}
       <Pressable accessibilityRole="button" accessibilityLabel="Center map on my location"
         onPress={() => recenterOnMe()}
         hitSlop={8}
         className="absolute items-center justify-center rounded-full bg-surface"
-        style={[{ right: 16, bottom: PEEK + 18, width: 46, height: 46 }, styles.shadow]}>
+        style={[{ right: 16, bottom: 16, width: 46, height: 46 }, styles.shadow]}>
         <Icon name="locate" size={22} color={ACCENT} />
       </Pressable>
 
