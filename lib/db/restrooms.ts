@@ -27,6 +27,30 @@ export async function fetchNearby({ lat, lng, limit, offset, sort, filters }: Ne
   return (data ?? []).map((r: any) => ({ ...r, dist: milesFromMeters(r.dist_m) }));
 }
 
+export type Bounds = { minLat: number; minLng: number; maxLat: number; maxLng: number };
+
+// Everything inside the map viewport (restrooms_in_bounds). Drives the PINS,
+// not the list: the list stays distance-ordered from the user and paginated,
+// while pins should show what is actually on screen. Capped by the RPC (300
+// default, 1000 max) and ordered from the viewport centre, so a dense city
+// keeps the central ones rather than an arbitrary slice.
+export async function fetchInBounds(
+  b: Bounds,
+  filters: Partial<Record<FilterKey, boolean>>,
+  limit = 300,
+): Promise<Restroom[]> {
+  const { data, error } = await supabase.rpc('restrooms_in_bounds', {
+    in_min_lat: b.minLat,
+    in_min_lng: b.minLng,
+    in_max_lat: b.maxLat,
+    in_max_lng: b.maxLng,
+    in_limit: limit,
+    ...filters,
+  });
+  if (error) throw error;
+  return (data ?? []).map((r: any) => ({ ...r, dist: milesFromMeters(r.dist_m) }));
+}
+
 // Fallback un-located list (before we have the user's location).
 export async function fetchRestroomPage(offset: number, limit: number): Promise<Restroom[]> {
   const { data, error } = await supabase

@@ -51,9 +51,10 @@ export function MobileMap() {
           f.setSelected(null);
         }}
         initialRegion={DEFAULT_REGION}>
-        {f.list.map((item) => (
+        {f.pins.map((item) => (
           <AppMarker
             key={item.id}
+            tracksViewChanges={false}
             coordinate={{ latitude: item.lat, longitude: item.lng }}
             pinColor={item.id === f.activeId ? DANGER : f.loggedIds?.has(item.id) ? VISITED : ACCENT}
             onPress={() => openRestroom(item)}

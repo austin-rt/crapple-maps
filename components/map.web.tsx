@@ -56,7 +56,17 @@ export const AppMapView = forwardRef<AppMapHandle, any>(function AppMapView(prop
             // finder refetches restrooms for the visible area.
             const c = e?.map?.getCenter?.();
             if (c && props.onRegionChangeComplete) {
-              props.onRegionChangeComplete({ latitude: c.lat(), longitude: c.lng() });
+              // Also report the span, in react-native-maps' delta shape, so the
+              // finder can derive the viewport bounds for the pins query the
+              // same way it does on native.
+              const b = e?.map?.getBounds?.();
+              const ne = b?.getNorthEast?.(), sw = b?.getSouthWest?.();
+              props.onRegionChangeComplete({
+                latitude: c.lat(),
+                longitude: c.lng(),
+                latitudeDelta: ne && sw ? ne.lat() - sw.lat() : undefined,
+                longitudeDelta: ne && sw ? ne.lng() - sw.lng() : undefined,
+              });
             }
           }}
           onContextmenu={(e: any) => {

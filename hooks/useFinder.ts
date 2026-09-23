@@ -6,6 +6,8 @@ import { Keyboard } from 'react-native';
 import { type AppMapHandle, type Region } from '@/components/map';
 import { useLoggedRestroomIds } from '@/hooks/useLogs';
 import { useNearbyRestrooms } from '@/hooks/useNearbyRestrooms';
+import { useRestroomsInBounds } from '@/hooks/useRestroomsInBounds';
+import type { Bounds } from '@/lib/db/restrooms';
 import { usePlaceSearch } from '@/hooks/usePlaceSearch';
 import { useSavedIds } from '@/hooks/useSaved';
 import { useAuth } from '@/lib/auth';
@@ -44,10 +46,20 @@ export function useFinder() {
   // fetched around wherever the map is looking, not only the user's location, so
   // moving the map loads that area. Rounded to ~110m so tiny drags don't refetch.
   const [region, setRegion] = useState<Coords | null>(null);
+  // The viewport's edges, for the pins query. Rounded to 3 decimals (~110m)
+  // like the centre, so a small drag doesn't change the query key. Only fires
+  // when a gesture settles (onRegionChangeComplete / onIdle), so no debounce.
+  const [bounds, setBounds] = useState<Bounds | null>(null);
   const onRegionChangeComplete = useCallback((r: any) => {
     const lat = r?.latitude ?? r?.lat;
     const lng = r?.longitude ?? r?.lng;
-    if (typeof lat === 'number' && typeof lng === 'number') setRegion({ lat, lng });
+    if (typeof lat !== 'number' || typeof lng !== 'number') return;
+    setRegion({ lat, lng });
+    const dLat = r?.latitudeDelta, dLng = r?.longitudeDelta;
+    if (typeof dLat === 'number' && typeof dLng === 'number' && dLat > 0 && dLng > 0) {
+      const k = (n: number) => Math.round(n * 1000) / 1000;
+      setBounds({ minLat: k(lat - dLat / 2), maxLat: k(lat + dLat / 2), minLng: k(lng - dLng / 2), maxLng: k(lng + dLng / 2) });
+    }
   }, []);
   const base = region ?? active;
   const queryCenter = base ? { lat: Math.round(base.lat * 1000) / 1000, lng: Math.round(base.lng * 1000) / 1000 } : null;
@@ -167,8 +179,20 @@ export function useFinder() {
     } catch {}
   };
 
+  // Pins are what is in the viewport; the list stays nearest-first from the
+  // user. Before the first region event (or if the bounds query is off) fall
+  // back to the list so the map is never empty. The selected restroom is always
+  // kept, so panning away can't make the open sheet's pin vanish.
+  const { data: inBounds } = useRestroomsInBounds({ bounds, filters, enabled: locReady });
+  const pins = (() => {
+    const base = inBounds ?? list;
+    if (selected && !base.some((p) => p.id === selected.id)) return [...base, selected];
+    return base;
+  })();
+
   return {
     session, mapRef, markerTapRef,
+    pins,
     me, center, active, placeLabel, locReady, locNote,
     selected, setSelected,
     sort, setSort, filters, setFilters, toggleFilter, activeFilterCount, filterOpen, setFilterOpen,

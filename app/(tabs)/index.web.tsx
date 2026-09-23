@@ -78,7 +78,7 @@ function DesktopMapWeb() {
           f.setSelected(null);
         }}
         initialRegion={DEFAULT_REGION}>
-        {f.list.map((item) => (
+        {f.pins.map((item) => (
           <AppMarker
             key={item.id}
             coordinate={{ latitude: item.lat, longitude: item.lng }}
