@@ -23,7 +23,7 @@ export default function Root({ children }: PropsWithChildren) {
         <meta name="description" content={DESCRIPTION} />
         {/* Matches the app's dark surface so mobile browser chrome doesn't
             flash white against it. */}
-        <meta name="theme-color" content="#131314" />
+        <meta name="theme-color" content="#0a0e11" />
 
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Crapple Maps" />
