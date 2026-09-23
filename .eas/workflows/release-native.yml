@@ -25,6 +25,9 @@ on:
       - app.config.js
       - plugins/**
       - .easignore
+      - assets/images/icon*.png
+      - assets/images/splash-icon.png
+      - assets/images/android-icon-*.png
       # The workflow and submit config are part of what this job does. Without
       # these, editing them silently doesn't re-run it — which is how the
       # Android jobs sat here unexecuted after they were added.
