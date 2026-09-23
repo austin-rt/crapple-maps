@@ -20,6 +20,17 @@ export function Stars({
 }) {
   const widthRef = useRef((size + gap) * 5);
 
+  // PanResponder.create runs once, so its handlers close over the FIRST
+  // render's onChange. Callers pass an inline arrow, so route through a ref to
+  // avoid calling a stale one.
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  const setFromX = (x: number) => {
+    const per = widthRef.current / 5;
+    onChangeRef.current?.(Math.max(0, Math.min(5, Math.ceil(x / per))));
+  };
+
   const pan = useRef(
     onChange
       ? PanResponder.create({
@@ -31,20 +42,29 @@ export function Stars({
       : null,
   ).current;
 
-  function setFromX(x: number) {
-    const per = widthRef.current / 5;
-    onChange?.(Math.max(0, Math.min(5, Math.ceil(x / per))));
-  }
-
   const c = useColors();
   return (
     <View
       {...(pan ? pan.panHandlers : {})}
       onLayout={onChange ? (e) => (widthRef.current = e.nativeEvent.layout.width) : undefined}
-      style={{ flexDirection: 'row', gap, alignSelf: 'flex-start', paddingVertical: onChange ? 4 : 0 }}>
-      {[1, 2, 3, 4, 5].map((n) => (
-        <Icon key={n} name={n <= value ? 'star' : 'star-outline'} size={size} color={n <= value ? STAR : c.content2} />
-      ))}
+      style={{ alignSelf: 'flex-start', paddingVertical: onChange ? 4 : 0 }}>
+      {/* pointerEvents="none" is load-bearing, not decoration. `locationX` is
+          measured against the touch TARGET, and on the initial press that
+          target is whichever star was hit — so tapping the 5th star reported an
+          x of a few points and set the rating to 1. It only behaved while
+          dragging, because by then the container had become the responder.
+          Making the stars transparent to touches means the container is always
+          the target, so press and drag agree. */}
+      <View pointerEvents="none" style={{ flexDirection: 'row', gap }}>
+        {[1, 2, 3, 4, 5].map((n) => (
+          <Icon
+            key={n}
+            name={n <= value ? 'star' : 'star-outline'}
+            size={size}
+            color={n <= value ? STAR : c.content2}
+          />
+        ))}
+      </View>
     </View>
   );
 }
