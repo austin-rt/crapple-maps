@@ -70,7 +70,7 @@ export function CodePills({
       {value.map((code, i) => (
         <View key={`${code}-${i}`} className="flex-row items-center gap-1 rounded-lg py-1.5 pl-2.5 pr-1.5" style={{ backgroundColor: ACCENT + '22' }}>
           <Text className="text-sm font-bold tracking-widest" style={{ color: ACCENT }}>{code}</Text>
-          <Pressable onPress={() => remove(i)} hitSlop={6} className="active:opacity-60">
+          <Pressable accessibilityRole="button" accessibilityLabel="Remove code" onPress={() => remove(i)} hitSlop={6} className="active:opacity-60">
             <Icon name="close" size={14} color={ACCENT} />
           </Pressable>
         </View>

@@ -38,7 +38,7 @@ export default function TabLayout() {
           title: 'Feed',
           tabBarIcon: ({ color, size }) => <Icon name="newspaper-outline" size={size} color={color} />,
           headerRight: () => (
-            <Pressable onPress={() => router.push('/people')} hitSlop={10} style={{ marginRight: 16 }}>
+            <Pressable accessibilityRole="button" accessibilityLabel="Find people" onPress={() => router.push('/people')} hitSlop={10} style={{ marginRight: 16 }}>
               <Icon name="person-add-outline" size={22} color={ACCENT} />
             </Pressable>
           ),

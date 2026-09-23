@@ -37,7 +37,7 @@ export function WebNavDrawer({ open, onClose }: { open: boolean; onClose: () => 
             Crapple <Text style={{ color: ACCENT }}>Maps</Text>
           </Text>
         </View>
-        <Pressable onPress={onClose} hitSlop={10} className="items-center justify-center">
+        <Pressable accessibilityRole="button" accessibilityLabel="Close menu" onPress={onClose} hitSlop={10} className="items-center justify-center">
           <Icon name="close" size={24} color={c.content2} />
         </Pressable>
       </View>

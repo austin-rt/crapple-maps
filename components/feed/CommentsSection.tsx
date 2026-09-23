@@ -83,11 +83,11 @@ export function CommentsSection({ logId, session }: { logId: string; session: Se
                 <Text className="text-[15px] leading-5 text-content">{c.text}</Text>
               </View>
               {me === c.user_id ? (
-                <Pressable onPress={() => remove(c.id)} hitSlop={8}>
+                <Pressable accessibilityRole="button" accessibilityLabel="Delete comment" onPress={() => remove(c.id)} hitSlop={8}>
                   <Icon name="trash-outline" size={16} color={clr.content2} />
                 </Pressable>
               ) : me ? (
-                <Pressable
+                <Pressable accessibilityRole="button" accessibilityLabel="More options"
                   hitSlop={8}
                   onPress={() => moderationMenu({ targetType: 'comment', targetId: c.id, authorName: name, onBlock: () => block(c.user_id) })}>
                   <Icon name="ellipsis-horizontal" size={16} color={clr.content2} />

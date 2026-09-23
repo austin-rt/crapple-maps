@@ -52,12 +52,6 @@ jobs:
       platform: ios
       profile: production
 
-  # `type: submit` uploads and assigns groups but never submits for Beta App
-  # Review, so builds pile up at READY_FOR_BETA_SUBMISSION and external testers
-  # keep getting an old one — builds 14, 15 and 16 all stalled that way while
-  # the public link still served 13. `type: testflight` does the review
-  # submission too. Only the EXTERNAL group is listed; Apple distributes to
-  # internal groups automatically and rejects explicit assignment.
   # type: submit, NOT type: testflight. A testflight job that submits an EAS
   # build (build_id) is a PAID-plan feature; on the free plan it fails instantly
   # with "Failed to start job" and never uploads. That failure is easy to miss

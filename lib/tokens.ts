@@ -25,6 +25,9 @@ export const AMENITY = {
   code: '#FBBF24', // powder amber — door code required
   purchase: '#34D399', // powder mint — purchase required
 } as const;
-export const VISITED = '#7C3AED'; // visited/logged marker (purple)
+// Visited/logged marker. Kept in the purple family but deliberately NOT
+// AMENITY.unisex (#A78BFA) — they can appear on the same listing and must stay
+// distinguishable. #7C3AED was only 3.40:1 on the cool dark surface; this is 4.58:1.
+export const VISITED = '#8B5CF6';
 export const LIKE = '#EF4444'; // like heart (red)
 export const ON_ACCENT = '#FFFFFF'; // text/icons on the accent or other solid color buttons

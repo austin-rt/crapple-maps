@@ -37,7 +37,7 @@ export function FeedCard({ log }: { log: FeedLog }) {
           </Text>
           {log.visibility === 'private' ? <Icon name="lock-closed" size={12} color={c.content2} style={{ marginLeft: 4 }} /> : null}
           {!mine && session ? (
-            <Pressable
+            <Pressable accessibilityRole="button" accessibilityLabel="More options"
               hitSlop={10}
               style={{ marginLeft: 'auto' }}
               onPress={() => moderationMenu({ targetType: 'log', targetId: log.id, authorName: name, onBlock: () => block(log.user_id) })}>

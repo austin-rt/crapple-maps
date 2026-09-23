@@ -130,7 +130,7 @@ export default function MyMapScreen() {
 
       {/* Snap back to the user. Sits above the sheet's 30% peek, matching the
           finder's crosshair so both maps behave the same way. */}
-      <Pressable
+      <Pressable accessibilityRole="button" accessibilityLabel="Center map on my location"
         onPress={() => recenterOnMe()}
         hitSlop={8}
         className="absolute items-center justify-center rounded-full bg-surface"

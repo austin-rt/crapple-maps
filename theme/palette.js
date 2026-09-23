@@ -5,6 +5,12 @@
 //    a class (sheet/nav/tab backgrounds, icon colors, placeholders).
 // RGB triples ("R G B") so Tailwind's `rgb(var(--x) / <alpha-value>)` opacity
 // modifier keeps working. Change a color here and it updates everywhere.
+//
+// The dark palette is deliberately COOL, not neutral grey. It matches the
+// marketing site (crapplemaps.com/info), which is built on #0a0e11 / #121a20
+// with teal-tinted hairlines. The app previously used neutral greys (#131314,
+// #303032, #3a3a3e), which read as a different product sitting next to it. Same
+// darkness, different temperature.
 const PALETTE = {
   light: {
     surface: '255 255 255',
@@ -15,12 +21,12 @@ const PALETTE = {
     line: '209 213 219',
   },
   dark: {
-    surface: '19 19 20', // #131314 — matches Google Maps iOS dark bg
-    'surface-2': '48 48 50', // #303032
-    'surface-3': '62 62 66', // #3e3e42
-    content: '250 250 250',
-    'content-2': '163 163 172', // #a3a3ac
-    line: '58 58 62', // #3a3a3e
+    surface: '10 14 17', // #0a0e11 — marketing --bg
+    'surface-2': '18 26 32', // #121a20 — marketing --panel
+    'surface-3': '27 34 40', // #1b2228 — marketing panel gradient top
+    content: '232 238 242', // #e8eef2 — cool white, was pure #fafafa
+    'content-2': '159 178 191', // #9fb2bf — blue-grey, was neutral #a3a3ac
+    line: '38 52 60', // #26343c — teal-tinted hairline, was neutral #3a3a3e
   },
 };
 

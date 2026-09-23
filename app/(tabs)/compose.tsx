@@ -226,7 +226,7 @@ export default function ComposeScreen() {
           {photoUris.map((uri, i) => (
             <View key={`${uri}-${i}`}>
               <Image source={{ uri }} style={{ width: 72, height: 72, borderRadius: 12 }} />
-              <Pressable
+              <Pressable accessibilityRole="button" accessibilityLabel="Remove photo"
                 onPress={() => setPhotoUris((p) => p.filter((_, j) => j !== i))}
                 hitSlop={6}
                 style={{ position: 'absolute', top: -6, right: -6 }}
@@ -236,7 +236,7 @@ export default function ComposeScreen() {
             </View>
           ))}
           {photoUris.length < 4 ? (
-            <Pressable
+            <Pressable accessibilityRole="button" accessibilityLabel="Add photos"
               onPress={addPhotos}
               className="h-[72px] w-[72px] items-center justify-center rounded-xl border border-dashed border-line">
               <Icon name="camera-outline" size={22} color={c.content2} />
