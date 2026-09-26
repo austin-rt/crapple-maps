@@ -70,7 +70,7 @@ export default function People() {
             <Text className="px-4 py-6 text-center text-sm text-content-2">No one found for “{debounced}”.</Text>
           ) : (
             results.map((p) => (
-              <PersonRow key={p.id} p={p} right={<FollowButton status={statusFor(p.id)} onToggle={() => (statusFor(p.id) ? unfollow(p.id) : follow(p.id))} />} />
+              <PersonRow key={p.id} p={p} right={<FollowButton status={statusFor(p.id)} username={p.username} onToggle={() => (statusFor(p.id) ? unfollow(p.id) : follow(p.id))} />} />
             ))
           )}
         </View>

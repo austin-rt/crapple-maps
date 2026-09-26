@@ -126,7 +126,7 @@ export default function SharedProfile() {
               <Text className="font-semibold text-white">Share profile</Text>
             </Pressable>
           ) : me ? (
-            <FollowButton status={status} onToggle={() => (status ? unfollow(profile.id) : follow(profile.id))} />
+            <FollowButton status={status} username={profile.username} onToggle={() => (status ? unfollow(profile.id) : follow(profile.id))} />
           ) : (
             <Pressable
               onPress={() => setShowAuth(true)}

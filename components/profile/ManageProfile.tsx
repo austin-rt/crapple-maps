@@ -32,7 +32,9 @@ function Stat({ label, value, onPress }: { label: string; value: number; onPress
       accessibilityLabel={`${value} ${label}`}
       className="flex-1 items-center active:opacity-60">
       <Text className="text-lg font-bold text-content">{value}</Text>
-      <Text className="text-xs text-content-2">{label}</Text>
+      <Text className={`text-xs ${onPress ? 'font-semibold' : 'text-content-2'}`} style={onPress ? { color: ACCENT } : undefined}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
