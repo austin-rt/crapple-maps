@@ -17,6 +17,7 @@ import { toast } from '@/lib/toast';
 import { ACCENT, ON_ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 import type { Visibility } from '@/lib/types';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 type Coords = { latitude: number; longitude: number };
 
@@ -29,6 +30,7 @@ function Field({ children }: { children: React.ReactNode }) {
 }
 
 export default function ComposeScreen() {
+  const ptr = usePullToRefresh();
   const { session } = useAuth();
   const queryClient = useQueryClient();
   const c = useColors();
@@ -152,7 +154,8 @@ export default function ComposeScreen() {
       className="flex-1 bg-surface"
       contentContainerClassName="px-5 pb-28"
       keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets>
+      automaticallyAdjustKeyboardInsets
+      refreshControl={ptr.control}>
       <Text className="mt-4 text-2xl font-bold text-content">Log a visit</Text>
       <Text className="mt-1 text-sm text-content-2">Drop it anywhere. It’s your map.</Text>
 

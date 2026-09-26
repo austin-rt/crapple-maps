@@ -15,6 +15,7 @@ const ITEMS = [
   { href: '/compose', label: 'Log', icon: 'add-circle-outline' },
   { href: '/my-map', label: 'My Map', icon: 'trail-sign-outline' },
   { href: '/people', label: 'People', icon: 'people-outline' },
+  { href: '/notifications', label: 'Notifications', icon: 'notifications-outline' },
   { href: '/profile', label: 'Profile', icon: 'person-outline' },
 ] as const;
 

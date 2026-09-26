@@ -14,8 +14,10 @@ import { addCodes } from '@/lib/db/codes';
 import { createRestroom } from '@/lib/db/restrooms';
 import { ACCENT } from '@/lib/tokens';
 import type { RestroomDraft } from '@/lib/types';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 export default function NewRestroom() {
+  const ptr = usePullToRefresh();
   const { session } = useAuth();
   const qc = useQueryClient();
   const { stashRestroom, takeRestroom } = useContribution();
@@ -136,7 +138,8 @@ export default function NewRestroom() {
       className="flex-1 bg-surface"
       contentContainerClassName="px-5 pb-16"
       keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets>
+      automaticallyAdjustKeyboardInsets
+      refreshControl={ptr.control}>
       <Stack.Screen options={{ title: 'Add a restroom' }} />
 
       <SectionHeader>Location</SectionHeader>

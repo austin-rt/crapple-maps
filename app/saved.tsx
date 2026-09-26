@@ -9,8 +9,10 @@ import { useAuth } from '@/lib/auth';
 import { bestTitle, isGenericName, reverseGeocode } from '@/lib/geocode';
 import { ACCENT } from '@/lib/tokens';
 import type { Restroom } from '@/lib/types';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 export default function SavedScreen() {
+  const ptr = usePullToRefresh();
   const { session } = useAuth();
   const { data: list = [], isLoading } = useSavedList(session?.user.id);
   const [titles, setTitles] = useState<Record<string, string>>({});
@@ -36,6 +38,7 @@ export default function SavedScreen() {
     <View className="flex-1 bg-surface">
       <Stack.Screen options={{ title: 'Saved restrooms' }} />
       <FlatList
+        refreshControl={ptr.control}
         data={list as Restroom[]}
         keyExtractor={(i) => (i as Restroom).id}
         contentContainerStyle={{ paddingBottom: 24 }}

@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   approveFollow,
+  removeFollower,
   fetchFollowing,
   fetchFollowRequestRows,
   follow as dbFollow,
@@ -65,5 +66,14 @@ export function useFollows(me: string | undefined) {
     }
   };
 
-  return { requests: requestsQ.data ?? [], statusFor, followingLoaded: followingQ.isSuccess, follow, unfollow, approve };
+  const decline = async (followerId: string) => {
+    try {
+      await removeFollower(me!, followerId);
+      qc.invalidateQueries({ queryKey: ['follow-requests'] });
+    } catch (e: any) {
+      toast.error("Couldn't decline", e?.message);
+    }
+  };
+
+  return { requests: requestsQ.data ?? [], statusFor, followingLoaded: followingQ.isSuccess, follow, unfollow, approve, decline };
 }

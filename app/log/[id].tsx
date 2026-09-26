@@ -13,12 +13,14 @@ import { fullWhen } from '@/lib/format';
 import { openDirections } from '@/lib/maps';
 import { ACCENT, ON_ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 // Web-only: frame the centered column with side borders (theme-aware via the
 // --line CSS var), matching the feed timeline.
 const webColumn: any = { borderLeftWidth: 1, borderRightWidth: 1, borderColor: 'rgb(var(--line))' };
 
 export default function LogDetail() {
+  const ptr = usePullToRefresh();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { session } = useAuth();
   const { data, isLoading } = useLog(id);
@@ -40,6 +42,7 @@ export default function LogDetail() {
 
   return (
     <ScrollView
+      refreshControl={ptr.control}
       className="flex-1 bg-surface"
       // Center in a readable 600px column on web (like the feed); a no-op on
       // native, where the phone is already narrower than the cap.

@@ -18,6 +18,7 @@ import { shortWhen } from '@/lib/format';
 import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
 import { ACCENT, DANGER, ON_ACCENT } from '@/lib/tokens';
 import { useColors, useThemePref } from '@/lib/theme';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 const DEFAULT_REGION: Region = { latitude: 37.7749, longitude: -122.4194, latitudeDelta: 0.08, longitudeDelta: 0.08 };
 // Collapsed-sheet height, identical to the finder's PEEK so the crosshair sits
@@ -39,6 +40,7 @@ function regionFor(logs: LogItem[]): Region {
 }
 
 export default function MyMapScreen() {
+  const ptr = usePullToRefresh();
   const { session } = useAuth();
   const qc = useQueryClient();
   const insets = useSafeAreaInsets();
@@ -195,6 +197,8 @@ export default function MyMapScreen() {
 
             {tab === 'list' ? (
               <BottomSheetFlatList
+                refreshing={ptr.refreshing}
+                onRefresh={ptr.onRefresh}
                 data={logs}
                 keyExtractor={(i, idx) => (i as LogItem).id + idx}
                 contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 24, gap: 8 }}
@@ -229,6 +233,8 @@ export default function MyMapScreen() {
               />
             ) : gallery.length ? (
               <BottomSheetFlatList
+                refreshing={ptr.refreshing}
+                onRefresh={ptr.onRefresh}
                 data={gallery}
                 keyExtractor={(i, idx) => (i as any).url + idx}
                 numColumns={3}

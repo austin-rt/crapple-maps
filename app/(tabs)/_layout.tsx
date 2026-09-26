@@ -4,13 +4,16 @@ import { Platform, Pressable } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { WebHeader } from '@/components/web/WebHeader';
+import { useFollows } from '@/hooks/useFollows';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
-import { ACCENT } from '@/lib/auth';
+import { ACCENT, useAuth } from '@/lib/auth';
 import { useColors } from '@/lib/theme';
 
 export default function TabLayout() {
   const isMobileWeb = useIsMobileWeb();
   const c = useColors();
+  const { session } = useAuth();
+  const { requests } = useFollows(session?.user.id);
   // Desktop web hides the tab bar and shows a top header (hamburger nav + user
   // menu). Mobile web and native keep the bottom tab bar + per-screen headers.
   const webDesktop = Platform.OS === 'web' && !isMobileWeb;
@@ -56,6 +59,15 @@ export default function TabLayout() {
         options={{
           title: 'My Map',
           tabBarIcon: ({ color, size }) => <Icon name="trail-sign-outline" size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: 'Notifications',
+          tabBarIcon: ({ color, size }) => <Icon name="notifications-outline" size={size} color={color} />,
+          tabBarBadge: requests.length > 0 ? requests.length : undefined,
+          tabBarBadgeStyle: { backgroundColor: ACCENT },
         }}
       />
       <Tabs.Screen
