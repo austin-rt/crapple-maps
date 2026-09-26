@@ -20,6 +20,8 @@ import { useColors } from '@/lib/theme';
 import { AppearanceCard } from './AppearanceCard';
 import { Card } from './Card';
 
+const USERNAME_HINT = '3–30 lowercase letters, numbers or underscores. Profile links you shared under your old username stop working.';
+
 function Stat({ label, value }: { label: string; value: number }) {
   const c = useColors();
   return (
@@ -41,11 +43,16 @@ export function ManageProfile() {
 
   const [displayName, setDisplayName] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
+  const [username, setUsername] = useState('');
+  const [savingUsername, setSavingUsername] = useState(false);
   const [newPw, setNewPw] = useState('');
   const [savingPw, setSavingPw] = useState(false);
 
   useEffect(() => {
-    if (profile) setDisplayName(profile.display_name ?? '');
+    if (profile) {
+      setDisplayName(profile.display_name ?? '');
+      setUsername(profile.username ?? '');
+    }
   }, [profile]);
 
   const saveProfile = async () => {
@@ -58,6 +65,24 @@ export function ManageProfile() {
       toast.error("Couldn't save profile", e?.message);
     } finally {
       setSavingProfile(false);
+    }
+  };
+
+  const usernameValid = /^[a-z0-9_]{3,30}$/.test(username);
+  const usernameChanged = !!profile && username !== profile.username;
+
+  const saveUsername = async () => {
+    if (!usernameValid) return toast.error('Username not allowed', USERNAME_HINT);
+    setSavingUsername(true);
+    try {
+      await updateProfile(uid, { username });
+      qc.invalidateQueries({ queryKey: ['profile', uid] });
+      qc.invalidateQueries({ queryKey: ['public-profile'] });
+      toast.success('Username changed', `You're now @${username}`);
+    } catch (e: any) {
+      toast.error(e?.code === '23505' ? 'That username is taken' : "Couldn't change username", e?.code === '23505' ? 'Try a different one.' : e?.message);
+    } finally {
+      setSavingUsername(false);
     }
   };
 
@@ -159,6 +184,31 @@ export function ManageProfile() {
           className={`mt-3 items-center rounded-xl py-3 ${savingProfile ? 'opacity-50' : ''}`}
           style={{ backgroundColor: ACCENT }}>
           <Text className="font-semibold text-white">{savingProfile ? 'Saving…' : 'Save profile'}</Text>
+        </Pressable>
+
+        <View className="my-4 h-px bg-surface-3" />
+
+        <Text className="mb-1 text-sm text-content-2">Username</Text>
+        <View className="flex-row items-center">
+          <Text className="mr-1 text-base text-content-2">@</Text>
+          <TextInput
+            placeholder="username"
+            placeholderTextColor={c.content2}
+            value={username}
+            onChangeText={(t) => setUsername(t.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+            autoCapitalize="none"
+            autoCorrect={false}
+            maxLength={30}
+            className={INPUT_CLS}
+            style={{ flex: 1, minWidth: 0 }}
+          />
+        </View>
+        <Text className="mt-1 text-xs text-content-2">{USERNAME_HINT}</Text>
+        <Pressable
+          onPress={saveUsername}
+          disabled={savingUsername || !usernameChanged}
+          className={`mt-3 items-center rounded-xl border border-line py-3 ${savingUsername || !usernameChanged ? 'opacity-50' : ''}`}>
+          <Text className="font-semibold text-content">{savingUsername ? 'Saving…' : 'Change username'}</Text>
         </Pressable>
 
         <View className="my-4 h-px bg-surface-3" />
