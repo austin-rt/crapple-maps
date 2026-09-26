@@ -10,7 +10,23 @@
     },
     {
       "source": "/u/:username",
-      "destination": "/u/[username]"
+      "destination": "/api/u?username=:username"
     }
-  ]
+  ],
+  "headers": [
+    {
+      "source": "/.well-known/apple-app-site-association",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/u.js": {
+      "includeFiles": "dist/u/**"
+    }
+  }
 }
