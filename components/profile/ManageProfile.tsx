@@ -184,10 +184,10 @@ export function ManageProfile() {
       <AppearanceCard />
 
       <Pressable
-        onPress={() => router.push('/saved')}
+        onPress={() => router.push('/my-map')}
         className="mt-4 flex-row items-center gap-3 rounded-2xl border border-line p-4 active:opacity-70">
-        <Icon name="bookmark-outline" size={20} color={ACCENT} />
-        <Text className="flex-1 text-base font-medium text-content">Saved restrooms</Text>
+        <Icon name="trail-sign-outline" size={20} color={ACCENT} />
+        <Text className="flex-1 text-base font-medium text-content">My Map</Text>
         <Icon name="chevron-forward" size={18} color={c.content2} />
       </Pressable>
 

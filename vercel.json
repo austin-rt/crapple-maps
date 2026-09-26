@@ -11,6 +11,10 @@
     {
       "source": "/u/:username",
       "destination": "/api/u?username=:username"
+    },
+    {
+      "source": "/map/:username",
+      "destination": "/map/[username]"
     }
   ],
   "headers": [

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 
@@ -145,6 +145,15 @@ export default function SharedProfile() {
             Follow request sent. You’ll see {name}’s posts once they approve it.
           </Text>
         ) : null}
+
+        <Pressable
+          onPress={() => (isMe ? router.push('/my-map') : router.push({ pathname: '/map/[username]', params: { username: profile.username } }))}
+          accessibilityRole="button"
+          className="mt-6 w-full flex-row items-center gap-3 rounded-2xl border border-line p-4 active:opacity-70">
+          <Icon name="trail-sign-outline" size={20} color={ACCENT} />
+          <Text className="flex-1 text-base font-medium text-content">{isMe ? 'My Map' : `${name}’s map`}</Text>
+          <Icon name="chevron-forward" size={18} color={c.content2} />
+        </Pressable>
       </View>
     </ScrollView>
   );
