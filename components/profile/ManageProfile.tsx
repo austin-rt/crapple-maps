@@ -13,6 +13,7 @@ import { confirmAction } from '@/lib/confirm';
 import { deleteAccount } from '@/lib/db/moderation';
 import { toast } from '@/lib/toast';
 import { updateAvatarSeed, updateProfile, uploadAvatar } from '@/lib/db/profiles';
+import { shareProfile } from '@/lib/share';
 import { ACCENT, DANGER } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
@@ -118,6 +119,17 @@ export function ManageProfile() {
         <Text className="mt-3 text-xl font-bold text-content">{profile?.display_name || profile?.username || 'You'}</Text>
         {profile?.username ? <Text className="text-sm text-content-2">@{profile.username}</Text> : null}
         <Text className="mt-0.5 text-xs text-content-2">{session!.user.email}</Text>
+        {profile?.username ? (
+          <Pressable
+            onPress={() => shareProfile(profile.username)}
+            accessibilityRole="button"
+            accessibilityLabel="Share profile"
+            className="mt-4 flex-row items-center gap-2 rounded-full px-5 py-2.5 active:opacity-80"
+            style={{ backgroundColor: ACCENT }}>
+            <Icon name="share-outline" size={16} color="#fff" />
+            <Text className="font-semibold text-white">Share profile</Text>
+          </Pressable>
+        ) : null}
       </View>
 
       <View className="mt-6 flex-row rounded-2xl border border-line py-4">
