@@ -1,6 +1,7 @@
 import { AppleLogo } from 'phosphor-react-native/src/icons/AppleLogo';
 import { ArrowLeft } from 'phosphor-react-native/src/icons/ArrowLeft';
 import { BabyCarriage } from 'phosphor-react-native/src/icons/BabyCarriage';
+import { Bell } from 'phosphor-react-native/src/icons/Bell';
 import { BookmarkSimple } from 'phosphor-react-native/src/icons/BookmarkSimple';
 import { Camera } from 'phosphor-react-native/src/icons/Camera';
 import { CaretLeft } from 'phosphor-react-native/src/icons/CaretLeft';
@@ -89,6 +90,7 @@ const ICONS = {
   'bookmark-outline': { C: BookmarkSimple },
   'share-outline': { C: Export },
   'zoom-in': { C: MagnifyingGlassPlus },
+  'notifications-outline': { C: Bell },
   'zoom-out': { C: MagnifyingGlassMinus },
   'create-outline': { C: PencilSimple },
   'chatbubble-outline': { C: ChatCircle },

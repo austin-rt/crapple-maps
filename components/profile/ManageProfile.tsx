@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Linking, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from 'react-native';
+import { Linking, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { Avatar, INPUT_CLS } from '@/components/ui';
 import { useLogCount, useProfile } from '@/hooks/useProfile';
@@ -20,6 +20,7 @@ import { useColors } from '@/lib/theme';
 import { AppearanceCard } from './AppearanceCard';
 import { AvatarCropper, type CropSource } from './AvatarCropper';
 import { Card } from './Card';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 const USERNAME_HINT = '3–30 lowercase letters, numbers or underscores. Profile links you shared under your old username stop working.';
 
@@ -32,14 +33,13 @@ function Stat({ label, value, onPress }: { label: string; value: number; onPress
       accessibilityLabel={`${value} ${label}`}
       className="flex-1 items-center active:opacity-60">
       <Text className="text-lg font-bold text-content">{value}</Text>
-      <Text className={`text-xs ${onPress ? 'font-semibold' : 'text-content-2'}`} style={onPress ? { color: ACCENT } : undefined}>
-        {label}
-      </Text>
+      <Text className="text-xs text-content-2">{label}</Text>
     </Pressable>
   );
 }
 
 export function ManageProfile() {
+  const ptr = usePullToRefresh();
   const c = useColors();
   const { session, signOut, changePassword } = useAuth();
   const qc = useQueryClient();
@@ -51,7 +51,6 @@ export function ManageProfile() {
   const [displayName, setDisplayName] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
   const [cropSource, setCropSource] = useState<CropSource | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
   const [username, setUsername] = useState('');
   const [savingUsername, setSavingUsername] = useState(false);
   const [newPw, setNewPw] = useState('');
@@ -134,22 +133,13 @@ export function ManageProfile() {
     }
   };
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await Promise.all([
-      qc.refetchQueries({ queryKey: ['profile', uid] }),
-      qc.refetchQueries({ queryKey: ['my-log-count', uid] }),
-    ]);
-    setRefreshing(false);
-  };
-
   return (
     <ScrollView
       className="flex-1 bg-surface"
       contentContainerClassName="px-5 pb-16"
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={ACCENT} />}>
+      refreshControl={ptr.control}>
       {cropSource ? <AvatarCropper source={cropSource} onCancel={() => setCropSource(null)} onDone={saveCropped} /> : null}
       <View className="items-center pt-8">
         {profile?.avatar_url ? (

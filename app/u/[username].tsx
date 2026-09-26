@@ -2,12 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 
 import { FollowButton } from '@/components/people';
 import { AgeGate, AuthForm, useAgePassed } from '@/components/profile';
 import { Avatar, Icon } from '@/components/ui';
 import { useFollows } from '@/hooks/useFollows';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { useAuth } from '@/lib/auth';
 import { fetchProfileByUsername, type PublicProfile } from '@/lib/db/profiles';
 import { shareProfile } from '@/lib/share';
@@ -36,6 +37,7 @@ function ProfileAvatar({ p, size }: { p: PublicProfile; size: number }) {
 // signed in. A signed-out visitor taps Sign in to follow and signs in right
 // here, so the request goes out without leaving the page.
 export default function SharedProfile() {
+  const ptr = usePullToRefresh();
   const { username, invite } = useLocalSearchParams<{ username: string; invite?: string }>();
   const { session } = useAuth();
   const me = session?.user.id;
@@ -102,7 +104,7 @@ export default function SharedProfile() {
   }
 
   return (
-    <View className="flex-1 items-center bg-surface px-6 pt-10">
+    <ScrollView className="flex-1 bg-surface" contentContainerClassName="items-center px-6 pb-16 pt-10" refreshControl={ptr.control}>
       <Stack.Screen options={{ title: `@${profile.username}` }} />
       <View className="w-full max-w-[420px] items-center">
         <ProfileAvatar p={profile} size={96} />
@@ -144,6 +146,6 @@ export default function SharedProfile() {
           </Text>
         ) : null}
       </View>
-    </View>
+    </ScrollView>
   );
 }

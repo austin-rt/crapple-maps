@@ -13,6 +13,7 @@ import { profilesByIds } from '@/lib/db/profiles';
 import { toast } from '@/lib/toast';
 import { ACCENT } from '@/lib/tokens';
 import type { Profile } from '@/lib/types';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 type Side = 'followers' | 'following';
 type Row = { prof: Profile; status: FollowStatus };
@@ -29,6 +30,7 @@ function OutlineButton({ label, onPress }: { label: string; onPress: () => void 
 // tab: tabs across the top, one row per person, and the action on the right —
 // Remove for a follower, Following / Requested to unfollow or cancel.
 export default function Follows() {
+  const ptr = usePullToRefresh();
   const { tab } = useLocalSearchParams<{ tab?: string }>();
   const [side, setSide] = useState<Side>(tab === 'following' ? 'following' : 'followers');
   const { session } = useAuth();
@@ -36,15 +38,20 @@ export default function Follows() {
   const qc = useQueryClient();
   const { data: profile } = useProfile(me ?? '');
 
-  const { data: rows, isLoading } = useQuery({
-    queryKey: ['follow-list', me, side],
+  const listQuery = (s: Side) => ({
+    queryKey: ['follow-list', me, s],
     enabled: !!me,
     queryFn: async (): Promise<Row[]> => {
-      const edges = await fetchFollowEdges(me!, side);
+      const edges = await fetchFollowEdges(me!, s);
       const profs = await profilesByIds(edges.map((e) => e.userId));
       return edges.filter((e) => profs[e.userId]).map((e) => ({ prof: profs[e.userId], status: e.status }));
     },
   });
+  const followersQ = useQuery(listQuery('followers'));
+  const followingQ = useQuery(listQuery('following'));
+  const active = side === 'followers' ? followersQ : followingQ;
+  const rows = active.data;
+  const isLoading = active.isLoading;
 
   if (!me) return <SignInRequired message="Sign in to see who you follow." />;
 
@@ -85,9 +92,12 @@ export default function Follows() {
       { confirmLabel: status === 'pending' ? 'Cancel request' : 'Unfollow', destructive: true },
     );
 
+  // Counted from the lists themselves so the tab labels can never disagree with
+  // what's shown (the profile's cached counts lagged behind). Following counts
+  // approved follows only; pending requests show in the list as Requested.
   const counts: Record<Side, number> = {
-    followers: profile?.followers_count ?? 0,
-    following: profile?.following_count ?? 0,
+    followers: followersQ.data?.length ?? profile?.followers_count ?? 0,
+    following: followingQ.data ? followingQ.data.filter((r) => r.status === 'approved').length : (profile?.following_count ?? 0),
   };
 
   return (
@@ -113,6 +123,7 @@ export default function Follows() {
         <ActivityIndicator className="mt-10" color={ACCENT} />
       ) : (
         <FlatList
+          refreshControl={ptr.control}
           data={rows ?? []}
           keyExtractor={(r) => r.prof.id}
           renderItem={({ item }) => (

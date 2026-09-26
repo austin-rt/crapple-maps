@@ -13,12 +13,14 @@ import { distLabel } from '@/lib/restrooms/filters';
 import { useColors, useThemePref } from '@/lib/theme';
 import { ACCENT, DANGER } from '@/lib/tokens';
 import type { Restroom } from '@/lib/types';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 // Shared by native (iOS/Android) AND mobile web so they stay identical. Sort and
 // filter live in the sheet (FilterSheet), not the search bar.
 const PEEK = 84; // sheet height when collapsed — just the handle + summary header
 
 export function MobileMap() {
+  const ptr = usePullToRefresh();
   const insets = useSafeAreaInsets();
   const { scheme } = useThemePref();
   const c = useColors();
@@ -152,6 +154,8 @@ export function MobileMap() {
             </Pressable>
 
             <BottomSheetFlatList
+              refreshing={ptr.refreshing}
+              onRefresh={ptr.onRefresh}
               data={f.list}
               keyExtractor={(i, idx) => (i as Restroom).id + idx}
               contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}

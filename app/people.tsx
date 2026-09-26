@@ -11,8 +11,10 @@ import { useAuth } from '@/lib/auth';
 import { searchProfiles } from '@/lib/db/profiles';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 export default function People() {
+  const ptr = usePullToRefresh();
   const { session } = useAuth();
   const me = session?.user.id;
   const [q, setQ] = useState('');
@@ -28,7 +30,7 @@ export default function People() {
 
   const c = useColors();
   return (
-    <ScrollView className="flex-1 bg-surface" keyboardShouldPersistTaps="handled">
+    <ScrollView className="flex-1 bg-surface" keyboardShouldPersistTaps="handled" refreshControl={ptr.control}>
       <Stack.Screen options={{ title: 'Find people' }} />
 
       <View className="px-4 pt-3">

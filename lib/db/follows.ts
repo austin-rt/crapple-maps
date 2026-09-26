@@ -35,14 +35,18 @@ export async function approveFollow(followId: string) {
 export async function fetchFollowEdges(
   me: string,
   side: 'followers' | 'following',
-): Promise<{ userId: string; status: FollowStatus }[]> {
+): Promise<{ userId: string; status: FollowStatus; createdAt: string }[]> {
   const q =
     side === 'followers'
       ? supabase.from('follows').select('follower_id,status,created_at').eq('followee_id', me).eq('status', 'approved')
       : supabase.from('follows').select('followee_id,status,created_at').eq('follower_id', me);
   const { data, error } = await q.order('created_at', { ascending: false });
   if (error) throw error;
-  return (data ?? []).map((r: any) => ({ userId: side === 'followers' ? r.follower_id : r.followee_id, status: r.status }));
+  return (data ?? []).map((r: any) => ({
+    userId: side === 'followers' ? r.follower_id : r.followee_id,
+    status: r.status,
+    createdAt: r.created_at,
+  }));
 }
 
 export async function removeFollower(me: string, id: string) {

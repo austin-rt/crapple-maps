@@ -4,7 +4,17 @@ import { Pressable, Text, View } from 'react-native';
 import { Avatar } from '@/components/ui';
 import type { Profile } from '@/lib/types';
 
-export function PersonRow({ p, right, onPress }: { p: Profile; right: React.ReactNode; onPress?: () => void }) {
+export function PersonRow({
+  p,
+  right,
+  onPress,
+  subtitle,
+}: {
+  p: Profile;
+  right: React.ReactNode;
+  onPress?: () => void;
+  subtitle?: string;
+}) {
   return (
     <Pressable
       onPress={onPress}
@@ -19,6 +29,7 @@ export function PersonRow({ p, right, onPress }: { p: Profile; right: React.Reac
       <View className="flex-1">
         <Text className="text-[15px] font-semibold text-content">{p.display_name || p.username}</Text>
         <Text className="text-sm text-content-2">@{p.username}</Text>
+        {subtitle ? <Text className="text-xs text-content-2">{subtitle}</Text> : null}
       </View>
       {right}
     </Pressable>
