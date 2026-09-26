@@ -21,7 +21,17 @@ function weekdayDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-export function LogSheet({ log, onBack, onDeleted }: { log: LogItem; onBack: () => void; onDeleted: () => void }) {
+export function LogSheet({
+  log,
+  onBack,
+  onDeleted,
+  canDelete = true,
+}: {
+  log: LogItem;
+  onBack: () => void;
+  onDeleted: () => void;
+  canDelete?: boolean;
+}) {
   const place = useResolvedPlace(log.lat, log.lng, true);
   const b = bristol(log.bristol_type);
   const w = Dimensions.get('window').width;
@@ -95,10 +105,12 @@ export function LogSheet({ log, onBack, onDeleted }: { log: LogItem; onBack: () 
           <Text className="font-semibold text-content">Directions</Text>
         </Pressable>
 
-        <Pressable onPress={del} className="mt-3 flex-row items-center justify-center gap-2 rounded-xl py-3 active:opacity-70">
-          <Icon name="trash-outline" size={16} color={DANGER} />
-          <Text className="font-semibold text-red-600">Delete log</Text>
-        </Pressable>
+        {canDelete ? (
+          <Pressable onPress={del} className="mt-3 flex-row items-center justify-center gap-2 rounded-xl py-3 active:opacity-70">
+            <Icon name="trash-outline" size={16} color={DANGER} />
+            <Text className="font-semibold text-red-600">Delete log</Text>
+          </Pressable>
+        ) : null}
       </View>
     </BottomSheetScrollView>
   );

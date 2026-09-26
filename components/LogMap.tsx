@@ -10,9 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMapView, AppMarker, type AppMapHandle, type Region } from '@/components/map';
 import { LogSheet, type LogItem } from '@/components/log-sheet';
-import { SignInRequired } from '@/components/ui';
 import { useMyLogs } from '@/hooks/useLogs';
-import { useAuth } from '@/lib/auth';
 import { bristol } from '@/lib/bristol';
 import { shortWhen } from '@/lib/format';
 import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
@@ -39,9 +37,11 @@ function regionFor(logs: LogItem[]): Region {
   };
 }
 
-export default function MyMapScreen() {
+// A person's logs on a map with a list / gallery sheet. Used for My Map (own:
+// centers on you, logs are deletable) and for someone else's map (frames their
+// pins; the database only returns the logs you're allowed to see).
+export function LogMap({ userId, own }: { userId: string; own: boolean }) {
   const ptr = usePullToRefresh();
-  const { session } = useAuth();
   const qc = useQueryClient();
   const insets = useSafeAreaInsets();
   const { scheme } = useThemePref();
@@ -53,7 +53,7 @@ export default function MyMapScreen() {
   const [selected, setSelected] = useState<LogItem | null>(null);
   const [tab, setTab] = useState<'list' | 'gallery'>('list');
 
-  const { data: logs = [] } = useMyLogs(session?.user.id);
+  const { data: logs = [] } = useMyLogs(userId);
   // Tracks whether the opening camera move has happened, so the logs-fit
   // fallback below can't yank the map away after we've centred on the user.
   const centredRef = useRef(false);
@@ -81,10 +81,10 @@ export default function MyMapScreen() {
     }
   }, []);
 
-  // On open, find the user and centre on them.
+  // On your own map, open centred on you; someone else's map frames their pins.
   useEffect(() => {
-    recenterOnMe();
-  }, [recenterOnMe]);
+    if (own) recenterOnMe();
+  }, [own, recenterOnMe]);
 
   // Only fall back to framing every log when locating the user didn't work
   // (permission denied, or it failed) — otherwise this would fight the effect
@@ -105,10 +105,6 @@ export default function MyMapScreen() {
     qc.invalidateQueries({ queryKey: ['my-logs'] });
     qc.invalidateQueries({ queryKey: ['feed'] });
   };
-
-  if (!session) {
-    return <SignInRequired icon="trail-sign-outline" message="Everywhere you’ve gone, mapped." />;
-  }
 
   const gallery = logs.flatMap((l) => l.photos.map((url) => ({ url, log: l })));
 
@@ -133,14 +129,12 @@ export default function MyMapScreen() {
         ))}
       </AppMapView>
 
-      {/* Snap back to the user. Pinned to the map's bottom-right corner, just
-          above the tab bar — not above a sheet peek, since this screen's sheet
-          does not currently render and the button was floating mid-map. */}
+      {/* Snap back to the user, pinned to the map's bottom-right corner. */}
       <Pressable accessibilityRole="button" accessibilityLabel="Center map on my location"
         onPress={() => recenterOnMe()}
         hitSlop={8}
         className="absolute items-center justify-center rounded-full bg-surface"
-        style={[{ right: 16, bottom: 16, width: 46, height: 46 }, styles.shadow]}>
+        style={[{ right: 16, bottom: insets.bottom + 16, width: 46, height: 46 }, styles.shadow]}>
         <Icon name="locate" size={22} color={ACCENT} />
       </Pressable>
 
@@ -158,7 +152,13 @@ export default function MyMapScreen() {
               sheetRef.current?.snapToIndex(1);
             }}
             onDeleted={onDeleted}
+            canDelete={own}
           />
+        ) : logs.length === 0 && !own ? (
+          <View className="mt-16 items-center px-8">
+            <Text className="text-5xl">🚽</Text>
+            <Text className="mt-4 text-center text-lg font-semibold text-content">No visits to show yet</Text>
+          </View>
         ) : logs.length === 0 ? (
           <View className="mt-16 items-center px-8">
             <Text className="text-5xl">🚽</Text>

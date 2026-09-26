@@ -55,13 +55,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="my-map"
-        options={{
-          title: 'My Map',
-          tabBarIcon: ({ color, size }) => <Icon name="trail-sign-outline" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="notifications"
         options={{
           title: 'Notifications',
