@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 
 import { Icon } from '@/components/ui';
+import { useKeyboardHeight } from '@/hooks/useKeyboardHeight';
 import { MIN_AGE, checkDob } from '@/lib/age';
 import { useColors } from '@/lib/theme';
 import { ACCENT, DANGER } from '@/lib/tokens';
@@ -32,6 +33,7 @@ export function useAgePassed() {
 
 export function AgeGate({ onPass }: { onPass: () => void }) {
   const c = useColors();
+  const keyboardHeight = useKeyboardHeight();
   const [mm, setMm] = useState('');
   const [dd, setDd] = useState('');
   const [yyyy, setYyyy] = useState('');
@@ -51,7 +53,7 @@ export function AgeGate({ onPass }: { onPass: () => void }) {
   };
 
   return (
-    <View className="flex-1 justify-center bg-surface px-8">
+    <View className="flex-1 justify-center bg-surface px-8" style={{ paddingBottom: keyboardHeight }}>
       <View className="items-center">
         <Icon name="lock-closed-outline" size={40} color={c.content2} />
         <Text className="mt-3 text-center text-xl font-semibold text-content">

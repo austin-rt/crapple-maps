@@ -65,5 +65,5 @@ export function useFollows(me: string | undefined) {
     }
   };
 
-  return { requests: requestsQ.data ?? [], statusFor, follow, unfollow, approve };
+  return { requests: requestsQ.data ?? [], statusFor, followingLoaded: followingQ.isSuccess, follow, unfollow, approve };
 }
