@@ -11,6 +11,7 @@ import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
+import { UsernameGate } from '@/components/profile';
 import { WebHeader } from '@/components/web/WebHeader';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { AuthProvider } from '@/lib/auth';
@@ -68,6 +69,7 @@ export default function RootLayout() {
             <AuthProvider>
               <ContributionProvider>
                 <NavStack />
+                <UsernameGate />
               </ContributionProvider>
             </AuthProvider>
           </QueryClientProvider>

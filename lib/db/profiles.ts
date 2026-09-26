@@ -23,7 +23,7 @@ export async function searchProfiles(q: string, excludeId: string): Promise<Prof
 export async function fetchProfile(id: string) {
   const { data } = await supabase
     .from('profiles')
-    .select('username, display_name, avatar_url, avatar_seed, followers_count, following_count, logs_count')
+    .select('username, username_chosen, display_name, avatar_url, avatar_seed, followers_count, following_count, logs_count')
     .eq('id', id)
     .single();
   return data;

@@ -4,3 +4,4 @@ export { ManageProfile } from './ManageProfile';
 export { AppearanceCard } from './AppearanceCard';
 export { OAuthButtons } from './OAuthButtons';
 export { Card } from './Card';
+export { UsernameGate } from './UsernameGate';
