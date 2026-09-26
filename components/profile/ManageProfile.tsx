@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Linking, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Linking, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { Avatar, INPUT_CLS } from '@/components/ui';
 import { useLogCount, useProfile } from '@/hooks/useProfile';
@@ -18,6 +18,7 @@ import { ACCENT, DANGER } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
 import { AppearanceCard } from './AppearanceCard';
+import { AvatarCropper, type CropSource } from './AvatarCropper';
 import { Card } from './Card';
 
 const USERNAME_HINT = '3–30 lowercase letters, numbers or underscores. Profile links you shared under your old username stop working.';
@@ -47,6 +48,8 @@ export function ManageProfile() {
 
   const [displayName, setDisplayName] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
+  const [cropSource, setCropSource] = useState<CropSource | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
   const [username, setUsername] = useState('');
   const [savingUsername, setSavingUsername] = useState(false);
   const [newPw, setNewPw] = useState('');
@@ -112,10 +115,16 @@ export function ManageProfile() {
   };
 
   const uploadPhoto = async () => {
-    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, aspect: [1, 1], quality: 0.7 });
+    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1 });
     if (res.canceled) return;
+    const a = res.assets[0];
+    setCropSource({ uri: a.uri, width: a.width, height: a.height });
+  };
+
+  const saveCropped = async (uri: string) => {
+    setCropSource(null);
     try {
-      await uploadAvatar(uid, res.assets[0].uri);
+      await uploadAvatar(uid, uri);
       qc.invalidateQueries({ queryKey: ['profile', uid] });
       toast.success('Photo updated');
     } catch (e: any) {
@@ -123,12 +132,23 @@ export function ManageProfile() {
     }
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([
+      qc.refetchQueries({ queryKey: ['profile', uid] }),
+      qc.refetchQueries({ queryKey: ['my-log-count', uid] }),
+    ]);
+    setRefreshing(false);
+  };
+
   return (
     <ScrollView
       className="flex-1 bg-surface"
       contentContainerClassName="px-5 pb-16"
       keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets>
+      automaticallyAdjustKeyboardInsets
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={ACCENT} />}>
+      {cropSource ? <AvatarCropper source={cropSource} onCancel={() => setCropSource(null)} onDone={saveCropped} /> : null}
       <View className="items-center pt-8">
         {profile?.avatar_url ? (
           <Image source={{ uri: profile.avatar_url }} style={{ width: 84, height: 84, borderRadius: 42 }} className="bg-surface-3" />

@@ -24,6 +24,8 @@ import { List } from 'phosphor-react-native/src/icons/List';
 import { ListBullets } from 'phosphor-react-native/src/icons/ListBullets';
 import { Lock } from 'phosphor-react-native/src/icons/Lock';
 import { MagnifyingGlass } from 'phosphor-react-native/src/icons/MagnifyingGlass';
+import { MagnifyingGlassMinus } from 'phosphor-react-native/src/icons/MagnifyingGlassMinus';
+import { MagnifyingGlassPlus } from 'phosphor-react-native/src/icons/MagnifyingGlassPlus';
 import { MapPin } from 'phosphor-react-native/src/icons/MapPin';
 import { MapTrifold } from 'phosphor-react-native/src/icons/MapTrifold';
 import { Moon } from 'phosphor-react-native/src/icons/Moon';
@@ -86,6 +88,8 @@ const ICONS = {
   bookmark: { C: BookmarkSimple, weight: 'fill' },
   'bookmark-outline': { C: BookmarkSimple },
   'share-outline': { C: Export },
+  'zoom-in': { C: MagnifyingGlassPlus },
+  'zoom-out': { C: MagnifyingGlassMinus },
   'create-outline': { C: PencilSimple },
   'chatbubble-outline': { C: ChatCircle },
   'heart-outline': { C: Heart },

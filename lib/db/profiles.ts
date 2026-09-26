@@ -38,6 +38,7 @@ export async function updateProfile(id: string, patch: Record<string, unknown>) 
 export async function updateAvatarSeed(id: string, seed: string) {
   const { error } = await supabase.from('profiles').update({ avatar_seed: seed, avatar_url: null }).eq('id', id);
   if (error) throw error;
+  await clearAvatarFiles(id).catch(() => {});
 }
 
 // Count of THIS user's own (non-deleted) logs. The prior inline query omitted the
@@ -51,18 +52,34 @@ export async function fetchLogCount(userId: string): Promise<number> {
   return count ?? 0;
 }
 
-// `fetch(uri)` handles native file URIs AND web blob/data URLs, so this works on all platforms.
+const AVATAR_BUCKET = 'avatars';
+
+// Deletes every file in the user's avatars folder except `keep`, so only the
+// current photo is ever stored (older uploads used timestamped names).
+async function clearAvatarFiles(userId: string, keep?: string) {
+  const { data } = await supabase.storage.from(AVATAR_BUCKET).list(userId);
+  const stale = (data ?? []).map((f) => `${userId}/${f.name}`).filter((p) => p !== keep);
+  if (stale.length) await supabase.storage.from(AVATAR_BUCKET).remove(stale);
+}
+
+// Overwrites the user's single photo at <uid>/avatar.jpg. The stored URL gets
+// a version query so the app, the CDN and link-preview cards pick up the new
+// picture even though the file path never changes.
+// `fetch(uri)` handles native file URIs AND web blob/data URLs.
 export async function uploadAvatar(userId: string, uri: string): Promise<string> {
   const arraybuffer = await fetch(uri).then((r) => r.arrayBuffer());
-  const path = `${userId}/avatar_${Date.now()}.jpg`;
-  const { error } = await supabase.storage.from('avatars').upload(path, arraybuffer, {
+  const path = `${userId}/avatar.jpg`;
+  const { error } = await supabase.storage.from(AVATAR_BUCKET).upload(path, arraybuffer, {
     contentType: 'image/jpeg',
+    cacheControl: '3600',
     upsert: true,
   });
   if (error) throw error;
-  const { data } = supabase.storage.from('avatars').getPublicUrl(path);
-  await updateProfile(userId, { avatar_url: data.publicUrl });
-  return data.publicUrl;
+  const { data } = supabase.storage.from(AVATAR_BUCKET).getPublicUrl(path);
+  const url = `${data.publicUrl}?v=${Date.now()}`;
+  await updateProfile(userId, { avatar_url: url });
+  await clearAvatarFiles(userId, path).catch(() => {});
+  return url;
 }
 
 export type PublicProfile = Profile & { followers_count: number | null; following_count: number | null };
