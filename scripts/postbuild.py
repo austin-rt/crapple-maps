@@ -36,8 +36,15 @@ if os.path.isdir(nm):
 # `dark` class only after hydration. Setting it before first paint lets every
 # CSS-variable-styled element render dark immediately (inline style props still
 # wait for the ThemePrefProvider hydration flip).
-SNIPPET = ("<script>try{if(matchMedia('(prefers-color-scheme: dark)').matches)"
-           "document.documentElement.classList.add('dark')}catch(e){}</script>")
+#
+# Inline styles (react-navigation headers, anything colored from JS) can't read
+# the class, so in dark mode the pre-rendered page would still show a white
+# header and placeholder text until hydration. `prehydrate` hides the app root
+# in dark mode until app/_layout.tsx removes the class on mount; the themed
+# page background shows meanwhile. Light mode keeps the pre-render visible.
+SNIPPET = ("<style>html.dark.prehydrate #root{visibility:hidden}</style>"
+           "<script>try{var d=document.documentElement;d.classList.add('prehydrate');"
+           "if(matchMedia('(prefers-color-scheme: dark)').matches)d.classList.add('dark')}catch(e){}</script>")
 patched = 0
 for root, _dirs, files in os.walk(DIST):
     for name in files:

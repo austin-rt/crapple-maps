@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Linking, Pressable, Text, View } from 'react-native';
 
 import { FollowButton } from '@/components/people';
@@ -45,9 +45,10 @@ function OpenInApp({ username }: { username: string }) {
   );
 }
 
-// Landing page for a shared profile link. An invite link (?invite=1) sends the
-// follow request on arrival once the visitor is signed in, and a signed-out
-// visitor signs in right here so the request goes out without leaving the page.
+// Landing page for a shared profile link. Everyone sees the profile; an invite
+// link (?invite=1) sends the follow request on arrival once the visitor is
+// signed in. A signed-out visitor taps Sign in to follow and signs in right
+// here, so the request goes out without leaving the page.
 export default function SharedProfile() {
   const { username, invite } = useLocalSearchParams<{ username: string; invite?: string }>();
   const { session } = useAuth();
@@ -57,6 +58,7 @@ export default function SharedProfile() {
   const [agePassed, setAgePassed] = useAgePassed();
   const { statusFor, followingLoaded, follow, unfollow } = useFollows(me);
   const autoSent = useRef(false);
+  const [showAuth, setShowAuth] = useState(false);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['public-profile', username],
@@ -94,7 +96,7 @@ export default function SharedProfile() {
 
   const name = profile.display_name || profile.username;
 
-  if (!me) {
+  if (!me && showAuth) {
     return (
       <View className="flex-1 bg-surface">
         <Stack.Screen options={{ title: `@${profile.username}` }} />
@@ -143,8 +145,16 @@ export default function SharedProfile() {
               <Icon name="share-outline" size={16} color="#fff" />
               <Text className="font-semibold text-white">Share profile</Text>
             </Pressable>
-          ) : (
+          ) : me ? (
             <FollowButton status={status} onToggle={() => (status ? unfollow(profile.id) : follow(profile.id))} />
+          ) : (
+            <Pressable
+              onPress={() => setShowAuth(true)}
+              accessibilityRole="button"
+              className="rounded-full px-5 py-2.5 active:opacity-80"
+              style={{ backgroundColor: ACCENT }}>
+              <Text className="font-semibold text-white">Sign in to follow</Text>
+            </Pressable>
           )}
         </View>
 

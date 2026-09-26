@@ -3,6 +3,7 @@ import '@/global.css';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
+import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -24,6 +25,9 @@ export const unstable_settings = {
 const queryClient = new QueryClient();
 
 function NavStack() {
+  useEffect(() => {
+    if (Platform.OS === 'web') document.documentElement.classList.remove('prehydrate');
+  }, []);
   const { scheme } = useThemePref();
   const c = useColors();
   const isMobileWeb = useIsMobileWeb();
@@ -48,6 +52,7 @@ function NavStack() {
             : null),
         }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="u/[username]" options={{ title: 'Profile' }} />
       </Stack>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
     </ThemeProvider>

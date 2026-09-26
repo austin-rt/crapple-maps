@@ -6,6 +6,9 @@
    single source in theme/palette.js via the tailwind config plugin, and flipped
    by the `.dark` class. This file only styles what a class can't reach. */
 @layer base {
+  /* The page background shows behind Safari's translucent bars and in overscroll,
+     so it follows the theme instead of staying browser-default white. */
+  html, body { background-color: rgb(var(--surface)); }
   /* Web scrollbars, themed off the same tokens so they flip with the theme. */
   * { scrollbar-width: thin; scrollbar-color: rgb(var(--line)) transparent; }
   ::-webkit-scrollbar { width: 12px; height: 12px; }

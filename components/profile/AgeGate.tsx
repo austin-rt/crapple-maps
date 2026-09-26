@@ -73,7 +73,7 @@ export function AgeGate({ onPass }: { onPass: () => void }) {
           placeholderTextColor={c.content2}
           keyboardType="number-pad"
           maxLength={2}
-          style={{ flex: 1 }}
+          style={{ flex: 1, minWidth: 0 }}
           className="rounded-xl border border-line px-4 py-3 text-center text-base text-content"
         />
         <TextInput
@@ -83,7 +83,7 @@ export function AgeGate({ onPass }: { onPass: () => void }) {
           placeholderTextColor={c.content2}
           keyboardType="number-pad"
           maxLength={2}
-          style={{ flex: 1 }}
+          style={{ flex: 1, minWidth: 0 }}
           className="rounded-xl border border-line px-4 py-3 text-center text-base text-content"
         />
         <TextInput
@@ -93,7 +93,7 @@ export function AgeGate({ onPass }: { onPass: () => void }) {
           placeholderTextColor={c.content2}
           keyboardType="number-pad"
           maxLength={4}
-          style={{ flex: 1.6 }}
+          style={{ flex: 1.6, minWidth: 0 }}
           className="rounded-xl border border-line px-4 py-3 text-center text-base text-content"
         />
       </View>
