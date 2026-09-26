@@ -22,13 +22,17 @@ import { Card } from './Card';
 
 const USERNAME_HINT = '3–30 lowercase letters, numbers or underscores. Profile links you shared under your old username stop working.';
 
-function Stat({ label, value }: { label: string; value: number }) {
-  const c = useColors();
+function Stat({ label, value, onPress }: { label: string; value: number; onPress?: () => void }) {
   return (
-    <View className="flex-1 items-center">
+    <Pressable
+      onPress={onPress}
+      disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={`${value} ${label}`}
+      className="flex-1 items-center active:opacity-60">
       <Text className="text-lg font-bold text-content">{value}</Text>
       <Text className="text-xs text-content-2">{label}</Text>
-    </View>
+    </Pressable>
   );
 }
 
@@ -160,9 +164,9 @@ export function ManageProfile() {
       <View className="mt-6 flex-row rounded-2xl border border-line py-4">
         <Stat label="Logs" value={logCount} />
         <View className="w-px bg-surface-3" />
-        <Stat label="Followers" value={profile?.followers_count ?? 0} />
+        <Stat label="Followers" value={profile?.followers_count ?? 0} onPress={() => router.push({ pathname: '/follows', params: { tab: 'followers' } })} />
         <View className="w-px bg-surface-3" />
-        <Stat label="Following" value={profile?.following_count ?? 0} />
+        <Stat label="Following" value={profile?.following_count ?? 0} onPress={() => router.push({ pathname: '/follows', params: { tab: 'following' } })} />
       </View>
 
       <AppearanceCard />
