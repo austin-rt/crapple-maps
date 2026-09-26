@@ -2,10 +2,10 @@ import { Platform, Share } from 'react-native';
 
 import { toast } from '@/lib/toast';
 
-export const profileUrl = (username: string) => `https://crapplemaps.com/u/${encodeURIComponent(username)}`;
+export const profileUrl = (username: string) => `https://crapplemaps.com/u/${encodeURIComponent(username)}?invite=1`;
 
-// Opens the OS share sheet with a link that lands on the sharer's profile, where
-// the recipient can follow them. iOS takes the link as `url` so Messages renders
+// Opens the OS share sheet with an invite link to the sharer's profile. Opening
+// it while signed in sends the follow request on arrival. iOS takes the link as `url` so Messages renders
 // it as a link card; Android only reads `message`, so the link rides in the text.
 // Web uses the Web Share API where the browser has it and copies the link
 // otherwise.

@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
 import { MarkerBadge } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
+import { useKeyboardHeight } from '@/hooks/useKeyboardHeight';
 
 import { OAuthButtons } from './OAuthButtons';
 
@@ -18,7 +19,7 @@ const PASSWORD_HINT = 'At least 10 characters, with an uppercase letter, a lower
 
 const prettyError = (e: string) => (e.toLowerCase().includes('password should') ? PASSWORD_HINT : e);
 
-export function AuthForm() {
+export function AuthForm({ subtitle }: { subtitle?: string } = {}) {
   const { signInWithEmail, signUpWithEmail, signInWithProvider, signInWithApple } = useAuth();
   const [mode, setMode] = useState<'in' | 'up'>('in');
   const [email, setEmail] = useState('');
@@ -65,10 +66,19 @@ export function AuthForm() {
   };
 
   const c = useColors();
+  const keyboardHeight = useKeyboardHeight();
+  const scrollRef = useRef<ScrollView>(null);
+  useEffect(() => {
+    if (Platform.OS === 'android' && keyboardHeight > 0) {
+      requestAnimationFrame(() => scrollRef.current?.scrollToEnd({ animated: true }));
+    }
+  }, [keyboardHeight]);
   return (
     <ScrollView
+      ref={scrollRef}
       className="flex-1 bg-surface"
       contentContainerClassName="gap-3 px-6 pt-20 pb-10"
+      contentContainerStyle={Platform.OS === 'android' ? { paddingBottom: 40 + keyboardHeight } : undefined}
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets>
       <View className="mb-3 flex-row items-center gap-2.5">
@@ -84,7 +94,7 @@ export function AuthForm() {
       <Text className="text-2xl font-bold text-content">
         {mode === 'in' ? 'Welcome back' : 'Create account'}
       </Text>
-      <Text className="mb-2 text-content-2">Sign in to log visits, add restrooms, and follow friends.</Text>
+      <Text className="mb-2 text-content-2">{subtitle ?? 'Sign in to log visits, add restrooms, and follow friends.'}</Text>
 
       <OAuthButtons appleAvailable={appleAvailable} busy={busy} onApple={apple} onGoogle={google} />
 
