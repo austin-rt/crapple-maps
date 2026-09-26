@@ -28,7 +28,7 @@ To point local work at prod temporarily, move `.env.development.local` aside.
 ## Keeping dev's schema in step
 
 Apply migrations to both projects. Prod: Supabase MCP / dashboard. Dev: psql
-with the dev DB password (kept outside the repo):
+with the dev DB password (in gitignored `.secrets/dev-db-password`):
 
     psql "host=aws-0-ca-central-1.pooler.supabase.com port=5432 dbname=postgres \
           user=postgres.ymgprjcjgoybnngbgfki sslmode=require" -f supabase/migrations/NNNN_x.sql
