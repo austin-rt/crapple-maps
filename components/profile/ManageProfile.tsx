@@ -1,12 +1,12 @@
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Linking, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 
-import { Avatar, INPUT_CLS } from '@/components/ui';
+import { Avatar } from '@/components/ui';
 import { useLogCount, useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
 import { confirmAction } from '@/lib/confirm';
@@ -193,7 +193,7 @@ export function ManageProfile() {
 
       <Card title="Profile & account">
         <Text className="mb-1 text-sm text-content-2">Display name</Text>
-        <TextInput placeholder="Your name" placeholderTextColor={c.content2} value={displayName} onChangeText={setDisplayName} className={INPUT_CLS} />
+        <Input placeholder="Your name" placeholderTextColor={c.content2} value={displayName} onChangeText={setDisplayName} />
         <Pressable
           onPress={saveProfile}
           disabled={savingProfile}
@@ -207,7 +207,7 @@ export function ManageProfile() {
         <Text className="mb-1 text-sm text-content-2">Username</Text>
         <View className="flex-row items-center">
           <Text className="mr-1 text-base text-content-2">@</Text>
-          <TextInput
+          <Input
             placeholder="username"
             placeholderTextColor={c.content2}
             value={username}
@@ -215,7 +215,6 @@ export function ManageProfile() {
             autoCapitalize="none"
             autoCorrect={false}
             maxLength={30}
-            className={INPUT_CLS}
             style={{ flex: 1, minWidth: 0 }}
           />
         </View>
@@ -230,7 +229,7 @@ export function ManageProfile() {
         <View className="my-4 h-px bg-surface-3" />
 
         <Text className="mb-1 text-sm text-content-2">New password</Text>
-        <TextInput placeholder="••••••" placeholderTextColor={c.content2} value={newPw} onChangeText={setNewPw} secureTextEntry className={INPUT_CLS} />
+        <Input placeholder="••••••" placeholderTextColor={c.content2} value={newPw} onChangeText={setNewPw} secureTextEntry />
         <Pressable
           onPress={changePw}
           disabled={savingPw || !newPw}

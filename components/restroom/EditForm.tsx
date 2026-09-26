@@ -1,6 +1,6 @@
 import { Pressable, Text, TextInput, View } from 'react-native';
 
-import { CodePills, INPUT_CLS, SectionHeader, Segmented } from '@/components/ui';
+import { CodePills, Input, SectionHeader, Segmented } from '@/components/ui';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 import type { AccessType, RestroomDraft } from '@/lib/types';
@@ -57,33 +57,34 @@ export function EditForm({
       {isCreate ? (
         <>
           <SectionHeader>Name optional</SectionHeader>
-          <InputComponent
+          <Input
+            as={InputComponent}
             value={draft.name}
             onChangeText={(t) => onChange({ name: t })}
             placeholder="e.g. Blue Bottle Coffee"
             placeholderTextColor={c.content2}
-            className={INPUT_CLS}
           />
 
           <SectionHeader>Address</SectionHeader>
-          <InputComponent
+          <Input
+            as={InputComponent}
             value={draft.address}
             onChangeText={(t) => onChange({ address: t })}
             placeholder="Fills in from search — edit if it's wrong"
             placeholderTextColor={c.content2}
-            className={INPUT_CLS}
           />
         </>
       ) : null}
 
       <SectionHeader>How to find it</SectionHeader>
-      <InputComponent
+      <Input
+            as={InputComponent}
         value={draft.directions}
         onChangeText={(t) => onChange({ directions: t })}
         placeholder="e.g. Around back, separate entrance to the left of the bar…"
         placeholderTextColor={c.content2}
         multiline
-        className={`${INPUT_CLS} min-h-16`}
+        style={{ minHeight: 64 }}
       />
 
       {isCreate ? (

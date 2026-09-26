@@ -13,6 +13,7 @@ import Toast from 'react-native-toast-message';
 
 import { UsernameGate } from '@/components/profile';
 import { WebHeader } from '@/components/web/WebHeader';
+import { useApplyUpdates } from '@/hooks/useApplyUpdates';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { AuthProvider } from '@/lib/auth';
 import { ContributionProvider } from '@/lib/contribution';
@@ -61,6 +62,7 @@ function NavStack() {
 }
 
 export default function RootLayout() {
+  useApplyUpdates();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>

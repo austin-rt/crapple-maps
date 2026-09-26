@@ -1,8 +1,8 @@
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { INPUT_CLS, SectionHeader } from '@/components/ui';
+import { SectionHeader } from '@/components/ui';
 import { daysAgo } from '@/lib/format';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
@@ -52,13 +52,14 @@ export function CodesSection({
       )}
       {adding ? (
         <View className="mt-2 flex-row gap-2">
-          <SheetTextInput
+          <Input
+            as={SheetTextInput}
             autoFocus
             placeholder="Add a code…"
             placeholderTextColor={c.content2}
             value={newCode}
             onChangeText={setNewCode}
-            className={`${INPUT_CLS} flex-1`}
+            className="flex-1"
           />
           <Pressable onPress={post} className="items-center justify-center rounded-xl px-5" style={{ backgroundColor: ACCENT }}>
             <Text className="font-semibold text-white">Post</Text>

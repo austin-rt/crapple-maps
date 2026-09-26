@@ -66,6 +66,8 @@ module.exports = async (req, res) => {
     html = setMeta(html, 'twitter:title', title);
     html = setMeta(html, 'twitter:description', description);
     html = setMeta(html, 'twitter:image', image);
+    const invite = req.query.invite === '1' ? '?invite=1' : '';
+    html = setMeta(html, 'apple-itunes-app', `app-id=6795301489, app-argument=${url}${invite}`);
   }
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import { usePlaceSearch, type Place } from '@/hooks/usePlaceSearch';
 import { useColors } from '@/lib/theme';
 
@@ -42,7 +42,8 @@ export function PlaceSearchField({ onPick }: { onPick: (p: PickedPlace) => void 
     <View>
       <View className="flex-row items-center rounded-2xl bg-surface px-3" style={styles.shadow}>
         <Icon name="search" size={16} color={c.content2} />
-        <TextInput
+        <Input
+          variant="bare"
           ref={inputRef}
           placeholder="Search a place or address…"
           placeholderTextColor={c.content2}
@@ -51,7 +52,7 @@ export function PlaceSearchField({ onPick }: { onPick: (p: PickedPlace) => void 
           autoCapitalize="words"
           autoCorrect={false}
           returnKeyType="search"
-          className="flex-1 px-2 py-3 text-base text-content"
+          className="flex-1 px-2"
         />
         {searching ? (
           <ActivityIndicator size="small" color={c.content2} />

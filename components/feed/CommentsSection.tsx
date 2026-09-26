@@ -1,4 +1,4 @@
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import type { Session } from '@supabase/supabase-js';
 import { Image } from 'expo-image';
 import { useState } from 'react';
@@ -37,12 +37,13 @@ export function CommentsSection({ logId, session }: { logId: string; session: Se
 
       {session ? (
         <View className="mb-5 flex-row items-center gap-2">
-          <TextInput
+          <Input
+            variant="pill"
             value={text}
             onChangeText={setText}
             placeholder="Add a comment…"
             placeholderTextColor={clr.content2}
-            className="flex-1 rounded-full border border-line px-4 py-2.5 text-[15px] text-content"
+            className="flex-1"
             onSubmitEditing={submit}
             returnKeyType="send"
           />

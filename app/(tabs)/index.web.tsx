@@ -1,7 +1,7 @@
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AddRestroomCard, FilterControls, PlaceCard } from '@/components/finder';
 import { AppMapView, AppMarker } from '@/components/map';
@@ -101,13 +101,14 @@ function DesktopMapWeb() {
             <Pressable accessibilityRole="button" accessibilityLabel="Open menu" onPress={openNav} className="items-center justify-center" style={{ width: 42, height: 42 }}>
               <Icon name="menu" size={22} color={c.content2} />
             </Pressable>
-            <TextInput
+            <Input
+              variant="bare"
               placeholder="Search address, city, or ZIP…"
               placeholderTextColor={c.content2}
               value={f.query}
               onChangeText={f.setQuery}
               autoCapitalize="words"
-              className="flex-1 px-1 py-2.5 text-base text-content"
+              className="flex-1 px-1"
             />
             {f.searching ? (
               <ActivityIndicator size="small" color={c.content2} style={{ marginRight: 4 }} />

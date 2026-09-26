@@ -1,7 +1,7 @@
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { useRef } from 'react';
-import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AddRestroomCard, FilterSheet, PlaceCard } from '@/components/finder';
@@ -67,14 +67,15 @@ export function MobileMap() {
       <View style={{ position: 'absolute', top: insets.top + 10, left: 14, right: 14, zIndex: 20 }}>
         <View className="flex-row items-center rounded-2xl bg-surface px-3" style={styles.shadow}>
           <Icon name="search" size={16} color={c.content2} />
-          <TextInput
+          <Input
+            variant="bare"
             placeholder="Search address, city, or ZIP…"
             placeholderTextColor={c.content2}
             value={f.query}
             onChangeText={f.setQuery}
             autoCapitalize="words"
             returnKeyType="search"
-            className="flex-1 px-2 py-3 text-base text-content"
+            className="flex-1 px-2"
           />
           {f.searching ? (
             <ActivityIndicator size="small" color={c.content2} />

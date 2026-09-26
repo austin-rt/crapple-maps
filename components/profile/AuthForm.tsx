@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
 
-import { MarkerBadge } from '@/components/ui';
+import { Input, MarkerBadge } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
@@ -9,7 +9,6 @@ import { useKeyboardHeight } from '@/hooks/useKeyboardHeight';
 
 import { OAuthButtons } from './OAuthButtons';
 
-const inputCls = 'rounded-xl border border-line px-4 py-3 text-content';
 
 // Supabase states the password policy by dumping the literal character sets
 // ("...at least one character of each: abcdefghijklmnopqrstuvwxyz, ABC...").
@@ -118,7 +117,7 @@ export function AuthForm({ subtitle }: { subtitle?: string } = {}) {
         ))}
       </View>
 
-      <TextInput
+      <Input
         placeholder="Email"
         placeholderTextColor={c.content2}
         value={email}
@@ -129,9 +128,8 @@ export function AuthForm({ subtitle }: { subtitle?: string } = {}) {
         textContentType="username"
         autoComplete="email"
         importantForAutofill="yes"
-        className={inputCls}
       />
-      <TextInput
+      <Input
         placeholder="Password"
         placeholderTextColor={c.content2}
         value={password}
@@ -140,7 +138,6 @@ export function AuthForm({ subtitle }: { subtitle?: string } = {}) {
         textContentType={mode === 'in' ? 'password' : 'newPassword'}
         autoComplete={mode === 'in' ? 'password' : 'password-new'}
         importantForAutofill="yes"
-        className={inputCls}
       />
       {/* State the rules up front on sign-up, but not twice if the error already says them. */}
       {mode === 'up' && msg !== PASSWORD_HINT ? (

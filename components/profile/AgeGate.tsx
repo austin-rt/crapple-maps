@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import { useKeyboardHeight } from '@/hooks/useKeyboardHeight';
 import { MIN_AGE, checkDob } from '@/lib/age';
 import { useColors } from '@/lib/theme';
@@ -66,7 +66,7 @@ export function AgeGate({ onPass }: { onPass: () => void }) {
       </View>
 
       <View className="mt-6 flex-row gap-2">
-        <TextInput
+        <Input
           value={mm}
           onChangeText={(t) => setMm(t.replace(/[^0-9]/g, ''))}
           placeholder="MM"
@@ -74,9 +74,9 @@ export function AgeGate({ onPass }: { onPass: () => void }) {
           keyboardType="number-pad"
           maxLength={2}
           style={{ flex: 1, minWidth: 0 }}
-          className="rounded-xl border border-line px-4 py-3 text-center text-base text-content"
+          className="text-center"
         />
-        <TextInput
+        <Input
           value={dd}
           onChangeText={(t) => setDd(t.replace(/[^0-9]/g, ''))}
           placeholder="DD"
@@ -84,9 +84,9 @@ export function AgeGate({ onPass }: { onPass: () => void }) {
           keyboardType="number-pad"
           maxLength={2}
           style={{ flex: 1, minWidth: 0 }}
-          className="rounded-xl border border-line px-4 py-3 text-center text-base text-content"
+          className="text-center"
         />
-        <TextInput
+        <Input
           value={yyyy}
           onChangeText={(t) => setYyyy(t.replace(/[^0-9]/g, ''))}
           placeholder="YYYY"
@@ -94,7 +94,7 @@ export function AgeGate({ onPass }: { onPass: () => void }) {
           keyboardType="number-pad"
           maxLength={4}
           style={{ flex: 1.6, minWidth: 0 }}
-          className="rounded-xl border border-line px-4 py-3 text-center text-base text-content"
+          className="text-center"
         />
       </View>
 
