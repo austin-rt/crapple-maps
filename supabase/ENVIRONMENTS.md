@@ -1,45 +1,52 @@
 # Database environments (dev vs prod)
 
-**Rule: never develop against the production database.** The project we build on
-holds test users, seeded logs, and throwaway data — that must never be what ships.
+**Rule: develop against the dev project, never production.**
 
-## Current state
+## Projects
 
-- **DEV / staging** = Supabase project `obxrsxrtqkegwmzxbkdc` (the one in `.env`).
-  All local/dev-build work points here. Test data lives here and is disposable.
-- **PROD** = does **not exist yet**. Created clean at launch (runbook below).
+| env  | Supabase project | used by |
+|------|------------------|---------|
+| PROD | `obxrsxrtqkegwmzxbkdc` "Crapple Maps" | App Store / Play builds, OTA updates, crapplemaps.com (Vercel), EAS env `production`, `.env` |
+| DEV  | `ymgprjcjgoybnngbgfki` "Crapple Maps Dev" | local `expo start` via `.env.development.local` (gitignored) |
 
-The app reads `EXPO_PUBLIC_SUPABASE_URL` / `EXPO_PUBLIC_SUPABASE_ANON_KEY`, so
-which DB it uses is purely an env switch:
+The original project became production when the app launched on it, so it
+also holds seed and test accounts. Every profile carries `kind`
+(`real` / `demo` / `test`, migration 0018); real users only find real
+accounts in People search. Dev has only demo/test accounts.
 
-- Dev builds → `.env` (dev project).
-- Production build → prod project creds, injected via the EAS `production` build
-  profile (env / secrets), or a `.env.production`. **Prod creds never go in the
-  dev `.env`.**
+## How the app picks a database
 
-## Options for isolation
+The app reads `EXPO_PUBLIC_SUPABASE_URL` / `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
 
-1. **Two projects (free, chosen)** — dev project (current) + a fresh prod project
-   made at launch. Zero cost, clean separation. Free tier allows 2 projects/org.
-2. **Supabase Branching (Pro, ~$25/mo)** — the Neon-style per-Git-branch preview
-   databases with a protected `production` branch. Upgrade to this if we want
-   automatic branch DBs; not needed pre-launch.
+- `expo start` (development) loads `.env.development.local` over `.env` → DEV.
+- `expo export`, EAS builds and `eas update --environment production` never load
+  `.env.development.local` → PROD. (Checked: a web export contains only the
+  prod host.)
 
-## Launch runbook (create clean prod)
+To point local work at prod temporarily, move `.env.development.local` aside.
 
-1. Create a new Supabase project → this is PROD. Save its URL + anon key + a
-   strong DB password + service_role key.
-2. Apply schema: `supabase link --project-ref <PROD_REF>` then
-   `supabase db push` (runs `migrations/0001…`, `0002…`, and any later ones).
-3. Seed **real** restroom data only (Refuge + OSM) — no test users/logs.
-4. Run the name-enrichment cron against prod (see `functions/enrich-names`).
-5. Put prod URL/anon key in the EAS `production` profile env (NOT `.env`).
-6. Build with `--profile production` and submit. Dev keeps using the dev project.
-7. Before/at launch: wipe or archive the dev project's test users/logs.
+## Keeping dev's schema in step
 
-## Guardrails
+Apply migrations to both projects. Prod: Supabase MCP / dashboard. Dev: psql
+with the dev DB password (kept outside the repo):
 
-- Test users use fake names only (they get nuked before launch).
-- Don't hardcode the dev project ref in app code — always via env.
-- The `test`/`test` dev-login shim in `profile.tsx` must be removed for the
-  production build.
+    psql "host=aws-0-ca-central-1.pooler.supabase.com port=5432 dbname=postgres \
+          user=postgres.ymgprjcjgoybnngbgfki sslmode=require" -f supabase/migrations/NNNN_x.sql
+
+`0004_x_schema_drift.sql` and `0018_x_storage_drift.sql` capture what production
+got outside migrations (columns, legacy RPCs, pg_net, feedback table, storage
+buckets/policies). They are guarded no-ops on prod. Dev deliberately has no
+`feedback_to_github` trigger, so dev feedback never opens GitHub issues.
+
+## Dev data
+
+- Restrooms: all ~97k copied from prod (public columns; `added_by` /
+  `merged_into` dropped since those users/rows don't exist in dev).
+- Accounts: `supabase/dev/seed_feed.sql` then `seed_engagement.sql` (run the
+  latter in one transaction: `psql -1 -f`). Demo login `demo@cm.seed` /
+  `demopass1`; test login `test@test.com` / `testtest` (the dev `test`/`test`
+  shortcut in AuthForm).
+- Seed photos are hosted in prod's public `log-photos` bucket.
+
+Dev's profile-card trigger has no Vault secret, so card rendering is a no-op
+there.
