@@ -64,3 +64,14 @@ export async function uploadAvatar(userId: string, uri: string): Promise<string>
   await updateProfile(userId, { avatar_url: data.publicUrl });
   return data.publicUrl;
 }
+
+export type PublicProfile = Profile & { followers_count: number | null; following_count: number | null };
+
+export async function fetchProfileByUsername(username: string): Promise<PublicProfile | null> {
+  const { data } = await supabase
+    .from('profiles')
+    .select('id,username,display_name,avatar_url,avatar_seed,followers_count,following_count')
+    .eq('username', username)
+    .maybeSingle();
+  return (data as PublicProfile | null) ?? null;
+}
