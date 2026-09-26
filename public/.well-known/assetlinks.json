@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.austinrt.crapplemaps",
+      "sha256_cert_fingerprints": [
+        "DF:5C:62:B7:FD:B1:FD:CB:3F:D2:39:90:50:80:8A:48:63:EA:A1:FC:30:2F:13:EE:04:27:69:EC:43:36:EE:3C"
+      ]
+    }
+  }
+]

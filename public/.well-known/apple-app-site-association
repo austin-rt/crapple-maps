@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["ZLDX72HQWU.com.austin-rt.crapple-maps"],
+        "components": [{ "/": "/u/*", "comment": "Profile invite links open in the app" }],
+        "paths": ["/u/*"]
+      }
+    ]
+  }
+}
