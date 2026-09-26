@@ -28,3 +28,24 @@ export async function approveFollow(followId: string) {
   const { error } = await supabase.from('follows').update({ status: 'approved' }).eq('id', followId);
   if (error) throw error;
 }
+
+// One side of my follow graph, newest first. Followers are approved only
+// (pending requests live in People); Following includes my pending requests so
+// they can be cancelled from the list.
+export async function fetchFollowEdges(
+  me: string,
+  side: 'followers' | 'following',
+): Promise<{ userId: string; status: FollowStatus }[]> {
+  const q =
+    side === 'followers'
+      ? supabase.from('follows').select('follower_id,status,created_at').eq('followee_id', me).eq('status', 'approved')
+      : supabase.from('follows').select('followee_id,status,created_at').eq('follower_id', me);
+  const { data, error } = await q.order('created_at', { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((r: any) => ({ userId: side === 'followers' ? r.follower_id : r.followee_id, status: r.status }));
+}
+
+export async function removeFollower(me: string, id: string) {
+  const { error } = await supabase.from('follows').delete().eq('follower_id', id).eq('followee_id', me);
+  if (error) throw error;
+}
