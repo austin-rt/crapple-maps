@@ -1,12 +1,13 @@
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import { useQuery } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 
 import { FollowButton, PersonRow } from '@/components/people';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useFollows } from '@/hooks/useFollows';
+import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
 import { searchProfiles } from '@/lib/db/profiles';
 import { ACCENT } from '@/lib/tokens';
@@ -22,10 +23,12 @@ export default function People() {
 
   const { requests, statusFor, follow, unfollow, approve } = useFollows(me);
 
+  const { data: myProfile } = useProfile(me ?? '');
+  const realOnly = (myProfile?.kind ?? 'real') === 'real';
   const { data: results = [], isFetching } = useQuery({
-    queryKey: ['user-search', debounced, me],
+    queryKey: ['user-search', debounced, me, realOnly],
     enabled: debounced.length >= 2 && !!me,
-    queryFn: () => searchProfiles(debounced, me!),
+    queryFn: () => searchProfiles(debounced, me!, realOnly),
   });
 
   const c = useColors();
@@ -36,13 +39,14 @@ export default function People() {
       <View className="px-4 pt-3">
         <View className="flex-row items-center rounded-2xl border border-line px-3">
           <Icon name="search" size={16} color={c.content2} />
-          <TextInput
+          <Input
+            variant="bare"
             placeholder="Search by username…"
             placeholderTextColor={c.content2}
             value={q}
             onChangeText={setQ}
             autoCapitalize="none"
-            className="flex-1 px-2 py-3 text-base text-content"
+            className="flex-1 px-2"
           />
           {isFetching ? <ActivityIndicator size="small" color={c.content2} /> : null}
         </View>

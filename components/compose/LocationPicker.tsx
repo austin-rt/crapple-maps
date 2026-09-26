@@ -1,7 +1,7 @@
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import * as Location from 'expo-location';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 import { MapPinPicker } from '@/components/map-pin-picker';
 import { usePlaceSearch, type Place } from '@/hooks/usePlaceSearch';
@@ -65,13 +65,14 @@ export function LocationPicker({
 
       <View className="flex-row items-center rounded-xl border border-line px-3">
         <Icon name="search" size={16} color={c.content2} />
-        <TextInput
+        <Input
+          variant="bare"
           placeholder="Search an address or place…"
           placeholderTextColor={c.content2}
           value={query}
           onChangeText={setQuery}
           autoCapitalize="none"
-          className="flex-1 px-2 py-3 text-base text-content"
+          className="flex-1 px-2"
         />
         {searching ? <ActivityIndicator size="small" color={c.content2} /> : null}
       </View>

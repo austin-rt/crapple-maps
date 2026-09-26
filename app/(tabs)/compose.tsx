@@ -1,12 +1,12 @@
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { LocationPicker } from '@/components/compose/LocationPicker';
-import { INPUT_CLS, SignInRequired, Stars } from '@/components/ui';
+import { SignInRequired, Stars } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { BRISTOL } from '@/lib/bristol';
 import { confirmAction } from '@/lib/confirm';
@@ -213,13 +213,12 @@ export default function ComposeScreen() {
 
       <Field>
         <Label>How’d it go?</Label>
-        <TextInput
+        <Input
           placeholder="the tale of the porcelain throne…"
           placeholderTextColor={c.content2}
           value={caption}
           onChangeText={setCaption}
           multiline
-          className={`${INPUT_CLS} min-h-20`}
         />
       </Field>
 

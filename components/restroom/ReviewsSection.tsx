@@ -1,8 +1,8 @@
-import { Icon } from '@/components/ui';
+import { Icon, Input } from '@/components/ui';
 import { useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 
-import { INPUT_CLS, SectionHeader, Stars } from '@/components/ui';
+import { SectionHeader, Stars } from '@/components/ui';
 import { daysAgo } from '@/lib/format';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
@@ -60,13 +60,15 @@ export function ReviewsSection({
         <View className="mt-2 rounded-2xl border border-line p-4">
           <Text className="mb-2 text-sm text-content-2">Leave a review</Text>
           <Stars value={rating} onChange={setRating} />
-          <SheetTextInput
+          <Input
+            as={SheetTextInput}
             placeholder="How was it?"
             placeholderTextColor={c.content2}
             value={text}
             onChangeText={setText}
             multiline
-            className={`${INPUT_CLS} mt-3 min-h-16`}
+            className="mt-3"
+            style={{ minHeight: 64 }}
           />
           <View className="mt-3 flex-row gap-2">
             <Pressable onPress={submit} className="flex-1 items-center rounded-xl py-3" style={{ backgroundColor: ACCENT }}>

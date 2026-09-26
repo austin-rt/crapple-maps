@@ -9,13 +9,16 @@ export async function profilesByIds(ids: string[]): Promise<Record<string, Profi
   return out;
 }
 
-export async function searchProfiles(q: string, excludeId: string): Promise<Profile[]> {
-  const { data } = await supabase
+// Real accounts only see real accounts; demo/test accounts (seeds, QA) can
+// find everyone so they stay usable for testing.
+export async function searchProfiles(q: string, excludeId: string, realOnly: boolean): Promise<Profile[]> {
+  let query = supabase
     .from('profiles')
     .select('id,username,display_name,avatar_url,avatar_seed')
     .ilike('username', `%${q}%`)
-    .neq('id', excludeId)
-    .limit(20);
+    .neq('id', excludeId);
+  if (realOnly) query = query.eq('kind', 'real');
+  const { data } = await query.limit(20);
   return (data ?? []) as Profile[];
 }
 
@@ -23,7 +26,7 @@ export async function searchProfiles(q: string, excludeId: string): Promise<Prof
 export async function fetchProfile(id: string) {
   const { data } = await supabase
     .from('profiles')
-    .select('username, username_chosen, display_name, avatar_url, avatar_seed, followers_count, following_count, logs_count')
+    .select('username, username_chosen, kind, display_name, avatar_url, avatar_seed, followers_count, following_count, logs_count')
     .eq('id', id)
     .single();
   return data;

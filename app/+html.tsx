@@ -21,6 +21,9 @@ export default function Root({ children }: PropsWithChildren) {
 
         <title>{TITLE}</title>
         <meta name="description" content={DESCRIPTION} />
+        {/* iOS Safari's Smart App Banner: "Get" to the App Store when Crapple
+            Maps isn't installed, "Open" when it is. */}
+        <meta name="apple-itunes-app" content="app-id=6795301489" />
         {/* Matches the app's surface in each scheme so mobile browser chrome
             doesn't flash white against the dark theme. */}
         <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />

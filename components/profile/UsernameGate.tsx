@@ -1,8 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { Modal, Pressable, Text, TextInput, View } from 'react-native';
+import { Modal, Pressable, Text, View } from 'react-native';
 
-import { INPUT_CLS } from '@/components/ui';
+import { Input } from '@/components/ui';
 import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
 import { updateProfile } from '@/lib/db/profiles';
@@ -53,7 +53,7 @@ export function UsernameGate() {
         </Text>
         <View className="mt-6 flex-row items-center">
           <Text className="mr-1 text-lg text-content-2">@</Text>
-          <TextInput
+          <Input
             value={username}
             onChangeText={(t) => setUsername(t.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
             autoCapitalize="none"
@@ -61,7 +61,6 @@ export function UsernameGate() {
             maxLength={30}
             placeholder="username"
             placeholderTextColor={c.content2}
-            className={INPUT_CLS}
             style={{ flex: 1, minWidth: 0 }}
           />
         </View>
