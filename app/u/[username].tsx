@@ -2,13 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Linking, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 import { FollowButton } from '@/components/people';
 import { AgeGate, AuthForm, useAgePassed } from '@/components/profile';
 import { Avatar, Icon } from '@/components/ui';
 import { useFollows } from '@/hooks/useFollows';
-import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { useAuth } from '@/lib/auth';
 import { fetchProfileByUsername, type PublicProfile } from '@/lib/db/profiles';
 import { shareProfile } from '@/lib/share';
@@ -32,19 +31,6 @@ function ProfileAvatar({ p, size }: { p: PublicProfile; size: number }) {
   );
 }
 
-function OpenInApp({ username }: { username: string }) {
-  return (
-    <Pressable
-      onPress={() => Linking.openURL(`crapplemaps://u/${encodeURIComponent(username)}?invite=1`)}
-      accessibilityRole="link"
-      className="flex-row items-center justify-center gap-2 rounded-full px-5 py-3 active:opacity-80"
-      style={{ backgroundColor: ACCENT }}>
-      <Icon name="phone-portrait-outline" size={16} color="#fff" />
-      <Text className="font-semibold text-white">Open in Crapple Maps</Text>
-    </Pressable>
-  );
-}
-
 // Landing page for a shared profile link. Everyone sees the profile; an invite
 // link (?invite=1) sends the follow request on arrival once the visitor is
 // signed in. A signed-out visitor taps Sign in to follow and signs in right
@@ -54,7 +40,6 @@ export default function SharedProfile() {
   const { session } = useAuth();
   const me = session?.user.id;
   const c = useColors();
-  const isMobileWeb = useIsMobileWeb();
   const [agePassed, setAgePassed] = useAgePassed();
   const { statusFor, followingLoaded, follow, unfollow } = useFollows(me);
   const autoSent = useRef(false);
@@ -107,11 +92,6 @@ export default function SharedProfile() {
             <Text className="text-sm text-content-2">@{profile.username}</Text>
           </View>
         </View>
-        {isMobileWeb ? (
-          <View className="px-5 pt-4">
-            <OpenInApp username={profile.username} />
-          </View>
-        ) : null}
         {agePassed === null ? null : !agePassed ? (
           <AgeGate onPass={() => setAgePassed(true)} />
         ) : (
@@ -162,12 +142,6 @@ export default function SharedProfile() {
           <Text className="mt-3 text-center text-sm text-content-2">
             Follow request sent. You’ll see {name}’s posts once they approve it.
           </Text>
-        ) : null}
-
-        {isMobileWeb ? (
-          <View className="mt-8 w-full">
-            <OpenInApp username={profile.username} />
-          </View>
         ) : null}
       </View>
     </View>
