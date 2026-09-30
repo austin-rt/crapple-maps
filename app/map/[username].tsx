@@ -26,7 +26,7 @@ export default function UserMap() {
   });
 
   const title = profile ? `@${profile.username}` : 'Map';
-  if (!me) return <SignInRequired icon="trail-sign-outline" message="Sign in to see where your friends go." />;
+  if (!me) return <SignInRequired icon="trail-sign-outline" message="Sign in to see where your friends have pooped." />;
   if (isLoading || !profile) {
     return (
       <View className="flex-1 items-center justify-center bg-surface">
@@ -45,8 +45,8 @@ export default function UserMap() {
         <Icon name="lock-closed-outline" size={40} color={c.content2} />
         <Text className="mb-5 mt-3 text-center text-base text-content-2">
           {status === 'pending'
-            ? `Your follow request is waiting on @${profile.username}. Their map shows once they approve it.`
-            : `Follow @${profile.username} to see their map.`}
+            ? `Your follow request is waiting on @${profile.username}. Their poop map shows once they approve it.`
+            : `Follow @${profile.username} to see where they’ve pooped.`}
         </Text>
         <FollowButton status={status} username={profile.username} onToggle={() => (status ? unfollow(profile.id) : follow(profile.id))} />
       </View>

@@ -67,7 +67,7 @@ function NavStack() {
         }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="u/[username]" options={{ title: 'Profile' }} />
-        <Stack.Screen name="my-map" options={{ title: 'My Map' }} />
+        <Stack.Screen name="my-map" options={{ title: 'Places I’ve Pooped' }} />
         <Stack.Screen name="map/[username]" options={{ title: 'Map' }} />
         <Stack.Screen name="follows" options={{ title: 'Follows' }} />
         <Stack.Screen name="notifications" options={{ title: 'Notifications' }} />

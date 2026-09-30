@@ -87,7 +87,7 @@ export default function ComposeScreen() {
   };
 
   if (!session) {
-    return <SignInRequired message="Log a visit." />;
+    return <SignInRequired message="Log it 💩" />;
   }
 
   const doSubmit = async (publish: boolean) => {
@@ -156,8 +156,8 @@ export default function ComposeScreen() {
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets
       refreshControl={ptr.control}>
-      <Text className="mt-4 text-2xl font-bold text-content">Log a visit</Text>
-      <Text className="mt-1 text-sm text-content-2">Drop it anywhere. It’s your map.</Text>
+      <Text className="mt-4 text-2xl font-bold text-content">Log a poop</Text>
+      <Text className="mt-1 text-sm text-content-2">Where’d you go? Drop a pin and rate the throne.</Text>
 
       <Field>
         <Label>Location required</Label>
@@ -188,7 +188,7 @@ export default function ComposeScreen() {
       ) : null}
 
       <Field>
-        <Label>How was it?</Label>
+        <Label>Rate the throne</Label>
         <Stars value={rating ?? 0} onChange={(n) => setRating(n || null)} />
       </Field>
 

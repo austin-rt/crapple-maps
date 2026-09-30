@@ -38,7 +38,7 @@ export function LogSheet({
 
   const del = () =>
     confirmAction(
-      'Delete this log?',
+      'Delete this poop?',
       'It’ll be removed from your map and feed.',
       async () => {
         try {
@@ -56,7 +56,7 @@ export function LogSheet({
     <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 48 }} keyboardShouldPersistTaps="handled">
       <Pressable onPress={onBack} hitSlop={8} className="mb-3 ml-5 flex-row items-center gap-1 self-start">
         <Icon name="chevron-back" size={18} color={ACCENT} />
-        <Text className="text-sm font-semibold" style={{ color: ACCENT }}>All logs</Text>
+        <Text className="text-sm font-semibold" style={{ color: ACCENT }}>All poops</Text>
       </Pressable>
 
       {log.photos.length > 0 ? (
@@ -108,7 +108,7 @@ export function LogSheet({
         {canDelete ? (
           <Pressable onPress={del} className="mt-3 flex-row items-center justify-center gap-2 rounded-xl py-3 active:opacity-70">
             <Icon name="trash-outline" size={16} color={DANGER} />
-            <Text className="font-semibold text-red-600">Delete log</Text>
+            <Text className="font-semibold text-red-600">Delete poop</Text>
           </Pressable>
         ) : null}
       </View>

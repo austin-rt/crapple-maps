@@ -30,7 +30,7 @@ export default function LogDetail() {
   if (isLoading || !data) {
     return (
       <View className="flex-1 items-center justify-center bg-surface">
-        <Stack.Screen options={{ title: 'Post' }} />
+        <Stack.Screen options={{ title: 'Poop' }} />
         <ActivityIndicator color={ACCENT} />
       </View>
     );
@@ -53,7 +53,7 @@ export default function LogDetail() {
         alignSelf: 'center',
         ...(Platform.OS === 'web' ? webColumn : null),
       }}>
-      <Stack.Screen options={{ title: 'Post' }} />
+      <Stack.Screen options={{ title: 'Poop' }} />
 
       <View className="flex-row items-center gap-3 px-4 pt-4">
         {a?.avatar_url ? (
