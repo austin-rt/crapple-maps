@@ -159,7 +159,6 @@ export function ManageProfile() {
         </View>
         <Text className="mt-3 text-xl font-bold text-content">{profile?.display_name || profile?.username || 'You'}</Text>
         {profile?.username ? <Text className="text-sm text-content-2">@{profile.username}</Text> : null}
-        <Text className="mt-0.5 text-xs text-content-2">{session!.user.email}</Text>
         {profile?.username ? (
           <Pressable
             onPress={() => shareProfile(profile.username)}

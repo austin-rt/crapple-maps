@@ -10,10 +10,11 @@ import { LeftDrawer } from './LeftDrawer';
 const WIDTH = 300;
 
 const ITEMS = [
-  { href: '/', label: 'Map', icon: 'map-outline' },
   { href: '/feed', label: 'Feed', icon: 'newspaper-outline' },
+  { href: '/', label: 'Map', icon: 'map-outline' },
   { href: '/compose', label: 'Log', icon: 'add-circle-outline' },
   { href: '/my-map', label: 'My Map', icon: 'trail-sign-outline' },
+  { href: '/saved', label: 'Saved restrooms', icon: 'bookmark-outline' },
   { href: '/people', label: 'People', icon: 'people-outline' },
   { href: '/notifications', label: 'Notifications', icon: 'notifications-outline' },
   { href: '/profile', label: 'Profile', icon: 'person-outline' },

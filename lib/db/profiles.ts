@@ -22,6 +22,14 @@ export async function searchProfiles(q: string, excludeId: string, realOnly: boo
   return (data ?? []) as Profile[];
 }
 
+// Exact, case-insensitive email match via a database function that returns
+// only public profile fields — the email itself never comes back.
+export async function findProfileByEmail(email: string): Promise<Profile[]> {
+  const { data, error } = await supabase.rpc('find_profile_by_email', { p_email: email });
+  if (error) throw error;
+  return (data ?? []) as Profile[];
+}
+
 // Full self profile (stats included) for the profile screen.
 export async function fetchProfile(id: string) {
   const { data } = await supabase
