@@ -34,7 +34,6 @@ export function MobileMap() {
   return (
     <View className="flex-1 bg-surface">
       <AppMap
-        followUser={false}
         onRecenter={f.recenterOnMe}
         recenterBottom={PEEK + 18}
         ref={f.mapRef}

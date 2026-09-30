@@ -1,5 +1,5 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Platform, Pressable, StyleSheet } from 'react-native';
 
 import { AppMapView, type AppMapHandle, type Region } from '@/components/map';
 import { Icon } from '@/components/ui';
@@ -33,14 +33,18 @@ export const AppMap = forwardRef<AppMapHandle, Props>(function AppMap(
   const loc = useMyLocation();
   const initialRegion = useRef(loc.coords ? around(loc.coords) : FALLBACK_REGION).current;
 
-  const centeredOn = useRef<'none' | 'approx' | 'precise'>(loc.coords ? (loc.precise ? 'precise' : 'approx') : 'none');
+  // A map that isn't laid out yet (e.g. a tab that hasn't been shown) ignores
+  // camera moves, so centering waits for onMapReady and re-runs when the fix
+  // sharpens from the IP estimate to GPS.
+  const [ready, setReady] = useState(Platform.OS === 'web');
+  const centeredOn = useRef<'none' | 'approx' | 'precise'>('none');
   useEffect(() => {
-    if (!followUser || !loc.coords) return;
+    if (!followUser || !ready || !loc.coords) return;
     const level = loc.precise ? 'precise' : 'approx';
     if (centeredOn.current === 'precise' || centeredOn.current === level) return;
     centeredOn.current = level;
     inner.current?.animateToRegion(around(loc.coords), 500);
-  }, [followUser, loc.coords, loc.precise]);
+  }, [followUser, ready, loc.coords, loc.precise]);
 
   const recenter = async () => {
     if (onRecenter) return onRecenter();
@@ -58,7 +62,11 @@ export const AppMap = forwardRef<AppMapHandle, Props>(function AppMap(
         showsMyLocationButton={false}
         customMapStyle={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
         initialRegion={initialRegion}
-        {...rest}>
+        {...rest}
+        onMapReady={(...args: unknown[]) => {
+          setReady(true);
+          (rest as { onMapReady?: (...a: unknown[]) => void }).onMapReady?.(...args);
+        }}>
         {children}
       </AppMapView>
       <Pressable
