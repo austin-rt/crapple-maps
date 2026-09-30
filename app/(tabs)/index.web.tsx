@@ -60,7 +60,6 @@ function DesktopMapWeb() {
   return (
     <View className="flex-1 bg-surface">
       <AppMap
-        followUser={false}
         onRecenter={f.recenterOnMe}
         ref={f.mapRef}
         onRegionChangeComplete={f.onRegionChangeComplete}
