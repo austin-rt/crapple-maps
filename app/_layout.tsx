@@ -2,8 +2,8 @@ import '@/global.css';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Stack } from 'expo-router';
-import { useEffect } from 'react';
+import { router, Stack, usePathname, useRootNavigationState } from 'expo-router';
+import { useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -30,6 +30,18 @@ function NavStack() {
   useEffect(() => {
     if (Platform.OS === 'web') document.documentElement.classList.remove('prehydrate');
   }, []);
+
+  // The apps open on Feed. '/' is the Map route (and the website's home page),
+  // so a plain launch is sent to Feed once the navigator is ready; deep links
+  // (invites, profiles) land where they point.
+  const pathname = usePathname();
+  const navReady = !!useRootNavigationState()?.key;
+  const landed = useRef(false);
+  useEffect(() => {
+    if (Platform.OS === 'web' || !navReady || landed.current) return;
+    landed.current = true;
+    if (pathname === '/') setTimeout(() => router.replace('/feed'), 0);
+  }, [navReady, pathname]);
   const { scheme } = useThemePref();
   const c = useColors();
   const isMobileWeb = useIsMobileWeb();
@@ -58,6 +70,7 @@ function NavStack() {
         <Stack.Screen name="my-map" options={{ title: 'My Map' }} />
         <Stack.Screen name="map/[username]" options={{ title: 'Map' }} />
         <Stack.Screen name="follows" options={{ title: 'Follows' }} />
+        <Stack.Screen name="notifications" options={{ title: 'Notifications' }} />
       </Stack>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
     </ThemeProvider>

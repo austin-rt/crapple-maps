@@ -1,6 +1,6 @@
 import { Icon } from '@/components/ui';
 import { router, Tabs } from 'expo-router';
-import { Platform, Pressable } from 'react-native';
+import { Platform, Pressable, Text, View } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { WebHeader } from '@/components/web/WebHeader';
@@ -8,6 +8,7 @@ import { useFollows } from '@/hooks/useFollows';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { ACCENT, useAuth } from '@/lib/auth';
 import { useColors } from '@/lib/theme';
+import { DANGER } from '@/lib/tokens';
 
 export default function TabLayout() {
   const isMobileWeb = useIsMobileWeb();
@@ -28,6 +29,33 @@ export default function TabLayout() {
         ...(webDesktop ? { header: ({ options }: any) => <WebHeader title={options.title as string} /> } : null),
       }}>
       <Tabs.Screen
+        name="feed"
+        options={{
+          title: 'Feed',
+          tabBarIcon: ({ color, size }) => <Icon name="newspaper-outline" size={size} color={color} />,
+          headerRight: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18, marginRight: 16 }}>
+              <Pressable accessibilityRole="button" accessibilityLabel="Search people" onPress={() => router.push('/people')} hitSlop={10}>
+                <Icon name="search" size={22} color={c.content} />
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={requests.length ? `Notifications, ${requests.length} new` : 'Notifications'}
+                onPress={() => router.push('/notifications')}
+                hitSlop={10}>
+                <Icon name="notifications-outline" size={22} color={c.content} />
+                {requests.length > 0 ? (
+                  <View
+                    style={{ position: 'absolute', top: -5, right: -7, minWidth: 16, height: 16, borderRadius: 8, paddingHorizontal: 4, backgroundColor: DANGER, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{ color: '#fff', fontSize: 10, fontWeight: '700' }}>{requests.length}</Text>
+                  </View>
+                ) : null}
+              </Pressable>
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="index"
         options={{
           title: 'Map',
@@ -36,31 +64,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="feed"
-        options={{
-          title: 'Feed',
-          tabBarIcon: ({ color, size }) => <Icon name="newspaper-outline" size={size} color={color} />,
-          headerRight: () => (
-            <Pressable accessibilityRole="button" accessibilityLabel="Find people" onPress={() => router.push('/people')} hitSlop={10} style={{ marginRight: 16 }}>
-              <Icon name="person-add-outline" size={22} color={ACCENT} />
-            </Pressable>
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="compose"
         options={{
           title: 'Log',
-          tabBarIcon: ({ color, size }) => <Icon name="add-circle" size={size + 2} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="notifications"
-        options={{
-          title: 'Notifications',
-          tabBarIcon: ({ color, size }) => <Icon name="notifications-outline" size={size} color={color} />,
-          tabBarBadge: requests.length > 0 ? requests.length : undefined,
-          tabBarBadgeStyle: { backgroundColor: ACCENT },
+          tabBarIcon: ({ size }) => (
+            <View style={{ width: size + 14, height: size + 4, borderRadius: 9, backgroundColor: ACCENT, alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="add" size={size - 2} color="#fff" />
+            </View>
+          ),
         }}
       />
       <Tabs.Screen

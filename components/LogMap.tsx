@@ -142,6 +142,9 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
         ref={sheetRef}
         index={1}
         snapPoints={[PEEK, '58%', '92%']}
+        // Fixed snap points only: with dynamic sizing on, an empty state (no
+        // scrollable child) measured as zero height and the sheet never showed.
+        enableDynamicSizing={false}
         backgroundStyle={{ backgroundColor: sheetBg }}
         handleIndicatorStyle={{ backgroundColor: c.content2 }}>
         {selected ? (

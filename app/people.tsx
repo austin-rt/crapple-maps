@@ -9,7 +9,7 @@ import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useFollows } from '@/hooks/useFollows';
 import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
-import { searchProfiles } from '@/lib/db/profiles';
+import { findProfileByEmail, searchProfiles } from '@/lib/db/profiles';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
@@ -25,10 +25,12 @@ export default function People() {
 
   const { data: myProfile } = useProfile(me ?? '');
   const realOnly = (myProfile?.kind ?? 'real') === 'real';
+  // Anything with an @ is looked up as an exact email; otherwise username search.
+  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(debounced);
   const { data: results = [], isFetching } = useQuery({
-    queryKey: ['user-search', debounced, me, realOnly],
+    queryKey: ['user-search', debounced, me, realOnly, isEmail],
     enabled: debounced.length >= 2 && !!me,
-    queryFn: () => searchProfiles(debounced, me!, realOnly),
+    queryFn: () => (isEmail ? findProfileByEmail(debounced) : searchProfiles(debounced, me!, realOnly)),
   });
 
   const c = useColors();
@@ -41,7 +43,7 @@ export default function People() {
           <Icon name="search" size={16} color={c.content2} />
           <Input
             variant="bare"
-            placeholder="Search by username…"
+            placeholder="Search by username or email…"
             placeholderTextColor={c.content2}
             value={q}
             onChangeText={setQ}
@@ -82,7 +84,7 @@ export default function People() {
         </View>
       ) : (
         <Text className="mt-10 px-8 text-center text-sm text-content-2">
-          Search for friends by their @username to follow them and see their posts.
+          Find friends by their @username, or by their full email address if you know it. Emails are never shown.
         </Text>
       )}
     </ScrollView>
