@@ -2,30 +2,27 @@ import { Icon } from '@/components/ui';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
-import * as Location from 'expo-location';
 import { router } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { AppMapView, AppMarker, type AppMapHandle, type Region } from '@/components/map';
+import { AppMap } from '@/components/AppMap';
+import { AppMarker, type AppMapHandle, type Region } from '@/components/map';
 import { LogSheet, type LogItem } from '@/components/log-sheet';
 import { useMyLogs } from '@/hooks/useLogs';
+import { useMyLocation } from '@/hooks/useMyLocation';
 import { bristol } from '@/lib/bristol';
 import { shortWhen } from '@/lib/format';
-import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
 import { ACCENT, DANGER, ON_ACCENT } from '@/lib/tokens';
-import { useColors, useThemePref } from '@/lib/theme';
+import { useColors } from '@/lib/theme';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
-const DEFAULT_REGION: Region = { latitude: 37.7749, longitude: -122.4194, latitudeDelta: 0.08, longitudeDelta: 0.08 };
 // Collapsed-sheet height, identical to the finder's PEEK so the crosshair sits
 // in the same spot on both maps: bottom-right, just above the collapsed sheet.
 // A percentage peek put it a third of the way up the screen.
 const PEEK = 84;
 
 function regionFor(logs: LogItem[]): Region {
-  if (!logs.length) return DEFAULT_REGION;
   const lats = logs.map((l) => l.lat);
   const lngs = logs.map((l) => l.lng);
   const minLat = Math.min(...lats), maxLat = Math.max(...lats), minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
@@ -44,7 +41,6 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
   const ptr = usePullToRefresh();
   const qc = useQueryClient();
   const insets = useSafeAreaInsets();
-  const { scheme } = useThemePref();
   const c = useColors();
   const sheetBg = c.surface;
   const mapRef = useRef<AppMapHandle>(null);
@@ -54,45 +50,12 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
   const [tab, setTab] = useState<'list' | 'gallery'>('list');
 
   const { data: logs = [] } = useMyLogs(userId);
-  // Tracks whether the opening camera move has happened, so the logs-fit
-  // fallback below can't yank the map away after we've centred on the user.
-  const centredRef = useRef(false);
-
-  // Snap to the user. Shared by the open-on-mount effect and the crosshair
-  // button, so the button also re-prompts when permission was denied earlier.
-  const recenterOnMe = useCallback(async (animate = true) => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') return false;
-      const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-      centredRef.current = true;
-      mapRef.current?.animateToRegion(
-        {
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-          latitudeDelta: 0.012,
-          longitudeDelta: 0.012,
-        },
-        animate ? 500 : 0,
-      );
-      return true;
-    } catch {
-      return false;
-    }
-  }, []);
-
-  // On your own map, open centred on you; someone else's map frames their pins.
+  // Every map opens on the user (AppMap). Only when there's no location at all
+  // (denied, offline) frame this person's pins instead.
+  const loc = useMyLocation();
   useEffect(() => {
-    if (own) recenterOnMe();
-  }, [own, recenterOnMe]);
-
-  // Only fall back to framing every log when locating the user didn't work
-  // (permission denied, or it failed) — otherwise this would fight the effect
-  // above and the map would jump off the user a moment after opening.
-  useEffect(() => {
-    if (centredRef.current) return;
-    if (logs.length && mapRef.current) mapRef.current.animateToRegion(regionFor(logs), 500);
-  }, [logs.length]);
+    if (loc.ready && !loc.coords && logs.length) mapRef.current?.animateToRegion(regionFor(logs), 500);
+  }, [loc.ready, loc.coords, logs]);
 
   const select = (log: LogItem) => {
     setSelected(log);
@@ -110,15 +73,10 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
 
   return (
     <View className="flex-1 bg-surface">
-      <AppMapView
+      <AppMap
+        recenterBottom={PEEK + 18}
         ref={mapRef}
-        provider={MAP_PROVIDER}
-        style={StyleSheet.absoluteFill}
-        showsUserLocation
-        showsMyLocationButton={false}
-        customMapStyle={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
-        onPress={() => setSelected(null)}
-        initialRegion={DEFAULT_REGION}>
+        onPress={() => setSelected(null)}>
         {logs.map((l) => (
           <AppMarker
             key={l.id}
@@ -127,16 +85,7 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
             onPress={() => select(l)}
           />
         ))}
-      </AppMapView>
-
-      {/* Snap back to the user, pinned to the map's bottom-right corner. */}
-      <Pressable accessibilityRole="button" accessibilityLabel="Center map on my location"
-        onPress={() => recenterOnMe()}
-        hitSlop={8}
-        className="absolute items-center justify-center rounded-full bg-surface"
-        style={[{ right: 16, bottom: insets.bottom + 16, width: 46, height: 46 }, styles.shadow]}>
-        <Icon name="locate" size={22} color={ACCENT} />
-      </Pressable>
+      </AppMap>
 
       <BottomSheet
         ref={sheetRef}
@@ -264,7 +213,3 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
   );
 }
 
-// Matches the finder's crosshair so the two maps read as the same control.
-const styles = StyleSheet.create({
-  shadow: { shadowColor: '#000', shadowOpacity: 0.14, shadowRadius: 10, shadowOffset: { width: 0, height: 2 }, elevation: 4 },
-});

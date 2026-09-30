@@ -2,20 +2,19 @@ import { Icon, Input } from '@/components/ui';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-
 import { AddRestroomCard, FilterControls, PlaceCard } from '@/components/finder';
-import { AppMapView, AppMarker } from '@/components/map';
+import { AppMap } from '@/components/AppMap';
+import { AppMarker } from '@/components/map';
 import { RestroomSheet } from '@/components/restroom';
 import { Avatar } from '@/components/ui';
 import { MobileMap } from '@/components/finder/MobileMap';
 import { LeftDrawer } from '@/components/web/LeftDrawer';
 import { WebNavDrawer } from '@/components/web/WebNavDrawer';
-import { DEFAULT_REGION, VISITED, useFinder } from '@/hooks/useFinder';
+import { VISITED, useFinder } from '@/hooks/useFinder';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { useProfile } from '@/hooks/useProfile';
-import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
 import { distLabel } from '@/lib/restrooms/filters';
-import { useColors, useThemePref } from '@/lib/theme';
+import { useColors } from '@/lib/theme';
 import { ACCENT, DANGER } from '@/lib/tokens';
 import type { Restroom } from '@/lib/types';
 
@@ -31,7 +30,6 @@ export default function MapWeb() {
 }
 
 function DesktopMapWeb() {
-  const { scheme } = useThemePref();
   const c = useColors();
   const f = useFinder();
   const { data: me } = useProfile(f.session?.user.id ?? '');
@@ -61,13 +59,10 @@ function DesktopMapWeb() {
 
   return (
     <View className="flex-1 bg-surface">
-      <AppMapView
+      <AppMap
+        followUser={false}
+        onRecenter={f.recenterOnMe}
         ref={f.mapRef}
-        provider={MAP_PROVIDER}
-        style={StyleSheet.absoluteFill}
-        showsUserLocation
-        showsMyLocationButton={false}
-        customMapStyle={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
         onRegionChangeComplete={f.onRegionChangeComplete}
         onLongPress={(e: any) => {
           const c = e?.nativeEvent?.coordinate;
@@ -76,8 +71,7 @@ function DesktopMapWeb() {
         onPress={() => {
           if (Date.now() - f.markerTapRef.current < 500) return;
           f.setSelected(null);
-        }}
-        initialRegion={DEFAULT_REGION}>
+        }}>
         {f.pins.map((item) => (
           <AppMarker
             key={item.id}
@@ -86,7 +80,7 @@ function DesktopMapWeb() {
             onPress={() => selectFromMarker(item)}
           />
         ))}
-      </AppMapView>
+      </AppMap>
 
       <View style={{ position: 'absolute', top: 14, right: 16, zIndex: 20 }}>
         <Pressable accessibilityRole="button" accessibilityLabel="Profile" onPress={() => router.push('/profile')} className="items-center justify-center overflow-hidden rounded-full bg-surface" style={[{ width: 44, height: 44 }, styles.shadow]}>

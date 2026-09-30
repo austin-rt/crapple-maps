@@ -1,22 +1,23 @@
-import * as Location from 'expo-location';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Keyboard } from 'react-native';
 
-import { type AppMapHandle, type Region } from '@/components/map';
+import { FALLBACK_REGION } from '@/components/AppMap';
+import { type AppMapHandle } from '@/components/map';
 import { useLoggedRestroomIds } from '@/hooks/useLogs';
 import { useNearbyRestrooms } from '@/hooks/useNearbyRestrooms';
 import { useRestroomsInBounds } from '@/hooks/useRestroomsInBounds';
 import type { Bounds } from '@/lib/db/restrooms';
 import { usePlaceSearch } from '@/hooks/usePlaceSearch';
 import { useSavedIds } from '@/hooks/useSaved';
+import { locatePrecisely, useMyLocation, type Coords } from '@/hooks/useMyLocation';
 import { useAuth } from '@/lib/auth';
 import { bestTitle, isGenericName, reverseGeocode } from '@/lib/geocode';
 import { SORTS, type FilterKey, type SortKey } from '@/lib/restrooms/filters';
 import type { Restroom } from '@/lib/types';
 
-export type Coords = { lat: number; lng: number };
-export const DEFAULT_REGION: Region = { latitude: 37.7749, longitude: -122.4194, latitudeDelta: 0.05, longitudeDelta: 0.05 };
+export type { Coords } from '@/hooks/useMyLocation';
+export { FALLBACK_REGION as DEFAULT_REGION } from '@/components/AppMap';
 export { VISITED } from '@/lib/tokens'; // purple marker for restrooms you've logged a visit at
 
 // All finder state + logic, shared by the native (bottom-sheet) and web
@@ -26,11 +27,12 @@ export function useFinder() {
   const mapRef = useRef<AppMapHandle>(null);
   const markerTapRef = useRef(0);
 
-  const [me, setMe] = useState<Coords | null>(null);
+  const loc = useMyLocation();
+  const me = loc.coords;
+  const locReady = loc.ready;
+  const locNote = loc.coords && !loc.precise ? `Approx location — ${loc.city ?? 'your area'}` : '';
   const [center, setCenter] = useState<Coords | null>(null);
   const [placeLabel, setPlaceLabel] = useState<string | null>(null);
-  const [locReady, setLocReady] = useState(false);
-  const [locNote, setLocNote] = useState('');
   const [selected, setSelected] = useState<Restroom | null>(null);
   const [titles, setTitles] = useState<Record<string, string>>({});
   const [sort, setSort] = useState<SortKey>('near');
@@ -80,35 +82,6 @@ export function useFinder() {
     }
   }, [params.flat, params.flng]);
 
-  useEffect(() => {
-    let preciseSet = false;
-    // Fast path: IP geolocation lands us close-ish and lets the list populate
-    // right away, instead of blocking on slow high-accuracy GPS.
-    (async () => {
-      try {
-        const j = await fetch('https://ipwho.is/').then((r) => r.json());
-        if (j?.success && j.latitude && !preciseSet) {
-          setMe({ lat: j.latitude, lng: j.longitude });
-          setLocNote(`Approx location — ${j.city ?? 'your area'}`);
-        }
-      } catch {}
-      setLocReady(true);
-    })();
-    // Precise path (in parallel): refine to real GPS when allowed.
-    (async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') return;
-        const last = await Location.getLastKnownPositionAsync();
-        if (last && !preciseSet) setMe({ lat: last.coords.latitude, lng: last.coords.longitude });
-        const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-        preciseSet = true;
-        setMe({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        setLocNote('');
-        setLocReady(true);
-      } catch {}
-    })();
-  }, []);
 
   useEffect(() => {
     if (active && mapRef.current) {
@@ -140,7 +113,7 @@ export function useFinder() {
   const addRestroomAt = (coord: Coords) => {
     router.push({ pathname: '/restroom/new', params: { lat: String(coord.lat), lng: String(coord.lng) } });
   };
-  const addHere = () => addRestroomAt(active ?? { lat: DEFAULT_REGION.latitude, lng: DEFAULT_REGION.longitude });
+  const addHere = () => addRestroomAt(active ?? { lat: FALLBACK_REGION.latitude, lng: FALLBACK_REGION.longitude });
 
   const pickPlace = (p: { lat: string; lon: string; display_name: string }) => {
     Keyboard.dismiss();
@@ -167,16 +140,8 @@ export function useFinder() {
       setPlaceLabel(null);
       mapRef.current?.animateToRegion({ latitude: m.lat, longitude: m.lng, latitudeDelta: 0.012, longitudeDelta: 0.012 }, 500);
     };
-    if (me) return zoomTo(me);
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') return;
-      const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-      const m = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      setMe(m);
-      setLocReady(true);
-      zoomTo(m);
-    } catch {}
+    const m = loc.precise && me ? me : await locatePrecisely();
+    if (m) zoomTo(m);
   };
 
   // Pins are what is in the viewport; the list stays nearest-first from the
