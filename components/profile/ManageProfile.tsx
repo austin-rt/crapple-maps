@@ -173,7 +173,7 @@ export function ManageProfile() {
       </View>
 
       <View className="mt-6 flex-row rounded-2xl border border-line py-4">
-        <Stat label="Logs" value={logCount} />
+        <Stat label="Poops" value={logCount} />
         <View className="w-px bg-surface-3" />
         <Stat label="Followers" value={profile?.followers_count ?? 0} onPress={() => router.push({ pathname: '/follows', params: { tab: 'followers' } })} />
         <View className="w-px bg-surface-3" />
@@ -186,7 +186,7 @@ export function ManageProfile() {
         onPress={() => router.push('/my-map')}
         className="mt-4 flex-row items-center gap-3 rounded-2xl border border-line p-4 active:opacity-70">
         <Icon name="trail-sign-outline" size={20} color={ACCENT} />
-        <Text className="flex-1 text-base font-medium text-content">My Map</Text>
+        <Text className="flex-1 text-base font-medium text-content">Places I’ve Pooped</Text>
         <Icon name="chevron-forward" size={18} color={c.content2} />
       </Pressable>
 

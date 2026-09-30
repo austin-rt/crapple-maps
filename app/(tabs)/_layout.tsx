@@ -66,7 +66,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="compose"
         options={{
-          title: 'Log',
+          title: 'Poop',
           tabBarIcon: ({ size }) => (
             <View style={{ width: size + 14, height: size + 4, borderRadius: 9, backgroundColor: ACCENT, alignItems: 'center', justifyContent: 'center' }}>
               <Icon name="add" size={size - 2} color="#fff" />

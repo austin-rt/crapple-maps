@@ -13,7 +13,7 @@ export default function FeedScreen() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, refetch } = useFeed(session?.user.id);
 
   if (!session) {
-    return <SignInRequired icon="newspaper-outline" message="See what friends are up to." />;
+    return <SignInRequired icon="newspaper-outline" message="See where your friends have pooped." />;
   }
 
   const logs = data?.pages.flat() ?? [];
@@ -40,9 +40,9 @@ export default function FeedScreen() {
           ) : (
             <View className="mt-24 items-center px-8">
               <Text className="text-5xl">🚽</Text>
-              <Text className="mt-4 text-center text-lg font-semibold text-content">Your feed is empty</Text>
+              <Text className="mt-4 text-center text-lg font-semibold text-content">No poops yet</Text>
               <Text className="mt-1 text-center text-sm text-content-2">
-                Follow friends, or tap Log to add your first one. It’ll show up here.
+                Follow friends to see where they go, or tap Poop to log your first.
               </Text>
             </View>
           )
