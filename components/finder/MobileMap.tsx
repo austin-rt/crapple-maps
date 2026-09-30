@@ -3,14 +3,13 @@ import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { useRef } from 'react';
 import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import { AddRestroomCard, FilterSheet, PlaceCard } from '@/components/finder';
-import { AppMapView, AppMarker } from '@/components/map';
+import { AppMap } from '@/components/AppMap';
+import { AppMarker } from '@/components/map';
 import { RestroomSheet } from '@/components/restroom';
-import { DEFAULT_REGION, VISITED, useFinder } from '@/hooks/useFinder';
-import { DARK_MAP_STYLE, MAP_PROVIDER } from '@/lib/maps';
+import { VISITED, useFinder } from '@/hooks/useFinder';
 import { distLabel } from '@/lib/restrooms/filters';
-import { useColors, useThemePref } from '@/lib/theme';
+import { useColors } from '@/lib/theme';
 import { ACCENT, DANGER } from '@/lib/tokens';
 import type { Restroom } from '@/lib/types';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
@@ -22,7 +21,6 @@ const PEEK = 84; // sheet height when collapsed — just the handle + summary he
 export function MobileMap() {
   const ptr = usePullToRefresh();
   const insets = useSafeAreaInsets();
-  const { scheme } = useThemePref();
   const c = useColors();
   const sheetRef = useRef<BottomSheet>(null);
   const f = useFinder();
@@ -35,13 +33,11 @@ export function MobileMap() {
 
   return (
     <View className="flex-1 bg-surface">
-      <AppMapView
+      <AppMap
+        followUser={false}
+        onRecenter={f.recenterOnMe}
+        recenterBottom={PEEK + 18}
         ref={f.mapRef}
-        provider={MAP_PROVIDER}
-        style={StyleSheet.absoluteFill}
-        showsUserLocation
-        showsMyLocationButton={false}
-        customMapStyle={scheme === 'dark' ? DARK_MAP_STYLE : undefined}
         onRegionChangeComplete={f.onRegionChangeComplete}
         onLongPress={(e: any) => {
           const coord = e?.nativeEvent?.coordinate;
@@ -51,8 +47,7 @@ export function MobileMap() {
           Keyboard.dismiss();
           if (Date.now() - f.markerTapRef.current < 500) return;
           f.setSelected(null);
-        }}
-        initialRegion={DEFAULT_REGION}>
+        }}>
         {f.pins.map((item) => (
           <AppMarker
             key={item.id}
@@ -62,7 +57,7 @@ export function MobileMap() {
             onPress={() => openRestroom(item)}
           />
         ))}
-      </AppMapView>
+      </AppMap>
 
       <View style={{ position: 'absolute', top: insets.top + 10, left: 14, right: 14, zIndex: 20 }}>
         <View className="flex-row items-center rounded-2xl bg-surface px-3" style={styles.shadow}>
@@ -100,14 +95,6 @@ export function MobileMap() {
           </View>
         ) : null}
       </View>
-
-      {/* recenter + zoom to the user (re-prompts location if not granted) */}
-      <Pressable accessibilityRole="button" accessibilityLabel="Center map on my location"
-        onPress={f.recenterOnMe}
-        className="absolute items-center justify-center rounded-full bg-surface"
-        style={[{ right: 16, bottom: PEEK + 18, width: 46, height: 46 }, styles.shadow]}>
-        <Icon name="locate" size={22} color={ACCENT} />
-      </Pressable>
 
       <BottomSheet
         ref={sheetRef}

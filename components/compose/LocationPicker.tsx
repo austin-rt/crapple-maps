@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 import { MapPinPicker } from '@/components/map-pin-picker';
+import { locatePrecisely } from '@/hooks/useMyLocation';
 import { usePlaceSearch, type Place } from '@/hooks/usePlaceSearch';
 import { notify } from '@/lib/confirm';
 import { ACCENT } from '@/lib/tokens';
@@ -32,13 +33,12 @@ export function LocationPicker({
   const useCurrent = async () => {
     setLocating(true);
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+      const here = await locatePrecisely();
+      if (!here) {
         notify('Location off', 'Search an address instead.');
         return;
       }
-      const pos = await Location.getCurrentPositionAsync({});
-      const c = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+      const c = { latitude: here.lat, longitude: here.lng };
       // Never surface raw lat/long — reverse-geocode to a human address.
       let lbl = 'Current location';
       try {
