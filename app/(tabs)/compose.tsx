@@ -9,6 +9,7 @@ import { LocationPicker } from '@/components/compose/LocationPicker';
 import { SignInRequired, Stars } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { BRISTOL } from '@/lib/bristol';
+import { TP } from '@/lib/tp';
 import { confirmAction } from '@/lib/confirm';
 import { createLog } from '@/lib/db/logs';
 import { createRestroom, fetchNearestId } from '@/lib/db/restrooms';
@@ -38,7 +39,8 @@ export default function ComposeScreen() {
   const [coords, setCoords] = useState<Coords | null>(null);
   const [locLabel, setLocLabel] = useState<string | null>(null);
   const [rating, setRating] = useState<number | null>(null);
-  const [bristol, setBristol] = useState<number | null>(null);
+  const [bristol, setBristol] = useState<number[]>([]);
+  const [tpq, setTpq] = useState<number | null>(null);
   const [caption, setCaption] = useState('');
   const [photoUris, setPhotoUris] = useState<string[]>([]);
   const [visibility, setVisibility] = useState<Visibility>('friends');
@@ -55,7 +57,8 @@ export default function ComposeScreen() {
         setCoords(null);
         setLocLabel(null);
         setRating(null);
-        setBristol(null);
+        setBristol([]);
+        setTpq(null);
         setCaption('');
         setPhotoUris([]);
         setVisibility('friends');
@@ -104,7 +107,8 @@ export default function ComposeScreen() {
         lng: coords.longitude,
         restroomId,
         rating,
-        bristolType: bristol,
+        bristolTypes: bristol,
+        tpQuality: tpq,
         caption: caption.trim() || null,
         visibility,
       });
@@ -118,11 +122,13 @@ export default function ComposeScreen() {
       setCoords(null);
       setLocLabel(null);
       setRating(null);
-      setBristol(null);
+      setBristol([]);
+      setTpq(null);
       setCaption('');
       setPhotoUris([]);
       setAlsoPublish(false);
       queryClient.invalidateQueries({ queryKey: ['my-logs'] });
+      queryClient.invalidateQueries({ queryKey: ['tp'] });
       queryClient.invalidateQueries({ queryKey: ['my-log-count'] });
       queryClient.invalidateQueries({ queryKey: ['feed'] });
       queryClient.invalidateQueries({ queryKey: ['logged-restroom-ids'] });
@@ -196,12 +202,37 @@ export default function ComposeScreen() {
         <Label>Consistency</Label>
         <View className="flex-row flex-wrap gap-2">
           {BRISTOL.map(({ n, emoji, label }) => {
-            const active = bristol === n;
+            const active = bristol.includes(n);
             return (
               <Pressable
                 key={n}
-                onPress={() => setBristol(active ? null : n)}
+                accessibilityRole="checkbox"
+                accessibilityLabel={label}
+                accessibilityState={{ checked: active }}
+                onPress={() => setBristol((cur) => (active ? cur.filter((x) => x !== n) : [...cur, n].sort((x, y) => x - y)))}
                 style={{ width: '22%', backgroundColor: active ? ACCENT : undefined }}
+                className={`items-center rounded-xl border py-2.5 ${active ? 'border-transparent' : 'border-line'}`}>
+                <Text className="text-2xl">{emoji}</Text>
+                <Text className={`mt-1 text-[11px] ${active ? 'font-semibold text-white' : 'text-content-2'}`}>{label}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </Field>
+
+      <Field>
+        <Label>Toilet paper</Label>
+        <View className="flex-row gap-2">
+          {TP.map(({ n, emoji, label }) => {
+            const active = tpq === n;
+            return (
+              <Pressable
+                key={n}
+                accessibilityRole="radio"
+                accessibilityLabel={`Toilet paper: ${label}`}
+                accessibilityState={{ selected: active }}
+                onPress={() => setTpq(active ? null : n)}
+                style={{ flex: 1, backgroundColor: active ? ACCENT : undefined }}
                 className={`items-center rounded-xl border py-2.5 ${active ? 'border-transparent' : 'border-line'}`}>
                 <Text className="text-2xl">{emoji}</Text>
                 <Text className={`mt-1 text-[11px] ${active ? 'font-semibold text-white' : 'text-content-2'}`}>{label}</Text>

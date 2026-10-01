@@ -8,7 +8,7 @@ import { SignInRequired } from '@/components/ui';
 import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
 import { confirmAction } from '@/lib/confirm';
-import { fetchFollowEdges, removeFollower, unfollow, type FollowStatus } from '@/lib/db/follows';
+import { fetchFollowEdges, follow, removeFollower, unfollow, type FollowStatus } from '@/lib/db/follows';
 import { profilesByIds } from '@/lib/db/profiles';
 import { toast } from '@/lib/toast';
 import { ACCENT } from '@/lib/tokens';
@@ -26,9 +26,18 @@ function OutlineButton({ label, onPress }: { label: string; onPress: () => void 
   );
 }
 
+
+function FilledButton({ label, onPress }: { label: string; onPress: () => void }) {
+  return (
+    <Pressable onPress={onPress} accessibilityRole="button" className="rounded-lg px-4 py-1.5 active:opacity-70" style={{ backgroundColor: ACCENT }}>
+      <Text className="text-sm font-semibold text-white">{label}</Text>
+    </Pressable>
+  );
+}
+
 // Instagram-style lists behind the Followers / Following counts on the Profile
-// tab: tabs across the top, one row per person, and the action on the right —
-// Remove for a follower, Following / Requested to unfollow or cancel.
+// tab: tabs across the top, one row per person, and the actions on the right —
+// Follow back and Remove for a follower, Following / Requested to unfollow or cancel.
 export default function Follows() {
   const ptr = usePullToRefresh();
   const { tab } = useLocalSearchParams<{ tab?: string }>();
@@ -76,6 +85,18 @@ export default function Follows() {
       },
       { confirmLabel: 'Remove', destructive: true },
     );
+
+  const myStatus = (id: string) => followingQ.data?.find((r) => r.prof.id === id)?.status;
+
+  const followBack = async (p: Profile) => {
+    try {
+      await follow(me, p.id);
+      refresh();
+      toast.success('Request sent');
+    } catch (e: any) {
+      toast.error("Couldn't follow", e?.message);
+    }
+  };
 
   const drop = (p: Profile, status: FollowStatus) =>
     confirmAction(
@@ -132,7 +153,14 @@ export default function Follows() {
               onPress={() => router.push({ pathname: '/u/[username]', params: { username: item.prof.username } })}
               right={
                 side === 'followers' ? (
-                  <OutlineButton label="Remove" onPress={() => remove(item.prof)} />
+                  <View className="flex-row gap-2">
+                    {myStatus(item.prof.id) === 'pending' ? (
+                      <OutlineButton label="Requested" onPress={() => drop(item.prof, 'pending')} />
+                    ) : !myStatus(item.prof.id) ? (
+                      <FilledButton label="Follow back" onPress={() => followBack(item.prof)} />
+                    ) : null}
+                    <OutlineButton label="Remove" onPress={() => remove(item.prof)} />
+                  </View>
                 ) : (
                   <OutlineButton label={item.status === 'pending' ? 'Requested' : 'Following'} onPress={() => drop(item.prof, item.status)} />
                 )

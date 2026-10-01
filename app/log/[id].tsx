@@ -8,7 +8,8 @@ import { Avatar, Stars } from '@/components/ui';
 import { useLog } from '@/hooks/useLogs';
 import { useResolvedPlace } from '@/hooks/useResolvedPlace';
 import { useAuth } from '@/lib/auth';
-import { bristol } from '@/lib/bristol';
+import { bristols } from '@/lib/bristol';
+import { tp } from '@/lib/tp';
 import { fullWhen } from '@/lib/format';
 import { openDirections } from '@/lib/maps';
 import { ACCENT, ON_ACCENT } from '@/lib/tokens';
@@ -38,7 +39,8 @@ export default function LogDetail() {
 
   const a = data.author;
   const name = a?.display_name || a?.username || 'Someone';
-  const b = bristol(data.bristol_type);
+  const bs = bristols(data.bristol_types);
+  const t = tp(data.tp_quality);
 
   return (
     <ScrollView
@@ -72,13 +74,19 @@ export default function LogDetail() {
 
       <PostPhotos photos={data.photos} />
 
-      {(data.rating || b) && (
-        <View className="mt-4 flex-row items-center gap-3 px-4">
+      {(data.rating || bs.length > 0 || t) && (
+        <View className="mt-4 flex-row flex-wrap items-center gap-3 px-4">
           {data.rating ? <Stars value={data.rating} size={18} gap={2} /> : null}
-          {b ? (
-            <View className="flex-row items-center gap-1 rounded-full bg-surface-3 px-3 py-1">
+          {bs.map((b) => (
+            <View key={b.n} className="flex-row items-center gap-1 rounded-full bg-surface-3 px-3 py-1">
               <Text className="text-base">{b.emoji}</Text>
               <Text className="text-xs font-medium text-content-2">{b.label}</Text>
+            </View>
+          ))}
+          {t ? (
+            <View className="flex-row items-center gap-1 rounded-full bg-surface-3 px-3 py-1">
+              <Text className="text-base">{t.emoji}</Text>
+              <Text className="text-xs font-medium text-content-2">TP: {t.label}</Text>
             </View>
           ) : null}
         </View>

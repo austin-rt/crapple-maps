@@ -6,7 +6,8 @@ import { Pressable, Text, View } from 'react-native';
 import { Avatar, Stars } from '@/components/ui';
 import { useBlock } from '@/hooks/useModeration';
 import { useAuth } from '@/lib/auth';
-import { bristol } from '@/lib/bristol';
+import { bristols } from '@/lib/bristol';
+import { tp } from '@/lib/tp';
 import { timeAgo } from '@/lib/format';
 import { moderationMenu } from '@/lib/moderate';
 import { useColors } from '@/lib/theme';
@@ -17,7 +18,8 @@ import { FeedPhotos } from './FeedPhotos';
 export function FeedCard({ log }: { log: FeedLog }) {
   const a = log.author;
   const name = a?.display_name || a?.username || 'Someone';
-  const b = bristol(log.bristol_type);
+  const bs = bristols(log.bristol_types);
+  const t = tp(log.tp_quality);
   const c = useColors();
   const { session } = useAuth();
   const { block } = useBlock(session?.user.id);
@@ -48,13 +50,19 @@ export function FeedCard({ log }: { log: FeedLog }) {
 
         {log.caption ? <Text className="mt-0.5 text-[15px] leading-5 text-content">{log.caption}</Text> : null}
 
-        {(log.rating || b) && (
-          <View className="mt-1.5 flex-row items-center gap-2">
+        {(log.rating || bs.length > 0 || t) && (
+          <View className="mt-1.5 flex-row flex-wrap items-center gap-2">
             {log.rating ? <Stars value={log.rating} size={14} gap={2} /> : null}
-            {b ? (
-              <View className="flex-row items-center gap-1 rounded-full bg-surface-3 px-2 py-0.5">
+            {bs.map((b) => (
+              <View key={b.n} className="flex-row items-center gap-1 rounded-full bg-surface-3 px-2 py-0.5">
                 <Text className="text-xs">{b.emoji}</Text>
                 <Text className="text-[11px] font-medium text-content-2">{b.label}</Text>
+              </View>
+            ))}
+            {t ? (
+              <View className="flex-row items-center gap-1 rounded-full bg-surface-3 px-2 py-0.5">
+                <Text className="text-xs">{t.emoji}</Text>
+                <Text className="text-[11px] font-medium text-content-2">TP: {t.label}</Text>
               </View>
             ) : null}
           </View>

@@ -5,7 +5,7 @@ import type { FeedLog, LogItem, Visibility } from '@/lib/types';
 // Shared select for a log joined with its author profile + like/comment counts
 // (feed + single log). reactions(count)/comments(count) are PostgREST aggregates.
 const LOG_WITH_AUTHOR =
-  'id,user_id,lat,lng,rating,bristol_type,caption,visibility,created_at, author:profiles(username,display_name,avatar_url,avatar_seed), reactions(count), comments(count)';
+  'id,user_id,lat,lng,rating,bristol_types,tp_quality,caption,visibility,created_at, author:profiles(username,display_name,avatar_url,avatar_seed), reactions(count), comments(count)';
 
 // Flatten the [{count}] aggregate arrays into plain numbers.
 const withCounts = <T extends Record<string, any>>(rows: T[]): (T & { likes_count: number; comments_count: number })[] =>
@@ -41,7 +41,7 @@ export async function fetchLog(id: string): Promise<FeedLog | null> {
 export async function fetchMyLogs(userId: string): Promise<LogItem[]> {
   const { data, error } = await supabase
     .from('logs')
-    .select('id,lat,lng,rating,bristol_type,caption,visibility,created_at')
+    .select('id,lat,lng,rating,bristol_types,tp_quality,caption,visibility,created_at')
     .eq('user_id', userId)
     .is('deleted_at', null)
     .order('created_at', { ascending: false });
@@ -68,7 +68,8 @@ export type NewLog = {
   lng: number;
   restroomId: string | null;
   rating: number | null;
-  bristolType: number | null;
+  bristolTypes: number[];
+  tpQuality: number | null;
   caption: string | null;
   visibility: Visibility;
 };
@@ -82,7 +83,8 @@ export async function createLog(input: NewLog): Promise<string> {
       lng: input.lng,
       restroom_id: input.restroomId,
       rating: input.rating,
-      bristol_type: input.bristolType,
+      bristol_types: input.bristolTypes,
+      tp_quality: input.tpQuality,
       caption: input.caption,
       visibility: input.visibility,
     })

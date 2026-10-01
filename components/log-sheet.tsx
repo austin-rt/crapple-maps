@@ -4,7 +4,8 @@ import { Image } from 'expo-image';
 import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native';
 
 import { Stars } from '@/components/ui';
-import { bristol } from '@/lib/bristol';
+import { bristols } from '@/lib/bristol';
+import { tp } from '@/lib/tp';
 import { confirmAction } from '@/lib/confirm';
 import { toast } from '@/lib/toast';
 import { softDeleteLog } from '@/lib/db/logs';
@@ -33,7 +34,8 @@ export function LogSheet({
   canDelete?: boolean;
 }) {
   const place = useResolvedPlace(log.lat, log.lng, true);
-  const b = bristol(log.bristol_type);
+  const bs = bristols(log.bristol_types);
+  const t = tp(log.tp_quality);
   const w = Dimensions.get('window').width;
 
   const del = () =>
@@ -82,13 +84,19 @@ export function LogSheet({
           {log.visibility === 'private' ? ' · 🔒 Private' : ' · Friends'}
         </Text>
 
-        {(log.rating || b) && (
-          <View className="mt-4 flex-row items-center gap-3">
+        {(log.rating || bs.length > 0 || t) && (
+          <View className="mt-4 flex-row flex-wrap items-center gap-3">
             {log.rating ? <Stars value={log.rating} size={18} gap={2} /> : null}
-            {b ? (
-              <View className="flex-row items-center gap-1 rounded-full bg-surface-2 px-3 py-1">
+            {bs.map((b) => (
+              <View key={b.n} className="flex-row items-center gap-1 rounded-full bg-surface-2 px-3 py-1">
                 <Text className="text-base">{b.emoji}</Text>
                 <Text className="text-xs font-medium text-content-2">{b.label}</Text>
+              </View>
+            ))}
+            {t ? (
+              <View className="flex-row items-center gap-1 rounded-full bg-surface-2 px-3 py-1">
+                <Text className="text-base">{t.emoji}</Text>
+                <Text className="text-xs font-medium text-content-2">TP: {t.label}</Text>
               </View>
             ) : null}
           </View>

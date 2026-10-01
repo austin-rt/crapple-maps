@@ -69,7 +69,8 @@ export type LogItem = {
   lat: number;
   lng: number;
   rating: number | null;
-  bristol_type: number | null;
+  bristol_types: number[];
+  tp_quality: number | null;
   caption: string | null;
   visibility: Visibility;
   created_at: string;

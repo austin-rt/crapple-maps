@@ -4,7 +4,8 @@ import { Icon } from '@/components/ui';
 import { useState } from 'react';
 import { Pressable, Share, Text, View } from 'react-native';
 
-import { useRestroomCodes, useRestroomInfo, useRestroomReviews, useRestroomVisits } from '@/hooks/useRestroom';
+import { useRestroomCodes, useRestroomInfo, useRestroomReviews, useRestroomTp, useRestroomVisits } from '@/hooks/useRestroom';
+import { tp } from '@/lib/tp';
 import { useResolvedPlace } from '@/hooks/useResolvedPlace';
 import { useSavedRestroom } from '@/hooks/useSaved';
 import { useAuth } from '@/lib/auth';
@@ -49,6 +50,7 @@ export function RestroomSheet({
   const { data: info } = useRestroomInfo(restroom.id);
   const { data: codes = [] } = useRestroomCodes(restroom.id);
   const { data: reviews = [] } = useRestroomReviews(restroom.id);
+  const { data: tpTally = [] } = useRestroomTp(restroom.id);
   const { data: visits = [] } = useRestroomVisits(restroom.id, uid);
   const { saved, toggle: toggleSave, canSave } = useSavedRestroom(restroom.id);
 
@@ -64,6 +66,10 @@ export function RestroomSheet({
   const displayTitle = isGenericName(restroom.name) && place?.title ? place.title : title;
   const rated = reviews.filter((r) => r.overall_rating);
   const revAvg = rated.length ? rated.reduce((s, r) => s + (r.overall_rating || 0), 0) / rated.length : 0;
+  // Ties go to the worse paper, so nobody is promised plush that isn't there.
+  const tpTop = [...tpTally].sort((x, y) => y.reports - x.reports || x.tp_quality - y.tp_quality)[0];
+  const tpInfo = tpTop ? tp(tpTop.tp_quality) : null;
+  const tpReports = tpTally.reduce((s, r) => s + r.reports, 0);
 
   const startEdit = () => {
     setDraft({
@@ -167,6 +173,11 @@ export function RestroomSheet({
           {restroom.access_type ? '' : 'Restroom'}
           {distLabel(restroom.dist) ? `  ·  ${distLabel(restroom.dist)} away` : ''}
         </Text>
+        {tpInfo ? (
+          <Text className="mt-1 text-sm text-content-2">
+            Toilet paper: {tpInfo.emoji} {tpInfo.label} ({tpReports} {tpReports === 1 ? 'report' : 'reports'})
+          </Text>
+        ) : null}
       </Pressable>
 
       <ActionRow

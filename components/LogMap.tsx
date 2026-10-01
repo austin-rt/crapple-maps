@@ -11,7 +11,7 @@ import { AppMarker, type AppMapHandle, type Region } from '@/components/map';
 import { LogSheet, type LogItem } from '@/components/log-sheet';
 import { useMyLogs } from '@/hooks/useLogs';
 import { useMyLocation } from '@/hooks/useMyLocation';
-import { bristol } from '@/lib/bristol';
+import { bristols } from '@/lib/bristol';
 import { shortWhen } from '@/lib/format';
 import { ACCENT, DANGER, ON_ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
@@ -156,7 +156,8 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
                 contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 24, gap: 8 }}
                 renderItem={({ item }) => {
                   const l = item as LogItem;
-                  const b = bristol(l.bristol_type);
+                  const bs = bristols(l.bristol_types);
+                  const b = bs[0];
                   return (
                     <Pressable
                       onPress={() => select(l)}
@@ -170,7 +171,7 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
                       )}
                       <View className="flex-1">
                         <Text numberOfLines={1} className="text-[15px] font-semibold text-content">
-                          {l.caption || (b ? `${b.emoji} ${b.label}` : 'A quiet moment')}
+                          {l.caption || (bs.length ? bs.map((x) => `${x.emoji} ${x.label}`).join(' · ') : 'A quiet moment')}
                         </Text>
                         <View className="mt-0.5 flex-row items-center gap-2">
                           {l.rating ? <Text className="text-xs" style={{ color: ACCENT }}>{'★'.repeat(l.rating)}</Text> : null}

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { fetchCodes } from '@/lib/db/codes';
 import { fetchRestroomInfo } from '@/lib/db/restrooms';
-import { fetchReviews } from '@/lib/db/reviews';
+import { fetchReviews, fetchTpSummary } from '@/lib/db/reviews';
 import { fetchVisits } from '@/lib/db/logs';
 
 export function useRestroomInfo(id: string) {
@@ -15,6 +15,11 @@ export function useRestroomCodes(id: string) {
 
 export function useRestroomReviews(id: string) {
   return useQuery({ queryKey: ['reviews', id], queryFn: () => fetchReviews(id) });
+}
+
+
+export function useRestroomTp(id: string) {
+  return useQuery({ queryKey: ['tp', id], queryFn: () => fetchTpSummary(id) });
 }
 
 export function useRestroomVisits(id: string, userId: string | undefined) {

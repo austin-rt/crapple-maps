@@ -25,3 +25,11 @@ export async function addReview(input: {
   });
   if (error) throw error;
 }
+
+
+export type TpTally = { tp_quality: number; reports: number };
+
+export async function fetchTpSummary(restroomId: string): Promise<TpTally[]> {
+  const { data } = await supabase.rpc('restroom_tp_summary', { p_restroom_id: restroomId });
+  return ((data ?? []) as TpTally[]).map((r) => ({ tp_quality: r.tp_quality, reports: Number(r.reports) }));
+}

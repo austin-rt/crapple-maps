@@ -10,6 +10,6 @@ export const BRISTOL = [
   { n: 7, emoji: '🌊', label: 'Liquid' },
 ] as const;
 
-export function bristol(n: number | null | undefined) {
-  return n ? BRISTOL.find((b) => b.n === n) ?? null : null;
+export function bristols(ns: readonly number[] | null | undefined) {
+  return BRISTOL.filter((b) => ns?.includes(b.n));
 }
