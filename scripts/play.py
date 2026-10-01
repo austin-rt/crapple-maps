@@ -9,8 +9,8 @@ account JWT; the key lives in .secrets/ (gitignored) and is never inlined.
 Play has no single "approved" flag like Apple. Three independent gates:
   1. Release review — per release, usually automatic and fast.
   2. Production access — NEW personal accounts must run a CLOSED test with 12
-     testers opted in for 14 CONTINUOUS days, then apply. Not a review, and not
-     visible here; check Play Console > Dashboard.
+     testers opted in for 14 CONTINUOUS days, then apply. This account is an
+     organization account (since 2026-09-30), which is exempt.
   3. Developer verification — Play Console > Settings > Developer account.
 Only gate 1 is observable through this API, so absence of a production release
 does not by itself tell you which gate you are stuck behind.
@@ -59,9 +59,18 @@ def main():
             frac = r.get('userFraction')
             print(f"    status={r.get('status'):<12} versionCodes={r.get('versionCodes')} "
                   f"name={r.get('name')}" + (f" rollout={frac}" if frac else ''))
-    print('\nLIVE ON PLAY:', 'yes' if any(
-        t_['track'] == 'production' and t_.get('releases') for t_ in tracks.get('tracks', []))
-        else 'no — nothing on the production track')
+    # A release sent for review already reads status=completed here, so the API
+    # cannot tell "in review" from "live". The public listing can.
+    on_prod = any(t_['track'] == 'production' and t_.get('releases')
+                  for t_ in tracks.get('tracks', []))
+    try:
+        live = urllib.request.urlopen(urllib.request.Request(
+            f'https://play.google.com/store/apps/details?id={PKG}',
+            headers={'User-Agent': 'Mozilla/5.0'}), timeout=20).status == 200
+    except Exception:
+        live = False
+    print('\nPRODUCTION RELEASE:', 'yes' if on_prod else 'no')
+    print('LIVE ON PLAY:', 'yes' if live else 'no — the public listing is not up yet')
 
 
 if __name__ == "__main__":

@@ -51,7 +51,7 @@ the Play submit path went unexecuted until someone forced a run.
 | branch    | update channel | iOS                    | Android               |
 |-----------|----------------|------------------------|-----------------------|
 | `develop` | `preview`      | TestFlight (internal)  | Play internal testing |
-| `main`    | `production`   | App Store              | Play production/alpha |
+| `main`    | `production`   | App Store              | Play alpha (see below)|
 
 Anything you want to see on a real phone before users do goes to `develop`.
 `release-preview.yml` builds it with the `preview` profile, which bakes channel
@@ -92,17 +92,21 @@ list, not the job status — `python3 scripts/play.py` shows track state, and th
 `edits/{id}/bundles` endpoint shows every version code Play actually holds. Same
 for iOS: `python3 scripts/release.py status` shows which build is attached.
 
-The Play app is still a DRAFT app — it has never been published to production.
-Until that first publish, Google rejects any release that is not `draft`:
-"Only releases with status draft may be created on draft app." So
-`submit.production.android.releaseStatus` must stay `draft`; setting it to
-`completed` fails the submit job while the iOS half still goes green. The first
-publish has to happen in the Play Console by hand; after that, `completed` works.
+The first Play production release (1.1.4, version code 22) went to Google for
+review by hand on 2026-09-30. A never-published app rejects any release that is
+not `draft` ("Only releases with status draft may be created on draft app"), so
+that first one has to be sent from the Play Console. Until Google approves it,
+`submit.production.android` stays `track: alpha`, `releaseStatus: draft`.
 
-Android submits to the **alpha** (closed testing) track, not internal. Google
-requires a CLOSED test with 12 testers opted in for 14 CONTINUOUS days before a
-new personal account can apply for production access; internal testing does not
-count toward it, so shipping to internal can never lead to a production release.
+After approval, switch it to `track: production`, `releaseStatus: completed`, so
+a push to main ships Android to production the same way it ships iOS. Make that
+switch in the same commit as the next version bump. eas.json is in
+release-native's `paths`, so changing it alone rebuilds both platforms, and the
+iOS upload is rejected when that version is already live.
+
+The developer account has been an organization account (Austin Taylor, LLC)
+since 2026-09-30. The 12-tester, 14-day closed test that new personal accounts
+need before production does not apply.
 
 Both workflows set `concurrency.cancel_in_progress`, so a newer push cancels
 the older run instead of stacking behind it. Without that, queued builds would
