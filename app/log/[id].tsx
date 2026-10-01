@@ -68,6 +68,7 @@ export default function LogDetail() {
           <Text className="text-sm text-content-2">@{a?.username ?? 'user'}</Text>
         </View>
         {data.visibility === 'private' ? <Icon name="lock-closed" size={16} color={c.content2} /> : null}
+          {data.visibility === 'public' ? <Icon name="earth" size={16} color={c.content2} /> : null}
       </View>
 
       {data.caption ? <Text className="px-4 pt-3 text-[19px] leading-7 text-content">{data.caption}</Text> : null}

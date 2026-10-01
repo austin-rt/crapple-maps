@@ -1,10 +1,11 @@
 import { Icon } from '@/components/ui';
+import { CountBadge } from '@/components/ui/CountBadge';
 import { router, Tabs } from 'expo-router';
-import { Platform, Pressable, Text, View } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { WebHeader } from '@/components/web/WebHeader';
-import { useFollows } from '@/hooks/useFollows';
+import { useUnreadCount } from '@/hooks/useNotifications';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { ACCENT, useAuth } from '@/lib/auth';
 import { useColors } from '@/lib/theme';
@@ -14,7 +15,7 @@ export default function TabLayout() {
   const isMobileWeb = useIsMobileWeb();
   const c = useColors();
   const { session } = useAuth();
-  const { requests } = useFollows(session?.user.id);
+  const unread = useUnreadCount(session?.user.id);
   // Desktop web hides the tab bar and shows a top header (hamburger nav + user
   // menu). Mobile web and native keep the bottom tab bar + per-screen headers.
   const webDesktop = Platform.OS === 'web' && !isMobileWeb;
@@ -33,6 +34,8 @@ export default function TabLayout() {
         options={{
           title: 'Feed',
           tabBarIcon: ({ color, size }) => <Icon name="newspaper-outline" size={size} color={color} />,
+          tabBarBadge: unread > 0 ? (unread > 99 ? '99+' : unread) : undefined,
+          tabBarBadgeStyle: { backgroundColor: DANGER, color: '#fff', fontSize: 10 },
           headerRight: () => (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18, marginRight: 16 }}>
               <Pressable accessibilityRole="button" accessibilityLabel="Search people" onPress={() => router.push('/people')} hitSlop={10}>
@@ -40,16 +43,11 @@ export default function TabLayout() {
               </Pressable>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={requests.length ? `Notifications, ${requests.length} new` : 'Notifications'}
+                accessibilityLabel={unread ? `Notifications, ${unread} new` : 'Notifications'}
                 onPress={() => router.push('/notifications')}
                 hitSlop={10}>
                 <Icon name="notifications-outline" size={22} color={c.content} />
-                {requests.length > 0 ? (
-                  <View
-                    style={{ position: 'absolute', top: -5, right: -7, minWidth: 16, height: 16, borderRadius: 8, paddingHorizontal: 4, backgroundColor: DANGER, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ color: '#fff', fontSize: 10, fontWeight: '700' }}>{requests.length}</Text>
-                  </View>
-                ) : null}
+                <CountBadge count={unread} />
               </Pressable>
             </View>
           ),

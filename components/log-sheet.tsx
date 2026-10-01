@@ -81,7 +81,7 @@ export function LogSheet({
         <Text className="mt-1 text-sm text-content-2">
           {weekdayDate(log.created_at)} · {timeOf(log.created_at)}
           {place?.full ? ` · ${place.full}` : ''}
-          {log.visibility === 'private' ? ' · 🔒 Private' : ' · Friends'}
+          {log.visibility === 'private' ? ' · 🔒 Private' : log.visibility === 'public' ? ' · 🌎 Public' : ' · Friends'}
         </Text>
 
         {(log.rating || bs.length > 0 || t) && (

@@ -20,10 +20,15 @@ const withPhotos = async <T extends { id: string }>(rows: T[]): Promise<(T & { p
   return rows.map((r) => ({ ...r, photos: photos[r.id] ?? [] }));
 };
 
-export async function fetchFeed(offset: number, limit: number): Promise<FeedLog[]> {
+// You and the people you follow. Public posts from everyone else are readable
+// (on their profile and map) but stay out of the feed.
+export async function fetchFeed(me: string, offset: number, limit: number): Promise<FeedLog[]> {
+  const { data: following } = await supabase.from('follows').select('followee_id').eq('follower_id', me).eq('status', 'approved');
+  const authors = [me, ...(following ?? []).map((f) => f.followee_id as string)];
   const { data, error } = await supabase
     .from('logs')
     .select(LOG_WITH_AUTHOR)
+    .in('user_id', authors)
     .is('deleted_at', null)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);

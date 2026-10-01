@@ -21,7 +21,7 @@ export function useFeed(userId: string | undefined) {
     enabled: !!userId,
     initialPageParam: 0,
     getNextPageParam: (last: FeedLog[], all) => (last.length === FEED_PAGE ? all.length * FEED_PAGE : undefined),
-    queryFn: ({ pageParam }) => fetchFeed(pageParam as number, FEED_PAGE),
+    queryFn: ({ pageParam }) => fetchFeed(userId!, pageParam as number, FEED_PAGE),
     select,
   });
 }

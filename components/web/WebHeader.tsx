@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { Avatar } from '@/components/ui';
+import { CountBadge } from '@/components/ui/CountBadge';
+import { useUnreadCount } from '@/hooks/useNotifications';
 import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
 import { ACCENT } from '@/lib/tokens';
@@ -18,6 +20,7 @@ export function WebHeader({ title, canGoBack, onBack }: { title?: string; canGoB
   const [navOpen, setNavOpen] = useState(false);
   const { session } = useAuth();
   const { data: me } = useProfile(session?.user.id ?? '');
+  const unread = useUnreadCount(session?.user.id);
 
   return (
     <>
@@ -41,6 +44,20 @@ export function WebHeader({ title, canGoBack, onBack }: { title?: string; canGoB
             </>
           )}
         </Text>
+
+        {session ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={unread ? `Notifications, ${unread} new` : 'Notifications'}
+            onPress={() => router.push('/notifications')}
+            hitSlop={8}
+            className="mr-3 h-10 w-10 items-center justify-center rounded-full active:bg-surface-2">
+            <View>
+              <Icon name="notifications-outline" size={22} color={c.content2} />
+              <CountBadge count={unread} />
+            </View>
+          </Pressable>
+        ) : null}
 
         <Pressable accessibilityRole="button" accessibilityLabel="Profile" onPress={() => router.push('/profile')} className="h-9 w-9 items-center justify-center overflow-hidden rounded-full">
           {session ? (

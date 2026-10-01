@@ -18,6 +18,7 @@ import { ACCENT, DANGER } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
 import { AppearanceCard } from './AppearanceCard';
+import { PostVisibilityCard } from './PostVisibilityCard';
 import { AvatarCropper, type CropSource } from './AvatarCropper';
 import { Card } from './Card';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
@@ -181,6 +182,7 @@ export function ManageProfile() {
       </View>
 
       <AppearanceCard />
+      <PostVisibilityCard uid={uid} />
 
       <Pressable
         onPress={() => router.push('/my-map')}

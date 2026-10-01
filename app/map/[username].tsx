@@ -6,13 +6,15 @@ import { LogMap } from '@/components/LogMap';
 import { FollowButton } from '@/components/people';
 import { Icon, SignInRequired } from '@/components/ui';
 import { useFollows } from '@/hooks/useFollows';
+import { useMyLogs } from '@/hooks/useLogs';
 import { useAuth } from '@/lib/auth';
 import { fetchProfileByUsername } from '@/lib/db/profiles';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
-// Someone's map, opened from their profile. Logs are friends-only, so the map
-// shows once you're an approved follower; until then it says so.
+// Someone's map, opened from their profile. Approved followers see their
+// friends and public logs; anyone else sees only the public ones, or a follow
+// prompt when there are none.
 export default function UserMap() {
   const { username } = useLocalSearchParams<{ username: string }>();
   const { session } = useAuth();
@@ -24,6 +26,10 @@ export default function UserMap() {
     enabled: !!username,
     queryFn: () => fetchProfileByUsername(username!),
   });
+
+  // Logs this viewer may read: everything for an approved follower, otherwise
+  // only public ones. A non-follower with nothing public sees the follow prompt.
+  const { data: visibleLogs, isLoading: logsLoading } = useMyLogs(profile?.id);
 
   const title = profile ? `@${profile.username}` : 'Map';
   if (!me) return <SignInRequired icon="trail-sign-outline" message="Sign in to see where your friends go." />;
@@ -38,7 +44,15 @@ export default function UserMap() {
 
   const isMe = profile.id === me;
   const status = statusFor(profile.id);
-  if (!isMe && status !== 'approved') {
+  if (!isMe && status !== 'approved' && logsLoading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-surface">
+        <Stack.Screen options={{ title }} />
+        <ActivityIndicator color={ACCENT} />
+      </View>
+    );
+  }
+  if (!isMe && status !== 'approved' && !visibleLogs?.length) {
     return (
       <View className="flex-1 items-center justify-center bg-surface px-8">
         <Stack.Screen options={{ title }} />

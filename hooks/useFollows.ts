@@ -59,6 +59,8 @@ export function useFollows(me: string | undefined) {
     try {
       await approveFollow(followId);
       qc.invalidateQueries({ queryKey: ['follow-requests'] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+      qc.invalidateQueries({ queryKey: ['notif-unread'] });
       qc.invalidateQueries({ queryKey: ['feed'] });
       toast.success('Approved');
     } catch (e: any) {
@@ -70,6 +72,8 @@ export function useFollows(me: string | undefined) {
     try {
       await removeFollower(me!, followerId);
       qc.invalidateQueries({ queryKey: ['follow-requests'] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+      qc.invalidateQueries({ queryKey: ['notif-unread'] });
     } catch (e: any) {
       toast.error("Couldn't decline", e?.message);
     }

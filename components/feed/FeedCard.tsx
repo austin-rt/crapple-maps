@@ -38,6 +38,7 @@ export function FeedCard({ log }: { log: FeedLog }) {
             @{a?.username ?? 'user'} · {timeAgo(log.created_at)}
           </Text>
           {log.visibility === 'private' ? <Icon name="lock-closed" size={12} color={c.content2} style={{ marginLeft: 4 }} /> : null}
+          {log.visibility === 'public' ? <Icon name="earth" size={12} color={c.content2} style={{ marginLeft: 4 }} /> : null}
           {!mine && session ? (
             <Pressable accessibilityRole="button" accessibilityLabel="More options"
               hitSlop={10}

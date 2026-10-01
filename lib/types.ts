@@ -5,7 +5,7 @@
 export type AccessType = 'public' | 'customers_only' | 'code' | 'ask_staff';
 export type RestroomStatus = 'open' | 'closed' | 'gone';
 export type RestroomSource = 'user' | 'osm' | 'refuge';
-export type Visibility = 'friends' | 'private';
+export type Visibility = 'public' | 'friends' | 'private';
 
 // A restroom as shown in the finder list / opened in the sheet. `dist` is miles,
 // computed client-side from the RPC's `dist_m`.

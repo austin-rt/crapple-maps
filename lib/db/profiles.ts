@@ -34,7 +34,7 @@ export async function findProfileByEmail(email: string): Promise<Profile[]> {
 export async function fetchProfile(id: string) {
   const { data } = await supabase
     .from('profiles')
-    .select('username, username_chosen, kind, display_name, avatar_url, avatar_seed, followers_count, following_count, logs_count')
+    .select('username, username_chosen, kind, display_name, avatar_url, avatar_seed, followers_count, following_count, logs_count, default_visibility')
     .eq('id', id)
     .single();
   return data;

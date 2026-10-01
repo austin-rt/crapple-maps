@@ -18,6 +18,8 @@ import { toast } from '@/lib/toast';
 import { ACCENT, ON_ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 import type { Visibility } from '@/lib/types';
+import { VISIBILITIES, VIS_ICON, VIS_LABEL } from '@/lib/visibility';
+import { useProfile } from '@/hooks/useProfile';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 type Coords = { latitude: number; longitude: number };
@@ -43,7 +45,10 @@ export default function ComposeScreen() {
   const [tpq, setTpq] = useState<number | null>(null);
   const [caption, setCaption] = useState('');
   const [photoUris, setPhotoUris] = useState<string[]>([]);
-  const [visibility, setVisibility] = useState<Visibility>('friends');
+  const { data: myProfile } = useProfile(session?.user.id ?? '');
+  const defaultVis: Visibility = (myProfile?.default_visibility as Visibility | undefined) ?? 'friends';
+  const [visibility, setVisibility] = useState<Visibility>(defaultVis);
+  useEffect(() => setVisibility(defaultVis), [defaultVis]);
   const [busy, setBusy] = useState(false);
   // undefined = not checked yet, null = new spot (no restroom nearby), string = existing restroom id
   const [nearId, setNearId] = useState<string | null | undefined>(undefined);
@@ -61,9 +66,9 @@ export default function ComposeScreen() {
         setTpq(null);
         setCaption('');
         setPhotoUris([]);
-        setVisibility('friends');
+        setVisibility(defaultVis);
       },
-      [],
+      [defaultVis],
     ),
   );
 
@@ -281,7 +286,7 @@ export default function ComposeScreen() {
       <Field>
         <Label>Who can see it?</Label>
         <View className="flex-row gap-2">
-          {(['friends', 'private'] as const).map((v) => {
+          {VISIBILITIES.map((v) => {
             const active = visibility === v;
             return (
               <Pressable
@@ -289,10 +294,8 @@ export default function ComposeScreen() {
                 onPress={() => setVisibility(v)}
                 className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-xl border py-2.5 ${active ? 'border-transparent' : 'border-line'}`}
                 style={active ? { backgroundColor: ACCENT } : undefined}>
-                <Icon name={v === 'friends' ? 'people-outline' : 'lock-closed-outline'} size={16} color={active ? ON_ACCENT : c.content2} />
-                <Text className={active ? 'font-semibold text-white' : 'text-content-2'}>
-                  {v === 'friends' ? 'Friends' : 'Private'}
-                </Text>
+                <Icon name={VIS_ICON[v]} size={16} color={active ? ON_ACCENT : c.content2} />
+                <Text className={active ? 'font-semibold text-white' : 'text-content-2'}>{VIS_LABEL[v]}</Text>
               </Pressable>
             );
           })}

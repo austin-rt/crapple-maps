@@ -2,7 +2,9 @@ import { Icon } from '@/components/ui';
 import { router, usePathname } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
-import { ACCENT } from '@/lib/tokens';
+import { useUnreadCount } from '@/hooks/useNotifications';
+import { useAuth } from '@/lib/auth';
+import { ACCENT, DANGER } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
 import { LeftDrawer } from './LeftDrawer';
@@ -24,6 +26,8 @@ const ITEMS = [
 export function WebNavDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const path = usePathname();
   const c = useColors();
+  const { session } = useAuth();
+  const unread = useUnreadCount(session?.user.id);
   const go = (href: string) => {
     router.push(href as any);
     onClose();
@@ -56,6 +60,11 @@ export function WebNavDrawer({ open, onClose }: { open: boolean; onClose: () => 
               <Text className="text-base font-semibold" style={on ? { color: ACCENT } : undefined}>
                 <Text className={on ? '' : 'text-content'}>{it.label}</Text>
               </Text>
+              {it.href === '/notifications' && unread > 0 ? (
+                <View className="ml-auto min-w-[20px] items-center rounded-full px-1.5 py-0.5" style={{ backgroundColor: DANGER }}>
+                  <Text className="text-xs font-bold text-white">{unread > 99 ? '99+' : unread}</Text>
+                </View>
+              ) : null}
             </Pressable>
           );
         })}
