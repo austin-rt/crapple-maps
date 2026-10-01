@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
@@ -33,18 +34,25 @@ export const AppMap = forwardRef<AppMapHandle, Props>(function AppMap(
   const loc = useMyLocation();
   const initialRegion = useRef(loc.coords ? around(loc.coords) : FALLBACK_REGION).current;
 
-  // A map that isn't laid out yet (e.g. a tab that hasn't been shown) ignores
-  // camera moves, so centering waits for onMapReady and re-runs when the fix
-  // sharpens from the IP estimate to GPS.
+  // A map that isn't on screen ignores camera moves. The Map tab mounts at
+  // launch and is hidden a tick later when the app moves to Feed, so the fix
+  // usually lands while it is hidden. Centering therefore waits until the map
+  // is ready AND its screen is focused, one frame after focus so the view is
+  // visible, and re-runs when the fix sharpens from the IP estimate to GPS.
   const [ready, setReady] = useState(false);
+  const focused = useIsFocused();
   const centeredOn = useRef<'none' | 'approx' | 'precise'>('none');
   useEffect(() => {
-    if (!followUser || !ready || !loc.coords) return;
+    if (!followUser || !ready || !focused || !loc.coords) return;
     const level = loc.precise ? 'precise' : 'approx';
     if (centeredOn.current === 'precise' || centeredOn.current === level) return;
-    centeredOn.current = level;
-    inner.current?.animateToRegion(around(loc.coords), 500);
-  }, [followUser, ready, loc.coords, loc.precise]);
+    const coords = loc.coords;
+    const frame = requestAnimationFrame(() => {
+      centeredOn.current = level;
+      inner.current?.animateToRegion(around(coords), 500);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [followUser, ready, focused, loc.coords, loc.precise]);
 
   const recenter = async () => {
     if (onRecenter) return onRecenter();
