@@ -2,7 +2,7 @@
 // the react-native-maps API the app uses (initialRegion, onPress, animateToRegion
 // via ref, markers with coordinate/onPress/pinColor).
 import { APIProvider, Map as GMap, Marker as GMarker, useApiIsLoaded, useMap } from '@vis.gl/react-google-maps';
-import { forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { Image, View } from 'react-native';
 
 import { DARK_MAP_STYLE } from '@/lib/maps';
@@ -19,8 +19,16 @@ function deltaToZoom(latDelta: number) {
 }
 
 // Lives inside <APIProvider> so useMap() can reach the map instance for panning.
-const Handle = forwardRef<AppMapHandle, {}>((_props, ref) => {
+const Handle = forwardRef<AppMapHandle, { onReady?: () => void }>(({ onReady }, ref) => {
   const map = useMap('main');
+  // Google Maps loads after first render, and camera moves before that are
+  // dropped. Report readiness the way react-native-maps' onMapReady does, so
+  // callers wait for it instead of firing into a map that isn't there yet.
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
+  useEffect(() => {
+    if (map) onReadyRef.current?.();
+  }, [map]);
   useImperativeHandle(
     ref,
     () => ({
@@ -81,7 +89,7 @@ export const AppMapView = forwardRef<AppMapHandle, any>(function AppMapView(prop
           style={{ width: '100%', height: '100%' }}>
           {props.children}
         </GMap>
-        <Handle ref={ref} />
+        <Handle ref={ref} onReady={props.onMapReady} />
       </APIProvider>
     </View>
   );

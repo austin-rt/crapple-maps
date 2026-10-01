@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Platform, Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { AppMapView, type AppMapHandle, type Region } from '@/components/map';
 import { Icon } from '@/components/ui';
@@ -36,7 +36,7 @@ export const AppMap = forwardRef<AppMapHandle, Props>(function AppMap(
   // A map that isn't laid out yet (e.g. a tab that hasn't been shown) ignores
   // camera moves, so centering waits for onMapReady and re-runs when the fix
   // sharpens from the IP estimate to GPS.
-  const [ready, setReady] = useState(Platform.OS === 'web');
+  const [ready, setReady] = useState(false);
   const centeredOn = useRef<'none' | 'approx' | 'precise'>('none');
   useEffect(() => {
     if (!followUser || !ready || !loc.coords) return;
