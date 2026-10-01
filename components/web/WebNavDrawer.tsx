@@ -12,7 +12,7 @@ const WIDTH = 300;
 const ITEMS = [
   { href: '/feed', label: 'Feed', icon: 'newspaper-outline' },
   { href: '/', label: 'Map', icon: 'map-outline' },
-  { href: '/compose', label: 'Log a poop', icon: 'add-circle-outline' },
+  { href: '/compose', label: 'Drop a log', icon: 'add-circle-outline' },
   { href: '/my-map', label: 'Places I’ve Pooped', icon: 'trail-sign-outline' },
   { href: '/saved', label: 'Saved restrooms', icon: 'bookmark-outline' },
   { href: '/people', label: 'People', icon: 'people-outline' },

@@ -109,24 +109,24 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
         ) : logs.length === 0 && !own ? (
           <View className="mt-16 items-center px-8">
             <Text className="text-5xl">🚽</Text>
-            <Text className="mt-4 text-center text-lg font-semibold text-content">No poops to show yet</Text>
+            <Text className="mt-4 text-center text-lg font-semibold text-content">No logs to show yet</Text>
           </View>
         ) : logs.length === 0 ? (
           <View className="mt-16 items-center px-8">
             <Text className="text-5xl">🚽</Text>
-            <Text className="mt-4 text-center text-lg font-semibold text-content">No poops on the map yet</Text>
+            <Text className="mt-4 text-center text-lg font-semibold text-content">Nothing logged yet</Text>
             <Text className="mt-1 text-center text-sm text-content-2">
-              Tap Poop to drop your first pin.
+              Tap Drop a log to add your first pin. It’ll show up here.
             </Text>
             <Pressable onPress={() => router.push('/(tabs)/compose')} className="mt-5 rounded-xl px-5 py-3" style={{ backgroundColor: ACCENT }}>
-              <Text className="font-semibold text-white">Log a poop</Text>
+              <Text className="font-semibold text-white">Drop a log</Text>
             </Pressable>
           </View>
         ) : (
           <>
             <View className="px-5 pb-3">
               <Text className="text-base font-semibold text-content">
-                {logs.length} {logs.length === 1 ? 'poop' : 'poops'}
+                {logs.length} {logs.length === 1 ? 'log' : 'logs'}
               </Text>
               <View className="mt-2 flex-row gap-2">
                 {(['list', 'gallery'] as const).map((t) => {

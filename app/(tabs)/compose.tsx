@@ -156,7 +156,7 @@ export default function ComposeScreen() {
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets
       refreshControl={ptr.control}>
-      <Text className="mt-4 text-2xl font-bold text-content">Log a poop</Text>
+      <Text className="mt-4 text-2xl font-bold text-content">Drop a log</Text>
       <Text className="mt-1 text-sm text-content-2">Where’d you go? Drop a pin and rate the throne.</Text>
 
       <Field>

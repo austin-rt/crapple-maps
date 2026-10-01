@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth';
 
 export default function MyMapScreen() {
   const { session } = useAuth();
-  if (!session) return <SignInRequired icon="trail-sign-outline" message="Every place you’ve pooped, on one map." />;
+  if (!session) return <SignInRequired icon="trail-sign-outline" message="Everywhere you’ve gone, mapped." />;
   return (
     <>
       <Stack.Screen options={{ title: 'Places I’ve Pooped' }} />

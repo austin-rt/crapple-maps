@@ -66,12 +66,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="compose"
         options={{
-          title: 'Poop',
-          tabBarIcon: ({ size }) => (
-            <View style={{ width: size + 14, height: size + 4, borderRadius: 9, backgroundColor: ACCENT, alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="add" size={size - 2} color="#fff" />
-            </View>
-          ),
+          title: 'Drop a log',
+          tabBarIcon: ({ color, size }) => <Icon name="add-circle" size={size + 2} color={color} />,
         }}
       />
       <Tabs.Screen

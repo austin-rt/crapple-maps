@@ -173,7 +173,7 @@ export function ManageProfile() {
       </View>
 
       <View className="mt-6 flex-row rounded-2xl border border-line py-4">
-        <Stat label="Poops" value={logCount} />
+        <Stat label="Logs" value={logCount} />
         <View className="w-px bg-surface-3" />
         <Stat label="Followers" value={profile?.followers_count ?? 0} onPress={() => router.push({ pathname: '/follows', params: { tab: 'followers' } })} />
         <View className="w-px bg-surface-3" />

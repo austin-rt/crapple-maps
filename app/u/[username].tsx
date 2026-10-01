@@ -151,7 +151,7 @@ export default function SharedProfile() {
           accessibilityRole="button"
           className="mt-6 w-full flex-row items-center gap-3 rounded-2xl border border-line p-4 active:opacity-70">
           <Icon name="trail-sign-outline" size={20} color={ACCENT} />
-          <Text className="flex-1 text-base font-medium text-content">{isMe ? 'Places I’ve Pooped' : `${name}’s poop map`}</Text>
+          <Text className="flex-1 text-base font-medium text-content">{isMe ? 'Places I’ve Pooped' : `${name}’s map`}</Text>
           <Icon name="chevron-forward" size={18} color={c.content2} />
         </Pressable>
       </View>
