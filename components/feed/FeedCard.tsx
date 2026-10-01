@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
-import { Avatar, Stars } from '@/components/ui';
+import { Avatar, Chip, Stars } from '@/components/ui';
 import { useBlock } from '@/hooks/useModeration';
 import { useAuth } from '@/lib/auth';
 import { bristols } from '@/lib/bristol';
@@ -55,17 +55,9 @@ export function FeedCard({ log }: { log: FeedLog }) {
           <View className="mt-1.5 flex-row flex-wrap items-center gap-2">
             {log.rating ? <Stars value={log.rating} size={14} gap={2} /> : null}
             {bs.map((b) => (
-              <View key={b.n} className="flex-row items-center gap-1 rounded-full bg-surface-3 px-2 py-0.5">
-                <Text className="text-xs">{b.emoji}</Text>
-                <Text className="text-[11px] font-medium text-content-2">{b.label}</Text>
-              </View>
+              <Chip key={b.n} size="sm" emoji={b.emoji} label={b.label} />
             ))}
-            {t ? (
-              <View className="flex-row items-center gap-1 rounded-full bg-surface-3 px-2 py-0.5">
-                <Text className="text-xs">{t.emoji}</Text>
-                <Text className="text-[11px] font-medium text-content-2">TP: {t.label}</Text>
-              </View>
-            ) : null}
+            {t ? <Chip size="sm" emoji={t.emoji} label={`TP: ${t.label}`} /> : null}
           </View>
         )}
 

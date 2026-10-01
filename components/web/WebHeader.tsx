@@ -3,8 +3,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { Avatar } from '@/components/ui';
-import { CountBadge } from '@/components/ui/CountBadge';
+import { Avatar, CountBadge } from '@/components/ui';
 import { useUnreadCount } from '@/hooks/useNotifications';
 import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';

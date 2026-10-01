@@ -6,7 +6,7 @@ import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-nati
 
 import { FollowButton } from '@/components/people';
 import { AgeGate, AuthForm, useAgePassed } from '@/components/profile';
-import { Avatar, Icon } from '@/components/ui';
+import { Avatar, Icon, Stat } from '@/components/ui';
 import { useFollows } from '@/hooks/useFollows';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { useAuth } from '@/lib/auth';
@@ -14,15 +14,6 @@ import { fetchProfileByUsername, type PublicProfile } from '@/lib/db/profiles';
 import { shareProfile } from '@/lib/share';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
-
-function Stat({ label, value }: { label: string; value: number }) {
-  return (
-    <View className="flex-1 items-center">
-      <Text className="text-lg font-bold text-content">{value}</Text>
-      <Text className="text-xs text-content-2">{label}</Text>
-    </View>
-  );
-}
 
 function ProfileAvatar({ p, size }: { p: PublicProfile; size: number }) {
   return p.avatar_url ? (
@@ -82,6 +73,8 @@ export default function SharedProfile() {
   }
 
   const name = profile.display_name || profile.username;
+  const openList = (tab: 'followers' | 'following') =>
+    router.push({ pathname: '/follows', params: isMe ? { tab } : { tab, user: profile.username } });
 
   if (!me && showAuth) {
     return (
@@ -112,9 +105,9 @@ export default function SharedProfile() {
         <Text className="text-sm text-content-2">@{profile.username}</Text>
 
         <View className="mt-6 w-full flex-row rounded-2xl border border-line py-4">
-          <Stat label="Followers" value={profile.followers_count ?? 0} />
+          <Stat label="Followers" value={profile.followers_count ?? 0} onPress={() => openList('followers')} />
           <View className="w-px bg-surface-3" />
-          <Stat label="Following" value={profile.following_count ?? 0} />
+          <Stat label="Following" value={profile.following_count ?? 0} onPress={() => openList('following')} />
         </View>
 
         <View className="mt-6 items-center">

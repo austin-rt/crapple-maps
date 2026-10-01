@@ -1,14 +1,12 @@
+import type { IconName } from '@/components/ui';
 import type { Visibility } from '@/lib/types';
 
-export const VISIBILITIES: readonly Visibility[] = ['public', 'friends', 'private'];
-
-export const VIS_LABEL: Record<Visibility, string> = { public: 'Public', friends: 'Friends', private: 'Private' };
-
-export const VIS_ICON: Record<Visibility, 'earth' | 'people-outline' | 'lock-closed-outline'> = {
-  public: 'earth',
-  friends: 'people-outline',
-  private: 'lock-closed-outline',
-};
+// Options for the shared Segmented control: label, value, icon.
+export const VIS_OPTIONS: [string, Visibility, IconName][] = [
+  ['Public', 'public', 'earth'],
+  ['Friends', 'friends', 'people-outline'],
+  ['Private', 'private', 'lock-closed-outline'],
+];
 
 export const VIS_HINT: Record<Visibility, string> = {
   public: 'Anyone can see your posts on your profile and map.',

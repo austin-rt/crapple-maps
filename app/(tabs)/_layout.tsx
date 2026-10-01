@@ -1,5 +1,4 @@
-import { Icon } from '@/components/ui';
-import { CountBadge } from '@/components/ui/CountBadge';
+import { CountBadge, Icon } from '@/components/ui';
 import { router, Tabs } from 'expo-router';
 import { Platform, Pressable, View } from 'react-native';
 

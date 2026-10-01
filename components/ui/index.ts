@@ -1,6 +1,8 @@
 // UI atoms barrel — outside consumers import from here (`@/components/ui`).
 // Sibling atoms import each other by direct relative path, never via this file.
 export { ActionButton } from './ActionButton';
+export { AppToast } from './AppToast';
+export { CountBadge } from './CountBadge';
 export { Avatar } from './Avatar';
 export { Chip } from './Chip';
 export { CodePills } from './CodePills';
@@ -14,4 +16,5 @@ export { SectionHeader } from './SectionHeader';
 export { Segmented } from './Segmented';
 export { SignInRequired } from './SignInRequired';
 export { Stars } from './Stars';
+export { Stat } from './Stat';
 export { SwipeDownModal } from './SwipeDownModal';

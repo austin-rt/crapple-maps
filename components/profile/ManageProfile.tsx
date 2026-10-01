@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 
-import { Avatar } from '@/components/ui';
+import { Avatar, Stat } from '@/components/ui';
 import { useLogCount, useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/lib/auth';
 import { confirmAction } from '@/lib/confirm';
@@ -24,20 +24,6 @@ import { Card } from './Card';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 const USERNAME_HINT = '3–30 lowercase letters, numbers or underscores. Profile links you shared under your old username stop working.';
-
-function Stat({ label, value, onPress }: { label: string; value: number; onPress?: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={!onPress}
-      accessibilityRole={onPress ? 'button' : undefined}
-      accessibilityLabel={`${value} ${label}`}
-      className="flex-1 items-center active:opacity-60">
-      <Text className="text-lg font-bold text-content">{value}</Text>
-      <Text className="text-xs text-content-2">{label}</Text>
-    </Pressable>
-  );
-}
 
 export function ManageProfile() {
   const ptr = usePullToRefresh();

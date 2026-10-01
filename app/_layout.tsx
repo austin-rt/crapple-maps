@@ -18,7 +18,7 @@ import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { AuthProvider } from '@/lib/auth';
 import { ContributionProvider } from '@/lib/contribution';
 import { ThemePrefProvider, useColors, useThemePref } from '@/lib/theme';
-import { AppToast } from '@/components/ui/AppToast';
+import { AppToast } from '@/components/ui';
 import { ACCENT } from '@/lib/tokens';
 
 export const unstable_settings = {

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { LocationPicker } from '@/components/compose/LocationPicker';
-import { SignInRequired, Stars } from '@/components/ui';
+import { Segmented, SignInRequired, Stars } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { BRISTOL } from '@/lib/bristol';
 import { TP } from '@/lib/tp';
@@ -18,7 +18,7 @@ import { toast } from '@/lib/toast';
 import { ACCENT, ON_ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 import type { Visibility } from '@/lib/types';
-import { VISIBILITIES, VIS_ICON, VIS_LABEL } from '@/lib/visibility';
+import { VIS_OPTIONS } from '@/lib/visibility';
 import { useProfile } from '@/hooks/useProfile';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
@@ -285,21 +285,7 @@ export default function ComposeScreen() {
 
       <Field>
         <Label>Who can see it?</Label>
-        <View className="flex-row gap-2">
-          {VISIBILITIES.map((v) => {
-            const active = visibility === v;
-            return (
-              <Pressable
-                key={v}
-                onPress={() => setVisibility(v)}
-                className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-xl border py-2.5 ${active ? 'border-transparent' : 'border-line'}`}
-                style={active ? { backgroundColor: ACCENT } : undefined}>
-                <Icon name={VIS_ICON[v]} size={16} color={active ? ON_ACCENT : c.content2} />
-                <Text className={active ? 'font-semibold text-white' : 'text-content-2'}>{VIS_LABEL[v]}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        <Segmented options={VIS_OPTIONS} value={visibility} onChange={setVisibility} />
       </Field>
 
       <Pressable

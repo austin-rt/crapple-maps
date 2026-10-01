@@ -10,10 +10,13 @@ export function FollowButton({
   status,
   onToggle,
   username,
+  followsYou,
 }: {
   status: FollowStatus | undefined;
   onToggle: () => void;
   username?: string;
+  /** They already follow you, so the empty state reads "Follow back". */
+  followsYou?: boolean;
 }) {
   const who = username ? `@${username}` : 'them';
   const press = () =>
@@ -25,11 +28,12 @@ export function FollowButton({
           { confirmLabel: status === 'pending' ? 'Cancel request' : 'Unfollow', destructive: true },
         )
       : onToggle();
-  const label = status === 'approved' ? 'Following' : status === 'pending' ? 'Requested' : 'Follow';
+  const label = status === 'approved' ? 'Following' : status === 'pending' ? 'Requested' : followsYou ? 'Follow back' : 'Follow';
   const filled = !status;
   return (
     <Pressable
       onPress={press}
+      accessibilityRole="button"
       className={`rounded-full px-4 py-1.5 ${filled ? '' : 'border border-line'}`}
       style={filled ? { backgroundColor: ACCENT } : undefined}>
       <Text className={filled ? 'text-sm font-semibold text-white' : 'text-sm font-semibold text-content'}>{label}</Text>

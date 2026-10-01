@@ -4,7 +4,7 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 
 import { CommentsSection, LikeButton, PostPhotos } from '@/components/feed';
-import { Avatar, Stars } from '@/components/ui';
+import { Avatar, Chip, Stars } from '@/components/ui';
 import { useLog } from '@/hooks/useLogs';
 import { useResolvedPlace } from '@/hooks/useResolvedPlace';
 import { useAuth } from '@/lib/auth';
@@ -79,17 +79,9 @@ export default function LogDetail() {
         <View className="mt-4 flex-row flex-wrap items-center gap-3 px-4">
           {data.rating ? <Stars value={data.rating} size={18} gap={2} /> : null}
           {bs.map((b) => (
-            <View key={b.n} className="flex-row items-center gap-1 rounded-full bg-surface-3 px-3 py-1">
-              <Text className="text-base">{b.emoji}</Text>
-              <Text className="text-xs font-medium text-content-2">{b.label}</Text>
-            </View>
+            <Chip key={b.n} emoji={b.emoji} label={b.label} />
           ))}
-          {t ? (
-            <View className="flex-row items-center gap-1 rounded-full bg-surface-3 px-3 py-1">
-              <Text className="text-base">{t.emoji}</Text>
-              <Text className="text-xs font-medium text-content-2">TP: {t.label}</Text>
-            </View>
-          ) : null}
+          {t ? <Chip emoji={t.emoji} label={`TP: ${t.label}`} /> : null}
         </View>
       )}
 

@@ -35,7 +35,7 @@ export default function Notifications() {
   const me = session?.user.id;
   const c = useColors();
   const qc = useQueryClient();
-  const { requests, approve, decline, statusFor, follow } = useFollows(me);
+  const { requests, approve, decline, statusFor, follow, unfollow } = useFollows(me);
   const { data: items = [] } = useNotifications(me);
 
   // Opening the screen reads everything: the badge clears while the rows still
@@ -94,8 +94,13 @@ export default function Notifications() {
                 subtitle={`${ACTION[n.kind]} · ${timeAgo(n.createdAt)}`}
                 onPress={() => openItem(n)}
                 right={
-                  n.kind === 'follow' && !statusFor(n.actor.id) ? (
-                    <FollowButton status={undefined} username={n.actor.username} onToggle={() => follow(n.actor.id)} />
+                  n.kind === 'follow' && statusFor(n.actor.id) !== 'approved' ? (
+                    <FollowButton
+                      status={statusFor(n.actor.id)}
+                      username={n.actor.username}
+                      followsYou
+                      onToggle={() => (statusFor(n.actor.id) ? unfollow(n.actor.id) : follow(n.actor.id))}
+                    />
                   ) : null
                 }
               />
