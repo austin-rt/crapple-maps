@@ -12,6 +12,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import { UsernameGate } from '@/components/profile';
+import { GetAppBanner } from '@/components/web/GetAppBanner';
 import { WebHeader } from '@/components/web/WebHeader';
 import { useApplyUpdates } from '@/hooks/useApplyUpdates';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
@@ -86,6 +87,7 @@ export default function RootLayout() {
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
               <ContributionProvider>
+                <GetAppBanner />
                 <NavStack />
                 <UsernameGate />
               </ContributionProvider>
