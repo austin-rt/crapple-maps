@@ -9,7 +9,6 @@ import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Toast from 'react-native-toast-message';
 
 import { UsernameGate } from '@/components/profile';
 import { GetAppBanner } from '@/components/web/GetAppBanner';
@@ -19,6 +18,7 @@ import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { AuthProvider } from '@/lib/auth';
 import { ContributionProvider } from '@/lib/contribution';
 import { ThemePrefProvider, useColors, useThemePref } from '@/lib/theme';
+import { AppToast } from '@/components/ui/AppToast';
 import { ACCENT } from '@/lib/tokens';
 
 export const unstable_settings = {
@@ -93,9 +93,9 @@ export default function RootLayout() {
               </ContributionProvider>
             </AuthProvider>
           </QueryClientProvider>
+          <AppToast />
         </ThemePrefProvider>
       </SafeAreaProvider>
-      <Toast />
     </GestureHandlerRootView>
   );
 }
