@@ -73,6 +73,7 @@ export type LogItem = {
   tp_quality: number | null;
   caption: string | null;
   visibility: Visibility;
+  graphic: boolean;
   created_at: string;
   photos: string[];
 };

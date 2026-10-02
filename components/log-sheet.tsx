@@ -3,6 +3,7 @@ import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Image } from 'expo-image';
 import { Dimensions, Pressable, ScrollView, Text, View } from 'react-native';
 
+import { GraphicShield } from '@/components/feed';
 import { Chip, Stars } from '@/components/ui';
 import { bristols } from '@/lib/bristol';
 import { tp } from '@/lib/tp';
@@ -64,12 +65,16 @@ export function LogSheet({
       {log.photos.length > 0 ? (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
           {log.photos.map((uri, i) => (
-            <Image
-              key={`${uri}-${i}`}
-              source={{ uri }}
-              style={{ width: log.photos.length === 1 ? w - 40 : w * 0.7, height: 220, borderRadius: 16 }}
-              contentFit="cover"
-            />
+            <GraphicShield key={`${uri}-${i}`} logId={log.id} graphic={log.graphic} radius={16}>
+              {(blur) => (
+                <Image
+                  source={{ uri }}
+                  blurRadius={blur}
+                  style={{ width: log.photos.length === 1 ? w - 40 : w * 0.7, height: 220 }}
+                  contentFit="cover"
+                />
+              )}
+            </GraphicShield>
           ))}
         </ScrollView>
       ) : null}

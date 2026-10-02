@@ -73,7 +73,7 @@ export default function LogDetail() {
 
       {data.caption ? <Text className="px-4 pt-3 text-[19px] leading-7 text-content">{data.caption}</Text> : null}
 
-      <PostPhotos photos={data.photos} />
+      <PostPhotos photos={data.photos} logId={data.id} graphic={data.graphic} />
 
       {(data.rating || bs.length > 0 || t) && (
         <View className="mt-4 flex-row flex-wrap items-center gap-3 px-4">

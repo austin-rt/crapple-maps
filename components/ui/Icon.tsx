@@ -15,6 +15,7 @@ import { DeviceMobile } from 'phosphor-react-native/src/icons/DeviceMobile';
 import { DotsNine } from 'phosphor-react-native/src/icons/DotsNine';
 import { DotsThree } from 'phosphor-react-native/src/icons/DotsThree';
 import { Export } from 'phosphor-react-native/src/icons/Export';
+import { EyeSlash } from 'phosphor-react-native/src/icons/EyeSlash';
 import { Flame } from 'phosphor-react-native/src/icons/Flame';
 import { GenderIntersex } from 'phosphor-react-native/src/icons/GenderIntersex';
 import { Globe } from 'phosphor-react-native/src/icons/Globe';
@@ -98,6 +99,7 @@ const ICONS = {
   heart: { C: Heart, weight: 'fill' },
   'camera-outline': { C: Camera },
   'images-outline': { C: Images },
+  'eye-off-outline': { C: EyeSlash },
   'trash-outline': { C: Trash },
   'log-out-outline': { C: SignOut },
   'lock-closed': { C: Lock, weight: 'fill' },

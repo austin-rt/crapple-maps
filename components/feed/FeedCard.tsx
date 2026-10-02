@@ -64,7 +64,7 @@ export function FeedCard({ log }: { log: FeedLog }) {
 
         {log.photos.length > 0 ? (
           <View className="mt-2">
-            <FeedPhotos photos={log.photos} />
+            <FeedPhotos photos={log.photos} logId={log.id} graphic={log.graphic} />
           </View>
         ) : null}
 

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { LocationPicker } from '@/components/compose/LocationPicker';
-import { Segmented, SignInRequired, Stars } from '@/components/ui';
+import { CheckRow, Segmented, SignInRequired, Stars } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { BRISTOL } from '@/lib/bristol';
 import { TP } from '@/lib/tp';
@@ -45,6 +45,7 @@ export default function ComposeScreen() {
   const [tpq, setTpq] = useState<number | null>(null);
   const [caption, setCaption] = useState('');
   const [photoUris, setPhotoUris] = useState<string[]>([]);
+  const [graphic, setGraphic] = useState(false);
   const { data: myProfile } = useProfile(session?.user.id ?? '');
   const defaultVis: Visibility = (myProfile?.default_visibility as Visibility | undefined) ?? 'friends';
   const [visibility, setVisibility] = useState<Visibility>(defaultVis);
@@ -66,6 +67,7 @@ export default function ComposeScreen() {
         setTpq(null);
         setCaption('');
         setPhotoUris([]);
+        setGraphic(false);
         setVisibility(defaultVis);
       },
       [defaultVis],
@@ -116,6 +118,7 @@ export default function ComposeScreen() {
         tpQuality: tpq,
         caption: caption.trim() || null,
         visibility,
+        graphic: graphic && photoUris.length > 0,
       });
       if (photoUris.length) {
         try {
@@ -131,6 +134,7 @@ export default function ComposeScreen() {
       setTpq(null);
       setCaption('');
       setPhotoUris([]);
+      setGraphic(false);
       setAlsoPublish(false);
       queryClient.invalidateQueries({ queryKey: ['my-logs'] });
       queryClient.invalidateQueries({ queryKey: ['tp'] });
@@ -184,17 +188,12 @@ export default function ComposeScreen() {
 
       {isNewSpot ? (
         <Field>
-          <Pressable onPress={() => setAlsoPublish((v) => !v)} className="flex-row items-center gap-3 active:opacity-70">
-            <View
-              className="h-6 w-6 items-center justify-center rounded-md border"
-              style={{ borderColor: alsoPublish ? ACCENT : c.content2, backgroundColor: alsoPublish ? ACCENT : 'transparent' }}>
-              {alsoPublish ? <Icon name="checkmark" size={16} color={ON_ACCENT} /> : null}
-            </View>
-            <View className="flex-1">
-              <Text className="text-[15px] font-medium text-content">This spot isn’t on the map yet</Text>
-              <Text className="text-xs text-content-2">Add it so others can find this restroom</Text>
-            </View>
-          </Pressable>
+          <CheckRow
+            checked={alsoPublish}
+            onToggle={() => setAlsoPublish((v) => !v)}
+            title="This spot isn’t on the map yet"
+            hint="Add it so others can find this restroom"
+          />
         </Field>
       ) : null}
 
@@ -281,6 +280,16 @@ export default function ComposeScreen() {
             </Pressable>
           ) : null}
         </View>
+        {photoUris.length ? (
+          <View className="mt-4">
+            <CheckRow
+              checked={graphic}
+              onToggle={() => setGraphic((v) => !v)}
+              title="Graphic photo"
+              hint="Blurred until someone taps to see it"
+            />
+          </View>
+        ) : null}
       </Field>
 
       <Field>

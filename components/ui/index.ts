@@ -4,6 +4,7 @@ export { ActionButton } from './ActionButton';
 export { AppToast } from './AppToast';
 export { CountBadge } from './CountBadge';
 export { Avatar } from './Avatar';
+export { CheckRow } from './CheckRow';
 export { Chip } from './Chip';
 export { CodePills } from './CodePills';
 export { GoogleG } from './GoogleG';

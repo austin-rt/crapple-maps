@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppMap } from '@/components/AppMap';
+import { GraphicShield } from '@/components/feed';
 import { AppMarker, type AppMapHandle, type Region } from '@/components/map';
 import { LogSheet, type LogItem } from '@/components/log-sheet';
 import { useMyLogs } from '@/hooks/useLogs';
@@ -149,6 +150,7 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
 
             {tab === 'list' ? (
               <BottomSheetFlatList
+                key="list"
                 refreshing={ptr.refreshing}
                 onRefresh={ptr.onRefresh}
                 data={logs}
@@ -163,7 +165,9 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
                       onPress={() => select(l)}
                       className="flex-row items-center gap-3 rounded-2xl border border-line p-3 active:opacity-70">
                       {l.photos[0] ? (
-                        <Image source={{ uri: l.photos[0] }} style={{ width: 52, height: 52, borderRadius: 10 }} />
+                        <GraphicShield logId={l.id} graphic={l.graphic} radius={10} compact>
+                          {(blur) => <Image source={{ uri: l.photos[0] }} blurRadius={blur} style={{ width: 52, height: 52 }} />}
+                        </GraphicShield>
                       ) : (
                         <View className="h-[52px] w-[52px] items-center justify-center rounded-[10px]" style={{ backgroundColor: ACCENT + '22' }}>
                           <Text className="text-xl">{b?.emoji ?? '🚽'}</Text>
@@ -186,6 +190,7 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
               />
             ) : gallery.length ? (
               <BottomSheetFlatList
+                key="gallery"
                 refreshing={ptr.refreshing}
                 onRefresh={ptr.onRefresh}
                 data={gallery}
@@ -196,7 +201,9 @@ export function LogMap({ userId, own }: { userId: string; own: boolean }) {
                   const g = item as { url: string; log: LogItem };
                   return (
                     <Pressable onPress={() => select(g.log)} style={{ width: '33.33%', aspectRatio: 1, padding: 2 }}>
-                      <Image source={{ uri: g.url }} style={{ flex: 1, borderRadius: 8 }} contentFit="cover" />
+                      <GraphicShield logId={g.log.id} graphic={g.log.graphic} radius={8} compact style={{ flex: 1 }}>
+                        {(blur) => <Image source={{ uri: g.url }} blurRadius={blur} style={{ flex: 1 }} contentFit="cover" />}
+                      </GraphicShield>
                     </Pressable>
                   );
                 }}
