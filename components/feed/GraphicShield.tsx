@@ -2,6 +2,8 @@ import { type ReactNode, useSyncExternalStore } from 'react';
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { Icon } from '@/components/ui';
+import { useProfile } from '@/hooks/useProfile';
+import { useAuth } from '@/lib/auth';
 
 // Logs the viewer chose to see this session, shared so a post revealed in the
 // feed stays revealed on its post screen and map sheet.
@@ -39,7 +41,9 @@ export function GraphicShield({
   children: (blurRadius: number) => ReactNode;
 }) {
   const seen = useSyncExternalStore(subscribe, () => revealed.has(logId), () => false);
-  const hidden = graphic && !seen;
+  const { session } = useAuth();
+  const { data: me } = useProfile(session?.user.id ?? '');
+  const hidden = graphic && !seen && !me?.show_sensitive;
   return (
     <View style={[{ overflow: 'hidden', borderRadius: radius }, style]}>
       {children(hidden ? BLUR : 0)}

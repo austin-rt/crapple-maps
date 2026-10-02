@@ -45,8 +45,10 @@ export default function ComposeScreen() {
   const [tpq, setTpq] = useState<number | null>(null);
   const [caption, setCaption] = useState('');
   const [photoUris, setPhotoUris] = useState<string[]>([]);
-  const [graphic, setGraphic] = useState(false);
   const { data: myProfile } = useProfile(session?.user.id ?? '');
+  const defaultSensitive = !!myProfile?.mark_sensitive;
+  const [graphic, setGraphic] = useState(defaultSensitive);
+  useEffect(() => setGraphic(defaultSensitive), [defaultSensitive]);
   const defaultVis: Visibility = (myProfile?.default_visibility as Visibility | undefined) ?? 'friends';
   const [visibility, setVisibility] = useState<Visibility>(defaultVis);
   useEffect(() => setVisibility(defaultVis), [defaultVis]);
@@ -67,10 +69,10 @@ export default function ComposeScreen() {
         setTpq(null);
         setCaption('');
         setPhotoUris([]);
-        setGraphic(false);
+        setGraphic(defaultSensitive);
         setVisibility(defaultVis);
       },
-      [defaultVis],
+      [defaultVis, defaultSensitive],
     ),
   );
 
@@ -134,7 +136,7 @@ export default function ComposeScreen() {
       setTpq(null);
       setCaption('');
       setPhotoUris([]);
-      setGraphic(false);
+      setGraphic(defaultSensitive);
       setAlsoPublish(false);
       queryClient.invalidateQueries({ queryKey: ['my-logs'] });
       queryClient.invalidateQueries({ queryKey: ['tp'] });

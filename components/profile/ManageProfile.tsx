@@ -19,6 +19,7 @@ import { useColors } from '@/lib/theme';
 
 import { AppearanceCard } from './AppearanceCard';
 import { PostVisibilityCard } from './PostVisibilityCard';
+import { SensitiveContentCard } from './SensitiveContentCard';
 import { AvatarCropper, type CropSource } from './AvatarCropper';
 import { Card } from './Card';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
@@ -169,6 +170,7 @@ export function ManageProfile() {
 
       <AppearanceCard />
       <PostVisibilityCard uid={uid} />
+      <SensitiveContentCard uid={uid} />
 
       <Pressable
         onPress={() => router.push('/my-map')}
