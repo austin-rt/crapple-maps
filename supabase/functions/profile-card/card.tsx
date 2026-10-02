@@ -4,7 +4,7 @@
 // preview the link as a card with the person's avatar.
 //
 // Rendering happens only when the card would change: a database trigger
-// (migration 0010) posts { user_id } after a profile's photo, avatar seed,
+// (migration 0012) posts { user_id } after a profile's photo, avatar seed,
 // display name or username changes. Backfill by posting each user_id in turn;
 // rendering many cards in one invocation exceeds the worker's compute limit.
 // Link views read the stored PNG and never reach this function.

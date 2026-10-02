@@ -1,0 +1,29 @@
+# Applies new files in supabase/migrations to the database that matches the
+# branch: develop → preview (Crapple Maps Dev), main → production. Only
+# migrations missing from the target's history table run; the history was
+# aligned with these files on 2026-10-01, so nothing old replays.
+name: Database migrations
+
+on:
+  push:
+    branches: [develop, main]
+    paths:
+      - supabase/migrations/**
+      - .github/workflows/db-migrations.yml
+
+concurrency:
+  group: db-migrations-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.109.1
+      - name: supabase db push → ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+        env:
+          DB_URL: ${{ github.ref_name == 'main' && secrets.PROD_DB_URL || secrets.PREVIEW_DB_URL }}
+        run: supabase db push --db-url "$DB_URL" --yes

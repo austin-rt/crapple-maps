@@ -35,7 +35,7 @@ from (values
 ) as u(id, email);
 
 -- 2. fill in profile identity (trigger already created the rows)
-update profiles p set username = v.username, display_name = v.name, avatar_seed = v.username
+update profiles p set username = v.username, username_chosen = true, display_name = v.name, avatar_seed = v.username
 from (values
   ('dededede-0000-0000-0000-000000000000'::uuid, 'demo_me',   'Demo (you)'),
   ('aaaaaaa0-0000-0000-0000-000000000001'::uuid, 'ava_p',     'Ava Pearson'),

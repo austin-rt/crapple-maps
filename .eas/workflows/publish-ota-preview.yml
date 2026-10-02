@@ -42,6 +42,6 @@ jobs:
   publish_ota:
     name: eas update → preview
     type: update
-    environment: production
+    environment: preview
     params:
       branch: preview

@@ -42,7 +42,7 @@ jobs:
   build_ios:
     name: eas build ios → preview
     type: build
-    environment: production
+    environment: preview
     params:
       platform: ios
       profile: preview
@@ -61,7 +61,7 @@ jobs:
   build_android:
     name: eas build android → preview
     type: build
-    environment: production
+    environment: preview
     params:
       platform: android
       profile: preview

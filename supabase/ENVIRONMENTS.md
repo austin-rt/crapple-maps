@@ -1,52 +1,73 @@
-# Database environments (dev vs prod)
+# Database environments: local, preview, production
 
-**Rule: develop against the dev project, never production.**
+**Rule: a schema change runs locally, then on preview, then on production.
+Nothing is tried on production first.**
 
-## Projects
+| tier | database | used by |
+|------|----------|---------|
+| LOCAL | Supabase CLI stack in Docker (`supabase start`) | `expo start` via `.env.development.local` (gitignored) |
+| PREVIEW | `ymgprjcjgoybnngbgfki` "Crapple Maps Dev" | `develop`: preview builds (EAS profile `preview`, EAS env `preview`), preview OTAs, preview.crapplemaps.com (Vercel Preview env) |
+| PROD | `obxrsxrtqkegwmzxbkdc` "Crapple Maps" | `main`: App Store / Play builds, production OTAs, crapplemaps.com (Vercel Production env), EAS env `production`, `.env`, the Supabase MCP server |
 
-| env  | Supabase project | used by |
-|------|------------------|---------|
-| PROD | `obxrsxrtqkegwmzxbkdc` "Crapple Maps" | App Store / Play builds, OTA updates, crapplemaps.com (Vercel), EAS env `production`, `.env` |
-| DEV  | `ymgprjcjgoybnngbgfki` "Crapple Maps Dev" | local `expo start` via `.env.development.local` (gitignored) |
+Real users only exist on production. Preview and local hold demo/test
+accounts (`kind` = `demo` / `test`, migration 0020).
 
-The original project became production when the app launched on it, so it
-also holds seed and test accounts. Every profile carries `kind`
-(`real` / `demo` / `test`, migration 0018); real users only find real
-accounts in People search. Dev has only demo/test accounts.
+## Migrations
 
-## How the app picks a database
+`supabase/migrations/NNNN_name.sql`, numbered in order with no repeats (the
+CLI keys its history table on the number). Write the file, then:
 
-The app reads `EXPO_PUBLIC_SUPABASE_URL` / `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
+1. **Local:** `supabase migration up` (or `supabase db reset` to replay all).
+2. **Preview:** push to `develop`. `.github/workflows/db-migrations.yml` runs
+   `supabase db push` against preview (`PREVIEW_DB_URL` secret).
+3. **Production:** merge to `main`; the same workflow pushes to production
+   (`PROD_DB_URL` secret).
 
-- `expo start` (development) loads `.env.development.local` over `.env` → DEV.
-- `expo export`, EAS builds and `eas update --environment production` never load
-  `.env.development.local` → PROD. (Checked: a web export contains only the
-  prod host.)
+`db push` applies only versions missing from the target's
+`supabase_migrations.schema_migrations`. Both remotes were aligned to
+0001–0029 on 2026-10-01 with `supabase migration repair`; anything applied by
+hand (MCP, dashboard) must be recorded the same way or CI will try it again.
 
-To point local work at prod temporarily, move `.env.development.local` aside.
+`0005_x_schema_drift.sql` and `0021_x_storage_drift.sql` capture what
+production got outside migrations (columns, legacy RPCs, pg_net, feedback
+table, storage buckets/policies). They are guarded no-ops on production.
 
-## Keeping dev's schema in step
+## Local stack
 
-Apply migrations to both projects. Prod: Supabase MCP / dashboard. Dev: psql
-with the dev DB password (in gitignored `.secrets/dev-db-password`):
+    supabase start                  # first run pulls images; applies every migration
+    supabase/dev/load_local.sh      # restrooms from preview + demo accounts, feed, engagement
+    TMPDIR=$HOME/.cache/supabase-tmp supabase functions serve   # Edge Functions (push)
+    supabase db reset               # wipe and replay migrations; rerun load_local.sh after
 
-    psql "host=aws-0-ca-central-1.pooler.supabase.com port=5432 dbname=postgres \
-          user=postgres.ymgprjcjgoybnngbgfki sslmode=require" -f supabase/migrations/NNNN_x.sql
+- Colima can't mount macOS's temp dir, so `functions serve` needs the TMPDIR
+  above, and analytics is off in `config.toml`.
+- `supabase/roles.sql` gives the API roles the same default table grants the
+  hosted projects have; newer local images grant nothing by default.
+- `load_local.sh` needs the preview DB password in `.secrets/dev-db-password`.
+- Demo login `demo@cm.seed` / `demopass1`. The iOS simulator reaches the stack
+  at 127.0.0.1; an Android emulator needs 10.0.2.2 in `.env.development.local`.
+- To run `expo start` against preview instead, copy `.secrets/preview.env` over
+  `.env.development.local`. It lives in `.secrets/` because Metro tries to
+  parse extra `.env*` files in the project root.
 
-`0004_x_schema_drift.sql` and `0018_x_storage_drift.sql` capture what production
-got outside migrations (columns, legacy RPCs, pg_net, feedback table, storage
-buckets/policies). They are guarded no-ops on prod. Dev deliberately has no
-`feedback_to_github` trigger, so dev feedback never opens GitHub issues.
+## Edge Functions and Vault
 
-## Dev data
+Triggers read their target URL and shared secret from each project's Vault,
+so a database only ever calls its own functions:
 
-- Restrooms: all ~97k copied from prod (public columns; `added_by` /
-  `merged_into` dropped since those users/rows don't exist in dev).
-- Accounts: `supabase/dev/seed_feed.sql` then `seed_engagement.sql` (run the
-  latter in one transaction: `psql -1 -f`). Demo login `demo@cm.seed` /
-  `demopass1`; test login `test@test.com` / `testtest` (the dev `test`/`test`
-  shortcut in AuthForm).
-- Seed photos are hosted in prod's public `log-photos` bucket.
+| trigger | Vault names | function secret |
+|---------|-------------|-----------------|
+| `notifications_push` (0030) | `push_function_url`, `push_secret` | `PUSH_SECRET` on `push` |
+| profile cards (0031) | `profile_card_url`, `profile_card_secret` | `CARD_SECRET` on `profile-card` |
 
-Dev's profile-card trigger has no Vault secret, so card rendering is a no-op
-there.
+Preview has no profile-card secrets, so cards don't render there. Deploy a
+function to a project with
+`supabase functions deploy <name> --project-ref <ref> --use-api`
+(`push` also takes `--no-verify-jwt`).
+
+## Push notifications
+
+Each new notifications row triggers `push`, which sends an Expo push to every
+token in `push_tokens` for the recipient and drops tokens Expo reports as
+unregistered. Apple delivery needs the APNs key stored on EAS
+(`eas credentials -p ios`); Android needs an FCM key and is not set up.

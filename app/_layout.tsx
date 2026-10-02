@@ -17,6 +17,7 @@ import { useApplyUpdates } from '@/hooks/useApplyUpdates';
 import { useIsMobileWeb } from '@/hooks/useIsMobileWeb';
 import { AuthProvider } from '@/lib/auth';
 import { ContributionProvider } from '@/lib/contribution';
+import { usePushNavigation } from '@/lib/push';
 import { ThemePrefProvider, useColors, useThemePref } from '@/lib/theme';
 import { AppToast } from '@/components/ui';
 import { ACCENT } from '@/lib/tokens';
@@ -37,6 +38,7 @@ function NavStack() {
   // (invites, profiles) land where they point.
   const pathname = usePathname();
   const navReady = !!useRootNavigationState()?.key;
+  usePushNavigation(navReady);
   const landed = useRef(false);
   useEffect(() => {
     if (Platform.OS === 'web' || !navReady || landed.current) return;

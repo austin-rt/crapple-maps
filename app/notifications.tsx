@@ -10,6 +10,7 @@ import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { useAuth } from '@/lib/auth';
 import { useNotifications } from '@/hooks/useNotifications';
 import { markAllRead, type AppNotification, type NotificationKind } from '@/lib/db/notifications';
+import { clearBadge } from '@/lib/push';
 import { timeAgo } from '@/lib/format';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
@@ -44,7 +45,10 @@ export default function Notifications() {
     useCallback(() => {
       if (!me) return;
       markAllRead(me)
-        .then(() => qc.invalidateQueries({ queryKey: ['notif-unread', me] }))
+        .then(() => {
+          qc.invalidateQueries({ queryKey: ['notif-unread', me] });
+          clearBadge();
+        })
         .catch(() => {});
     }, [me, qc]),
   );

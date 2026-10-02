@@ -5,6 +5,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
+import { registerPush, unregisterPush } from '@/lib/push';
 import { supabase } from '@/lib/supabase';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -63,6 +64,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  const userId = session?.user.id;
+  useEffect(() => {
+    if (userId) registerPush(userId);
+  }, [userId]);
 
   const value: AuthState = {
     session,
@@ -137,6 +143,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { error: error?.message };
     },
     signOut: async () => {
+      if (session) await unregisterPush(session.user.id);
       await supabase.auth.signOut();
     },
   };

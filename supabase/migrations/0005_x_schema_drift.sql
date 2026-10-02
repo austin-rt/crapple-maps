@@ -1,5 +1,5 @@
 -- Schema that production picked up outside the migration files (dashboard /
--- ad-hoc SQL) before 0005 relied on it. Recorded here so a fresh project — the
+-- ad-hoc SQL) before 0006 relied on it. Recorded here so a fresh project — the
 -- dev project — builds the same schema. Everything is IF NOT EXISTS, so this is
 -- a no-op on production.
 --
@@ -7,7 +7,7 @@
 -- each contact-form message as a GitHub issue). It is deliberately not created
 -- here, so dev feedback never opens real issues.
 
--- pg_net backs the profile-card trigger's HTTP call (0010); production enabled
+-- pg_net backs the profile-card trigger's HTTP call (0012); production enabled
 -- it from the dashboard.
 create extension if not exists pg_net;
 
@@ -36,7 +36,7 @@ begin
 end
 $$;
 
--- 0007 re-pins this function's search_path, so it must exist. Production has the
+-- 0009 re-pins this function's search_path, so it must exist. Production has the
 -- real GitHub-issue version; a fresh project gets a do-nothing stand-in (and no
 -- trigger), created only when the function is missing.
 do $$

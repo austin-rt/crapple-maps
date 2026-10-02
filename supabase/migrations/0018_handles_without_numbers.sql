@@ -1,5 +1,5 @@
 -- Random handles are words only (adjective_color_animal, e.g. swift_teal_otter),
--- no digits. Unconfirmed handles from 0015 are re-rolled in the new format.
+-- no digits. Unconfirmed handles from 0017 are re-rolled in the new format.
 create or replace function public.random_handle()
 returns text
 language plpgsql
