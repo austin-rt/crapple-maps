@@ -1,6 +1,7 @@
 import { Icon, Input } from '@/components/ui';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import { useRef } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import { useEffect, useRef } from 'react';
 import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AddRestroomCard, FilterSheet, PlaceCard } from '@/components/finder';
@@ -31,10 +32,30 @@ export function MobileMap() {
   };
   const expand = () => sheetRef.current?.snapToIndex(1);
 
+  // "See on map" from a post, or a searched place: the map centers there, so
+  // drop the sheet to its peek or it covers the spot. A snap issued while the
+  // post screen is still animating away is silently dropped, so it retries
+  // until the sheet reports it is down (up to two seconds).
+  const focused = useIsFocused();
+  const sheetIndex = useRef(1);
+  const centerKey = f.center ? `${f.center.lat},${f.center.lng}` : null;
+  const droppedFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (!centerKey || !focused || droppedFor.current === centerKey) return;
+    droppedFor.current = centerKey;
+    let tries = 0;
+    const timer = setInterval(() => {
+      if (sheetIndex.current === 0 || ++tries > 8) return clearInterval(timer);
+      sheetRef.current?.collapse();
+    }, 250);
+    return () => clearInterval(timer);
+  }, [centerKey, focused]);
+
   return (
     <View className="flex-1 bg-surface">
       <AppMap
         onRecenter={f.recenterOnMe}
+        target={f.center}
         recenterBottom={PEEK + 18}
         ref={f.mapRef}
         onRegionChangeComplete={f.onRegionChangeComplete}
@@ -98,6 +119,9 @@ export function MobileMap() {
       <BottomSheet
         ref={sheetRef}
         index={1}
+        onChange={(i) => {
+          sheetIndex.current = i;
+        }}
         snapPoints={[PEEK, '55%', '92%']}
         backgroundStyle={{ backgroundColor: c.surface }}
         handleIndicatorStyle={{ backgroundColor: c.content2 }}>

@@ -61,6 +61,7 @@ function DesktopMapWeb() {
     <View className="flex-1 bg-surface">
       <AppMap
         onRecenter={f.recenterOnMe}
+        target={f.center}
         ref={f.mapRef}
         onRegionChangeComplete={f.onRegionChangeComplete}
         onLongPress={(e: any) => {
