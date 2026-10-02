@@ -14,6 +14,7 @@ import { useColors } from '@/lib/theme';
 import type { FeedLog } from '@/lib/types';
 
 import { FeedPhotos } from './FeedPhotos';
+import { LikeButton } from './LikeButton';
 
 export function FeedCard({ log }: { log: FeedLog }) {
   const a = log.author;
@@ -68,10 +69,7 @@ export function FeedCard({ log }: { log: FeedLog }) {
         ) : null}
 
         <View className="mt-2 flex-row items-center gap-6">
-          <View className="flex-row items-center gap-1.5">
-            <Icon name="heart-outline" size={17} color={c.content2} />
-            {log.likes_count > 0 ? <Text className="text-xs text-content-2">{log.likes_count}</Text> : null}
-          </View>
+          <LikeButton logId={log.id} userId={session?.user.id} size={17} />
           <View className="flex-row items-center gap-1.5">
             <Icon name="chatbubble-outline" size={16} color={c.content2} />
             {log.comments_count > 0 ? <Text className="text-xs text-content-2">{log.comments_count}</Text> : null}
