@@ -60,8 +60,9 @@ so a database only ever calls its own functions:
 | `notifications_push` (0030) | `push_function_url`, `push_secret` | `PUSH_SECRET` on `push` |
 | profile cards (0031) | `profile_card_url`, `profile_card_secret` | `CARD_SECRET` on `profile-card` |
 
-Preview has no profile-card secrets, so cards don't render there. Deploy a
-function to a project with
+Preview and production each have both functions with their own secrets.
+Locally, `load_local.sh` sets up push only, so profile cards don't render.
+Deploy a function to a project with
 `supabase functions deploy <name> --project-ref <ref> --use-api`
 (`push` also takes `--no-verify-jwt`).
 
