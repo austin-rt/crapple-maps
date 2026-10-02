@@ -50,12 +50,12 @@ export function GraphicShield({
       ) : hidden ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Show graphic photo"
+          accessibilityLabel="Show sensitive content"
           onPress={() => reveal(logId)}
           style={[StyleSheet.absoluteFill, styles.cover]}>
           <Icon name="eye-off-outline" size={30} color="#fff" />
-          <Text style={styles.title}>Graphic photo</Text>
-          <Text style={styles.body}>The poster marked this as graphic.</Text>
+          <Text style={styles.title}>Sensitive content</Text>
+          <Text style={styles.body}>The poster flagged this as graphic.</Text>
           <View style={styles.button}>
             <Text style={styles.buttonText}>Show</Text>
           </View>

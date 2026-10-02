@@ -285,8 +285,8 @@ export default function ComposeScreen() {
             <CheckRow
               checked={graphic}
               onToggle={() => setGraphic((v) => !v)}
-              title="Graphic photo"
-              hint="Blurred until someone taps to see it"
+              title="Sensitive content"
+              hint="Blurred until someone taps Show"
             />
           </View>
         ) : null}
