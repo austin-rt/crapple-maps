@@ -16,6 +16,8 @@ type Props = React.ComponentProps<typeof AppMapView> & {
   children?: React.ReactNode;
   /** Glide to the user when their location arrives (and when it sharpens from the IP estimate to GPS). */
   followUser?: boolean;
+  /** Center here instead of on the user, e.g. the place a post links to. */
+  target?: Coords | null;
   /** Distance of the recenter button from the bottom edge. */
   recenterBottom?: number;
   /** Replace the default recenter behaviour (the finder also clears its search). */
@@ -25,7 +27,7 @@ type Props = React.ComponentProps<typeof AppMapView> & {
 // The one map every screen uses: same styling, user dot and recenter button,
 // and it opens on the user's location from the shared fix.
 export const AppMap = forwardRef<AppMapHandle, Props>(function AppMap(
-  { children, followUser = true, recenterBottom = 16, onRecenter, ...rest },
+  { children, followUser = true, target, recenterBottom = 16, onRecenter, ...rest },
   ref,
 ) {
   const inner = useRef<AppMapHandle>(null);
@@ -41,9 +43,25 @@ export const AppMap = forwardRef<AppMapHandle, Props>(function AppMap(
   // visible, and re-runs when the fix sharpens from the IP estimate to GPS.
   const [ready, setReady] = useState(false);
   const focused = useIsFocused();
+
+  // A target (the place a post links to, a searched address) wins over the
+  // user's location, with the same ready-and-focused wait.
+  const targetKey = target ? `${target.lat},${target.lng}` : null;
+  const centeredTarget = useRef<string | null>(null);
+  useEffect(() => {
+    if (!ready || !focused || !target || !targetKey || centeredTarget.current === targetKey) return;
+    const t = target;
+    const frame = requestAnimationFrame(() => {
+      centeredTarget.current = targetKey;
+      inner.current?.animateToRegion(around(t), 500);
+    });
+    return () => cancelAnimationFrame(frame);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- targetKey stands in for target
+  }, [ready, focused, targetKey]);
+
   const centeredOn = useRef<'none' | 'approx' | 'precise'>('none');
   useEffect(() => {
-    if (!followUser || !ready || !focused || !loc.coords) return;
+    if (!followUser || target || !ready || !focused || !loc.coords) return;
     const level = loc.precise ? 'precise' : 'approx';
     if (centeredOn.current === 'precise' || centeredOn.current === level) return;
     const coords = loc.coords;
@@ -52,7 +70,7 @@ export const AppMap = forwardRef<AppMapHandle, Props>(function AppMap(
       inner.current?.animateToRegion(around(coords), 500);
     });
     return () => cancelAnimationFrame(frame);
-  }, [followUser, ready, focused, loc.coords, loc.precise]);
+  }, [followUser, target, ready, focused, loc.coords, loc.precise]);
 
   const recenter = async () => {
     if (onRecenter) return onRecenter();
