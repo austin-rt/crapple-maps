@@ -1,16 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { fetchLikes, setLike } from '@/lib/db/reactions';
+import { fetchLikes, setLike, type LikeTarget } from '@/lib/db/reactions';
 
 type LikeState = { count: number; liked: boolean };
 
-export function useLikes(logId: string, userId: string | undefined) {
+export function useLikes(target: LikeTarget, userId: string | undefined) {
   const qc = useQueryClient();
-  const key = ['likes', logId];
-  const query = useQuery({ queryKey: key, queryFn: () => fetchLikes(logId, userId), enabled: !!logId });
+  const id = target.commentId ?? target.logId;
+  const key = ['likes', target.commentId ? 'comment' : 'log', id];
+  const query = useQuery({ queryKey: key, queryFn: () => fetchLikes(target, userId), enabled: !!id });
 
   const toggle = useMutation({
-    mutationFn: (on: boolean) => setLike(logId, userId!, on),
+    mutationFn: (on: boolean) => setLike(target, userId!, on),
     // Optimistic: flip the heart + count immediately, roll back on error.
     onMutate: async (on: boolean) => {
       await qc.cancelQueries({ queryKey: key });

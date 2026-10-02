@@ -2,7 +2,7 @@ import { profilesByIds } from '@/lib/db/profiles';
 import { supabase } from '@/lib/supabase';
 import type { Profile } from '@/lib/types';
 
-export type NotificationKind = 'follow' | 'follow_request' | 'follow_accepted' | 'like' | 'comment';
+export type NotificationKind = 'follow' | 'follow_request' | 'follow_accepted' | 'like' | 'comment' | 'comment_like';
 
 export type AppNotification = {
   id: string;

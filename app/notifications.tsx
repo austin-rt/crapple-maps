@@ -26,6 +26,7 @@ const ACTION: Record<NotificationKind, string> = {
   follow_accepted: 'Accepted your follow request',
   like: 'Liked your post',
   comment: 'Commented on your post',
+  comment_like: 'Liked your comment',
 };
 
 // Follow requests waiting on you (approve / decline), then all other activity,
@@ -58,7 +59,7 @@ export default function Notifications() {
   const activity = items.filter((n) => n.kind !== 'follow_request');
   const openProfile = (p: Profile) => router.push({ pathname: '/u/[username]', params: { username: p.username } });
   const openItem = (n: AppNotification) =>
-    n.logId && (n.kind === 'like' || n.kind === 'comment')
+    n.logId && (n.kind === 'like' || n.kind === 'comment' || n.kind === 'comment_like')
       ? router.push({ pathname: '/log/[id]', params: { id: n.logId } })
       : openProfile(n.actor);
   const empty = requests.length === 0 && activity.length === 0;

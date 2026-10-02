@@ -12,6 +12,8 @@ import { moderationMenu } from '@/lib/moderate';
 import { ACCENT } from '@/lib/tokens';
 import { useColors } from '@/lib/theme';
 
+import { LikeButton } from './LikeButton';
+
 // Plain TextInput because this screen is a ScrollView route, not a bottom sheet.
 export function CommentsSection({ logId, session }: { logId: string; session: Session | null }) {
   const { comments: allComments, isLoading, add, remove, adding } = useComments(logId);
@@ -82,6 +84,9 @@ export function CommentsSection({ logId, session }: { logId: string; session: Se
                   </Text>
                 </View>
                 <Text className="text-[15px] leading-5 text-content">{c.text}</Text>
+                <View className="mt-1.5 flex-row">
+                  <LikeButton commentId={c.id} userId={me} size={15} />
+                </View>
               </View>
               {me === c.user_id ? (
                 <Pressable accessibilityRole="button" accessibilityLabel="Delete comment" onPress={() => remove(c.id)} hitSlop={8}>

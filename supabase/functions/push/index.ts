@@ -12,6 +12,7 @@ const ACTION: Record<string, string> = {
   follow_accepted: 'accepted your follow request',
   like: 'liked your post',
   comment: 'commented on your post',
+  comment_like: 'liked your comment',
 };
 
 Deno.serve(async (req) => {
@@ -36,7 +37,7 @@ Deno.serve(async (req) => {
 
   const actor = n.actor as { username: string; display_name: string | null } | null;
   const name = actor?.display_name || (actor?.username ? `@${actor.username}` : 'Someone');
-  const url = n.log_id && (n.kind === 'like' || n.kind === 'comment') ? `/log/${n.log_id}` : '/notifications';
+  const url = n.log_id ? `/log/${n.log_id}` : '/notifications';
   const messages = tokens.map(({ token }) => ({
     to: token,
     body: `${name} ${ACTION[n.kind] ?? 'sent you a notification'}`,
