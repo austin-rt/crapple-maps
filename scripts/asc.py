@@ -22,16 +22,17 @@ from the environment so a different key can be dropped in without a code edit.
     ASC_ISSUER    default 81d35fdb-c8e5-4617-a00f-bfed08a246d1
     ASC_KEY_PATH  default .secrets/AuthKey_<ASC_KEY_ID>.p8
 
-Requires pyjwt with a crypto backend: pip3 install 'pyjwt[crypto]'
+Standard library plus the openssl CLI, so it also runs on a bare CI image
+(release-native.yml calls release.py from an EAS job).
 """
+import base64
 import json
 import os
+import subprocess
 import sys
 import time
 import urllib.error
 import urllib.request
-
-import jwt
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KEY_ID = os.environ.get('ASC_KEY_ID', 'Y2YF5P5593')
@@ -51,10 +52,27 @@ def token():
             '.p8 from App Store Connect > Users and Access > Integrations, or '
             'point ASC_KEY_PATH at it.')
     now = int(time.time())
-    return jwt.encode(
-        {'iss': ISSUER, 'iat': now, 'exp': now + 600, 'aud': 'appstoreconnect-v1'},
-        open(KEY_PATH).read(), algorithm='ES256',
-        headers={'kid': KEY_ID, 'typ': 'JWT'})
+    head = _b64(json.dumps({'alg': 'ES256', 'kid': KEY_ID, 'typ': 'JWT'}).encode())
+    body = _b64(json.dumps({'iss': ISSUER, 'iat': now, 'exp': now + 600, 'aud': 'appstoreconnect-v1'}).encode())
+    der = subprocess.run(['openssl', 'dgst', '-sha256', '-sign', KEY_PATH],
+                         input=f'{head}.{body}'.encode(), capture_output=True, check=True).stdout
+    return f'{head}.{body}.{_b64(_der_to_raw(der))}'
+
+
+def _b64(b):
+    return base64.urlsafe_b64encode(b).rstrip(b'=').decode()
+
+
+def _der_to_raw(der):
+    # openssl signs ECDSA as DER (SEQUENCE of r and s); a JWS ES256 signature is
+    # the two 32-byte integers back to back.
+    i = 2 if der[1] < 0x80 else 2 + (der[1] & 0x7f)
+    out = b''
+    for _ in range(2):
+        n = der[i + 1]
+        out += der[i + 2:i + 2 + n].lstrip(b'\0').rjust(32, b'\0')
+        i += 2 + n
+    return out
 
 
 def call(method, path, body=None):

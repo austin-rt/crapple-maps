@@ -20,7 +20,14 @@ you attach a build whose version string differs from the version record.
 
 - app/, components/, hooks/, lib/, theme/, assets/ → web deploy + OTA update
 - marketing/, public/, scripts/ → web deploy only
-- package.json, app.json, plugins/ → native builds + App Store Connect and Play closed testing
+- package.json, app.json, plugins/ → native builds; iOS goes to App Store review and releases on approval, Android to Play closed testing
+
+Bump `version` and `store.config.json` `apple.info.en-US.releaseNotes` together:
+the `release_ios` job in release-native.yml runs `scripts/release.py ship`,
+which creates the App Store version, sets What's New from those release notes,
+waits for Apple to process the exact build EAS uploaded, attaches it and
+submits for review. It needs the `ASC_KEY_PATH` file variable (the App Store
+Connect key) in the EAS production environment.
 
 Native binaries build only for changes OTA can't deliver (new dependencies,
 app config, native plugins), so nothing needs to be tagged or triggered by

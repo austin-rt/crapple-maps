@@ -3,7 +3,7 @@
   "apple": {
     "version": "1.1.5",
     "release": {
-      "automaticRelease": false
+      "automaticRelease": true
     },
     "info": {
       "en-US": {
@@ -26,6 +26,7 @@
         ],
         "marketingUrl": "https://crapplemaps.com/info",
         "promoText": "The nearest restroom, with the door code, before you need it.",
+        "releaseNotes": "• Notifications when someone follows you, likes your log or comments\n• Like comments, not just logs\n• Mark a photo as sensitive and it stays blurred until someone taps Show. Choose in Profile whether to see sensitive photos\n• Photos now show on the log screen\n• Fixes and polish",
         "supportUrl": "https://crapplemaps.com/contact",
         "title": "Crapple Maps",
         "subtitle": "Find a bathroom, fast",
